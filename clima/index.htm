@@ -165,22 +165,22 @@
       
       <div class="row">
         <span class="label"><i class="fas fa-thermometer-half icon-temp"></i> Temp:</span>
-        <span class="value">32,9 °C</span>
+        <span class="value">33,3 °C</span>
       </div>
       
       <div class="row">
         <span class="label"><i class="fas fa-user icon-temp"></i> Sensación:</span>
-        <span class="value">32,9 °C</span>
+        <span class="value">34,2 °C</span>
       </div>
 
       <div class="row">
         <span class="label"><i class="fas fa-tint icon-hum"></i> Humedad:</span>
-        <span class="value">33%</span>
+        <span class="value">32%</span>
       </div>
       
       <div class="row">
         <span class="label"><i class="fas fa-tachometer-alt icon-press"></i> Presión:</span>
-        <span class="value">1016,2 hPa</span>
+        <span class="value">1016,1 hPa</span>
       </div>
 
       <div class="row">
@@ -199,12 +199,12 @@
       </div>
       <div class="row">
         <span class="label"><i class="fas fa-wind icon-wind"></i> Viento:</span>
-        <span class="value">7,2 km/h</span>
+        <span class="value">2,5 km/h</span>
       </div>
       
       <div class="row">
         <span class="label"><i class="far fa-compass icon-wind"></i> Dirección:</span>
-        <span class="value">172° S</span>
+        <span class="value">186° S</span>
       </div>
 
       <div class="section-title">Astronomía</div>
@@ -232,14 +232,14 @@
     </div>
 
     <div class="update">
-      <i class="far fa-clock"></i> Actualizado: 27/12/2025 1:56:52 p. m.
+      <i class="far fa-clock"></i> Actualizado: 27/12/2025 2:01:52 p. m.
     </div>
 
   </div>
 
   <script>
     function traducirFase() {
-        var faseOriginal = "Waxing Crescent" + ""; 
+        var faseOriginal = "First Quarter" + ""; 
         faseOriginal = faseOriginal.toLowerCase(); 
         var resultado = "";
         var icono = "";
@@ -252,7 +252,7 @@
         else if (faseOriginal.indexOf("waning gibbous") >= 0) { resultado = "Gibosa Meng."; icono = "🌖"; }
         else if (faseOriginal.indexOf("last quarter") >= 0) { resultado = "Cuarto Meng."; icono = "🌗"; }
         else if (faseOriginal.indexOf("waning crescent") >= 0) { resultado = "Menguante"; icono = "🌘"; }
-        else { resultado = "Waxing Crescent"; icono = "🌙"; }
+        else { resultado = "First Quarter"; icono = "🌙"; }
 
         if(resultado.length > 15) {
              document.getElementById("moonText").style.fontSize = "0.8em";
