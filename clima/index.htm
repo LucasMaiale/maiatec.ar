@@ -79,25 +79,6 @@
       animation: slideInLeft 0.5s forwards;
     }
 
-    /* Loop de animación extendido para cubrir las filas */
-    .row:nth-child(1) { animation-delay: 0.1s; }
-    .row:nth-child(2) { animation-delay: 0.15s; }
-    .row:nth-child(3) { animation-delay: 0.2s; }
-    .row:nth-child(4) { animation-delay: 0.25s; }
-    .row:nth-child(5) { animation-delay: 0.3s; }
-    .row:nth-child(6) { animation-delay: 0.35s; }
-    .row:nth-child(7) { animation-delay: 0.4s; }
-    .row:nth-child(8) { animation-delay: 0.45s; }
-    .row:nth-child(9) { animation-delay: 0.5s; }
-    .row:nth-child(10) { animation-delay: 0.55s; }
-    .row:nth-child(11) { animation-delay: 0.6s; }
-    .row:nth-child(12) { animation-delay: 0.65s; }
-    .row:nth-child(13) { animation-delay: 0.7s; }
-    .row:nth-child(14) { animation-delay: 0.75s; }
-    .row:nth-child(15) { animation-delay: 0.8s; }
-
-    .row:last-child { border-bottom: none; }
-
     .row:hover {
       background-color: #f9f9f9;
       transform: translateX(3px);
@@ -119,7 +100,6 @@
       font-size: 1.1em;
     }
 
-    /* Colores */
     .icon-temp { color: #ff512f; } 
     .icon-hum { color: #1FA2FF; } 
     .icon-press { color: #DD2476; } 
@@ -140,19 +120,21 @@
         text-transform: capitalize;
     }
 
-    .update {
-      text-align: center;
-      margin-top: 10px;
-      font-size: 0.8em;
-      color: #999;
-      animation: fadeIn 1.5s ease-out;
-    }
+	.update {
+	  text-align: center;
+	  margin-top: 10px;
+	  font-size: 0.8em;
+	  color: #333; /* gris oscuro */
+	  /* o color: #000; para negro sólido */
+	  /* o color: #0055AA; para azul fuerte */
+	  animation: fadeIn 1.5s ease-out;
+	}
+
     
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes slideInLeft { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
   </style>
 </head>
 
@@ -164,47 +146,53 @@
     <div class="card">
       
       <div class="row">
-        <span class="label"><i class="fas fa-thermometer-half icon-temp"></i> Temp:</span>
-        <span class="value">30,6 °C</span>
+        <span class="label"><i class="fas fa-thermometer-half icon-temp"></i> Temperatura:</span>
+        <span class="value">34,1 °C</span>
       </div>
       
+		<div class="row">
+		  <span class="label"><i class="fas fa-thermometer-half icon-temp"></i> Max temperatura hoy:</span>
+		  <span class="value">34,1 °C a las 14:06</span>
+		</div>
+
+	  
       <div class="row">
-        <span class="label"><i class="fas fa-user icon-temp"></i> Sensación:</span>
-        <span class="value">31,2 °C</span>
+        <span class="label"><i class="fas fa-cloud-sun icon-sun"></i> Pronóstico:</span>
+        <span class="value" id="forecastValue">Unsettled, precipitation later</span>
       </div>
 
       <div class="row">
         <span class="label"><i class="fas fa-tint icon-hum"></i> Humedad:</span>
-        <span class="value">35%</span>
+        <span class="value">27%</span>
       </div>
       
       <div class="row">
-        <span class="label"><i class="fas fa-tachometer-alt icon-press"></i> Presión:</span>
-        <span class="value">1018,4 hPa</span>
-      </div>
-
-      <div class="row">
-        <span class="label"><i class="fas fa-stopwatch icon-rain"></i> Lluvia 1h:</span>
-        <span class="value">0,0 mm</span>
+        <span class="label"><i class="fas fa-tachometer-alt icon-press"></i> Presión atmosférica:</span>
+        <span class="value">1017,6 hPa</span>
       </div>
 
       <div class="row">
         <span class="label"><i class="fas fa-cloud-rain icon-rain"></i> Lluvia hoy:</span>
         <span class="value">0,0 mm</span>
       </div>
-
+	  
+      <div class="row">
+        <span class="label"><i class="fas fa-cloud-showers-heavy icon-rain"></i> Última lluvia:</span>
+        <span class="value"> mm</span>
+      </div>
+	  
       <div class="row">
         <span class="label"><i class="fas fa-calendar-alt icon-rain"></i> Lluvia mes:</span>
         <span class="value">99,3 mm</span>
       </div>
       <div class="row">
         <span class="label"><i class="fas fa-wind icon-wind"></i> Viento:</span>
-        <span class="value">2,5 km/h</span>
+        <span class="value">3,6 km/h</span>
       </div>
       
       <div class="row">
         <span class="label"><i class="far fa-compass icon-wind"></i> Dirección:</span>
-        <span class="value">13° NNE</span>
+        <span class="value"> ENE</span>
       </div>
 
       <div class="section-title">Astronomía</div>
@@ -232,46 +220,108 @@
     </div>
 
     <div class="update">
-      <i class="far fa-clock"></i> Actualizado: 28/12/2025 11:11:03 a. m.
+      <i class="far fa-clock"></i> Actualizado: 28/12/2025 2:06:13 p. m.
     </div>
 
   </div>
-
+  
   <script>
+    // ====== Traducción Forecast ======
+    function traducirForecast() {
+        var elem = document.getElementById('forecastValue'); 
+        if (!elem) return;
+
+        var pronostico = elem.innerText.trim().toLowerCase();
+
+        var dicForecast = {
+            "not available": "No disponible",
+            "exceptional weather": "Clima excepcional",
+            "settled fine": "Despejado",
+            "fine weather": "Buen clima",
+            "becoming fine": "Mejorando",
+            "fine, becoming less settled": "Bueno, menos estable",
+            "fine, possible showers": "Bueno, posibles chubascos",
+            "fairly fine, improving": "Bastante bueno, mejorando",
+            "fairly fine, possible showers early": "Bastante bueno, chubascos tempranos",
+            "fairly fine, showery later": "Bastante bueno, chubascos después",
+            "showery early, improving": "Chubascos temprano, mejorando",
+            "changeable, mending": "Variable, mejorando",
+            "fairly fine, showers likely": "Bastante bueno, probables chubascos",
+            "rather unsettled clearing later": "Bastante inestable, despejando después",
+            "unsettled, probably improving": "Inestable, probablemente mejorando",
+            "showery, bright intervals": "Chubascos, intervalos de sol",
+            "showery, becoming less settled": "Chubascos, menos estable después",
+            "changeable, some precipitation": "Variable, algo de precipitación",
+            "unsettled, short fine intervals": "Inestable, intervalos cortos de buen clima",
+            "unsettled, precipitation later": "Inestable, precipitación más tarde",
+            "unsettled, some precipitation": "Inestable, algo de precipitación",
+            "mostly very unsettled": "Mayormente muy inestable",
+            "occasional precipitation, worsening": "Precipitación ocasional, empeorando",
+            "precipitation at times, very unsettled": "Precipitación a ratos, muy inestable",
+            "precipitation at frequent intervals": "Precipitación frecuente",
+            "precipitation, very unsettled": "Precipitación, muy inestable",
+            "stormy, may improve": "Tormentoso, puede mejorar",
+            "stormy, much precipitation": "Tormentoso, mucha precipitación"
+        };
+
+        for (var key in dicForecast) {
+            if (pronostico === key) {
+                elem.innerText = dicForecast[key];
+                break;
+            }
+        }
+    }
+
+    // ====== Traducción Fase Lunar ======
     function traducirFase() {
-        var faseOriginal = "Waxing Gibbous" + ""; 
-        faseOriginal = faseOriginal.toLowerCase(); 
+        var faseOriginal = "Waxing Gibbous".trim().toLowerCase();
         var resultado = "";
         var icono = "";
 
-        if (faseOriginal.indexOf("new") >= 0) { resultado = "Nueva"; icono = "🌑"; } 
-        else if (faseOriginal.indexOf("waxing crescent") >= 0) { resultado = "Creciente"; icono = "🌒"; }
-        else if (faseOriginal.indexOf("first quarter") >= 0) { resultado = "Cuarto Crec."; icono = "🌓"; }
-        else if (faseOriginal.indexOf("waxing gibbous") >= 0) { resultado = "Gibosa Crec."; icono = "🌔"; }
-        else if (faseOriginal.indexOf("full") >= 0) { resultado = "Llena"; icono = "🌕"; }
-        else if (faseOriginal.indexOf("waning gibbous") >= 0) { resultado = "Gibosa Meng."; icono = "🌖"; }
-        else if (faseOriginal.indexOf("last quarter") >= 0) { resultado = "Cuarto Meng."; icono = "🌗"; }
-        else if (faseOriginal.indexOf("waning crescent") >= 0) { resultado = "Menguante"; icono = "🌘"; }
-        else { resultado = "Waxing Gibbous"; icono = "🌙"; }
+        var dicFases = {
+            "new moon": ["Nueva", "🌑"],
+            "waxing crescent": ["Creciente", "🌒"],
+            "first quarter": ["Cuarto Crec.", "🌓"],
+            "waxing gibbous": ["Gibosa Crec.", "🌔"],
+            "full moon": ["Llena", "🌕"],
+            "waning gibbous": ["Gibosa Meng.", "🌖"],
+            "last quarter": ["Cuarto Meng.", "🌗"],
+            "waning crescent": ["Menguante", "🌘"]
+        };
 
-        if(resultado.length > 15) {
-             document.getElementById("moonText").style.fontSize = "0.8em";
+        for (var key in dicFases) {
+            if (faseOriginal === key) {
+                resultado = dicFases[key][0];
+                icono = dicFases[key][1];
+                break;
+            }
+        }
+
+        if (resultado === "") {
+            resultado = "Waxing Gibbous";
+            icono = "🌙";
+        }
+
+        if (resultado.length > 15) {
+            document.getElementById("moonText").style.fontSize = "0.8em";
         }
 
         document.getElementById("moonText").innerHTML = icono + " " + resultado;
     }
-    
-    // --- LÓGICA DE INICIO ---
 
-    // 1. Ejecutar la traducción al cargar
-    traducirFase();
-
-    // 2. DETECTA EL REGRESO DEL MÓVIL Y FUERZA LA RECARGA 
-    document.addEventListener('visibilitychange', function() {
-        if (document.visibilityState === 'visible') {
-            window.location.reload(true); 
-        }
-    });
+    // ====== Ejecutar ambos al cargar ======
+    window.onload = function() {
+        traducirForecast();
+        traducirFase();
+    };
+	
+	  // --- DETECTA VISIBILIDAD (recarga al volver al móvil/pestaña) ---
+  document.addEventListener('visibilitychange', function() {
+      if (document.visibilityState === 'visible') {
+          window.location.reload(true); 
+      }
+  });
+	
   </script>
 
 </body>
