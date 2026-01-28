@@ -32,11 +32,27 @@
       height: auto;
     }
 
-    /* Logo WhatsApp */
-    .wsp {
+    /* Contenedor WhatsApp */
+    .wsp-container {
       position: fixed;
       right: 30px;
       bottom: 35px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .wsp-text {
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 500;
+      white-space: nowrap;
+      opacity: 0.9;
+    }
+
+    /* Logo WhatsApp */
+    .wsp {
       width: 60px;
       height: 60px;
       transform-origin: center;
@@ -86,8 +102,9 @@
     <img src="logo-maiatec.png" alt="MAIATEC - Soluciones Electrónicas" class="logo" />
   </div>
 
-  <!-- Logo WhatsApp -->
-  <a href="https://wa.me/5492352502050" target="_blank">
+  <!-- WhatsApp -->
+  <a href="https://wa.me/5492352502050" target="_blank" class="wsp-container">
+    <span class="wsp-text">Quiero hacer una consulta</span>
     <img src="wsp.png" alt="WhatsApp" class="wsp" />
   </a>
 
