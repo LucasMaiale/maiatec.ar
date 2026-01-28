@@ -1,1 +1,95 @@
-MAIATEC
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MAIATEC</title>
+  <meta name="description" content="MAIATEC - Soluciones Electrónicas">
+
+  <style>
+    html, body {
+      margin: 0;
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #3E4095;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      opacity: 0;
+      animation: fadeIn 1.2s ease-out forwards;
+    }
+
+    img.logo {
+      max-width: 600px;
+      width: 80vw;
+      height: auto;
+    }
+
+    /* Logo WhatsApp */
+    .wsp {
+      position: fixed;
+      right: 30px;
+      bottom: 35px;
+      width: 75px;
+      height: 75px;
+      transform-origin: center;
+      animation: wsp-attention 4s infinite ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Animación WhatsApp */
+    @keyframes wsp-attention {
+      0% {
+        transform: scale(1) rotate(0deg);
+      }
+      70% {
+        transform: scale(1) rotate(0deg);
+      }
+      75% {
+        transform: scale(1.08) rotate(-10deg);
+      }
+      80% {
+        transform: scale(1.08) rotate(10deg);
+      }
+      85% {
+        transform: scale(1.08) rotate(-10deg);
+      }
+      90% {
+        transform: scale(1) rotate(0deg);
+      }
+      100% {
+        transform: scale(1) rotate(0deg);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <img src="logo-maiatec.png" alt="MAIATEC - Soluciones Electrónicas" class="logo" />
+  </div>
+
+  <!-- Logo WhatsApp -->
+  <a href="https://wa.me/5491112345678" target="_blank">
+    <img src="wsp.png" alt="WhatsApp" class="wsp" />
+  </a>
+
+</body>
+</html>
