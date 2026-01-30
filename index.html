@@ -7,14 +7,30 @@
   <meta name="description" content="MAIATEC - Soluciones Electrónicas">
 
   <style>
+    /* 1. Definimos variables para facilitar el cambio de color */
+    :root {
+      /* Color original optimizado para monitores LCD */
+      --bg-color: #2E3092; 
+    }
+
+    /* 2. Media Query para móviles (compensación para pantallas AMOLED) */
+    /* Se activa en pantallas menores a 768px o dispositivos con gama de color amplia */
+    @media (max-width: 768px) or (color-gamut: p3) {
+      :root {
+        /* Color ajustado: Menos rojo, más verde/cian para evitar el tono violeta */
+        --bg-color: #1B438A; 
+      }
+    }
+
     html, body {
       margin: 0;
       min-height: 100svh;
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #1B438A;
+      background-color: var(--bg-color); /* Usamos la variable aquí */
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      transition: background-color 0.5s ease; /* Transición suave por si cambias el tamaño en PC */
     }
 
     .container {
@@ -24,7 +40,7 @@
       gap: 14px;
       opacity: 0;
       animation: fadeIn 1.2s ease-out forwards;
-      transform: translateY(-40px); /* sube el logo */
+      transform: translateY(-40px);
     }
 
     img.logo {
@@ -52,7 +68,6 @@
       opacity: 0.9;
     }
 
-    /* Logo WhatsApp */
     .wsp {
       width: 60px;
       height: 60px;
@@ -71,28 +86,15 @@
       }
     }
 
-    /* Animación WhatsApp */
     @keyframes wsp-attention {
-      0% {
+      0%, 70%, 90%, 100% {
         transform: scale(1) rotate(0deg);
       }
-      70% {
-        transform: scale(1) rotate(0deg);
-      }
-      75% {
+      75%, 85% {
         transform: scale(1.08) rotate(-10deg);
       }
       80% {
         transform: scale(1.08) rotate(10deg);
-      }
-      85% {
-        transform: scale(1.08) rotate(-10deg);
-      }
-      90% {
-        transform: scale(1) rotate(0deg);
-      }
-      100% {
-        transform: scale(1) rotate(0deg);
       }
     }
   </style>
@@ -103,7 +105,6 @@
     <img src="logo-maiatec.png" alt="MAIATEC - Soluciones Electrónicas" class="logo" />
   </div>
 
-  <!-- WhatsApp -->
   <a href="https://wa.me/5492352502050" target="_blank" class="wsp-container">
     <span class="wsp-text">Consúltenos</span>
     <img src="wsp.png" alt="WhatsApp" class="wsp" />
