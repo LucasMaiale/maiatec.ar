@@ -7,30 +7,46 @@
   <meta name="description" content="MAIATEC - Soluciones Electrónicas">
 
   <style>
-    /* 1. Definimos variables para facilitar el cambio de color */
+    /* 1. Definición de variables con gestión de color */
     :root {
-      /* Color original optimizado para monitores LCD */
-      --bg-color: #2E3092; 
+      /* Usamos formato color(srgb) para obligar a Chrome a no saturar en LCD */
+      /* Equivale a tu #2E3092 original */
+      --bg-color: color(srgb 0.18 0.188 0.573); 
     }
 
-    /* 2. Media Query para móviles (compensación para pantallas AMOLED) */
-    /* Se activa en pantallas menores a 768px o dispositivos con gama de color amplia */
+    /* 2. Compensación para pantallas AMOLED y dispositivos móviles */
     @media (max-width: 768px) or (color-gamut: p3) {
       :root {
-        /* Color ajustado: Menos rojo, más verde/cian para evitar el tono violeta */
+        /* Color ajustado para evitar el viraje a violeta en AMOLED (#1B438A) */
         --bg-color: #1B438A; 
       }
     }
 
     html, body {
       margin: 0;
+      padding: 0;
       min-height: 100svh;
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: var(--bg-color); /* Usamos la variable aquí */
+      background-color: #2E3092; /* Fallback para navegadores viejos */
+      background-color: var(--bg-color);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      transition: background-color 0.5s ease; /* Transición suave por si cambias el tamaño en PC */
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Estabilizador de color: Capa casi invisible que unifica el renderizado */
+    body::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.01);
+      pointer-events: none;
+      z-index: 10;
     }
 
     .container {
@@ -40,13 +56,15 @@
       gap: 14px;
       opacity: 0;
       animation: fadeIn 1.2s ease-out forwards;
-      transform: translateY(-40px);
+      z-index: 2;
     }
 
     img.logo {
       max-width: 600px;
       width: 80vw;
       height: auto;
+      /* Filtro suave para que el logo se integre mejor en cualquier panel */
+      filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1));
     }
 
     /* Contenedor WhatsApp */
@@ -58,6 +76,7 @@
       align-items: center;
       gap: 10px;
       text-decoration: none;
+      z-index: 20;
     }
 
     .wsp-text {
@@ -66,6 +85,7 @@
       font-weight: 500;
       white-space: nowrap;
       opacity: 0.9;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
     }
 
     .wsp {
@@ -78,11 +98,11 @@
     @keyframes fadeIn {
       from {
         opacity: 0;
-        transform: translateY(-32px);
+        transform: translateY(8px);
       }
       to {
         opacity: 1;
-        transform: translateY(-40px);
+        transform: translateY(0);
       }
     }
 
