@@ -20,8 +20,11 @@ jobs:
       - name: Fetch Data
         run: |
           mkdir -p data
-          # Definimos el nombre con fecha para el log histórico
+          # Agregamos unidades: Celsius (1), hPa (3) y mm (12)
+          curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&temp_unitid=1&pressure_unitid=3&precip_unitid=12&call_back=all" -o data/latest.json
+          
           TIMESTAMP=$(date +%Y%m%d_%H%M)
+          cp data/latest.json data/weather_$TIMESTAMP.json
           # Llamada a la API v3
           curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&call_back=all" -o data/latest.json
           
