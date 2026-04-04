@@ -3,18 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clima Chacabuco - Estación Realtime</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Clima Chacabuco - Realtime</title>
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌤️</text></svg>">
+
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; color: #1c1e21; display: flex; flex-direction: column; align-items: center; padding: 20px; }
-        .container { max-width: 500px; width: 100%; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f0f2f5; color: #1c1e21; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
+        .container { max-width: 450px; width: 100%; }
         .header { text-align: center; margin-bottom: 20px; }
-        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 15px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .label { font-size: 0.9rem; color: #65676b; margin-bottom: 5px; }
-        .value { font-size: 1.5rem; font-weight: bold; }
-        .viento-detalles { font-size: 0.85rem; color: #444; margin-top: 5px; border-top: 1px solid #eee; padding-top: 5px; }
-        .footer { font-size: 0.8rem; color: #888; text-align: center; margin-top: 10px; }
-        .unit { font-size: 1rem; font-weight: normal; margin-left: 2px; }
+        .header h1 { margin-bottom: 5px; color: #1877f2; }
+        #status { font-size: 0.85rem; color: #28a745; font-weight: bold; margin-top: 0; }
+        
+        .card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 15px; border: 1px solid #e4e6eb; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        .label { font-size: 0.85rem; color: #65676b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .value { font-size: 1.8rem; font-weight: 800; display: flex; align-items: baseline; }
+        .unit { font-size: 1rem; font-weight: 500; color: #65676b; margin-left: 3px; }
+        
+        .viento-detalles { font-size: 0.9rem; color: #444; margin-top: 12px; border-top: 1px solid #f0f2f5; padding-top: 10px; display: flex; justify-content: space-between; }
+        
+        .footer { font-size: 0.85rem; color: #8e9094; text-align: center; margin-top: 20px; padding: 10px; }
+        #time { font-weight: bold; color: #444; }
     </style>
 </head>
 <body>
@@ -22,7 +35,7 @@
 <div class="container">
     <div class="header">
         <h1>Chacabuco</h1>
-        <p id="status">Actualizando...</p>
+        <p id="status">Sincronizando estación...</p>
     </div>
 
     <div class="card">
@@ -42,7 +55,7 @@
         <div class="label">Viento Sostenido</div>
         <div class="value"><span id="wind">--</span><span class="unit">km/h</span></div>
         <div class="viento-detalles">
-            <span id="wind-dir">Dirección: --</span> | 
+            <span id="wind-dir">Dirección: --</span>
             <span id="gust">Ráfagas: -- km/h</span>
         </div>
     </div>
@@ -54,7 +67,7 @@
                 <div class="value"><span id="press">--</span><span class="unit">hPa</span></div>
             </div>
             <div>
-                <div class="label">Lluvia Hoy</div>
+                <div class="label">Lluvia Diaria</div>
                 <div class="value"><span id="rain">--</span><span class="unit">mm</span></div>
             </div>
         </div>
@@ -66,5 +79,6 @@
 </div>
 
 <script src="js/clima.js"></script>
+
 </body>
 </html>
