@@ -3,58 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clima en Chacabuco - Estación Real-Time</title>
+    <title>Clima Chacabuco - Estación Realtime</title>
     <style>
-        :root { --primary: #005cbf; --bg: #f4f7f6; --text: #333; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .container { background: white; padding: 2rem; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center; }
-        h1 { font-size: 1.2rem; color: #666; text-transform: uppercase; letter-spacing: 1px; }
-        .location { font-size: 1.8rem; font-weight: bold; margin-bottom: 1rem; color: var(--primary); }
-        .temp-main { font-size: 4.5rem; font-weight: 800; margin: 0.5rem 0; color: #ff5722; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; border-top: 1px solid #eee; padding-top: 20px; }
-        .data-item { background: #f9f9f9; padding: 15px; border-radius: 12px; }
-        .label { font-size: 0.8rem; color: #888; display: block; margin-bottom: 5px; }
-        .value { font-size: 1.1rem; font-weight: bold; }
-        .footer { margin-top: 20px; font-size: 0.75rem; color: #aaa; }
-        .dot { height: 10px; width: 10px; background-color: #4caf50; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        body { font-family: sans-serif; background: #f0f2f5; color: #1c1e21; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        .container { max-width: 500px; width: 100%; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .label { font-size: 0.9rem; color: #65676b; margin-bottom: 5px; }
+        .value { font-size: 1.5rem; font-weight: bold; }
+        .viento-detalles { font-size: 0.85rem; color: #444; margin-top: 5px; border-top: 1px solid #eee; padding-top: 5px; }
+        .footer { font-size: 0.8rem; color: #888; text-align: center; margin-top: 10px; }
+        .unit { font-size: 1rem; font-weight: normal; margin-left: 2px; }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Estación Meteorológica</h1>
-        <div class="location">Chacabuco, BA</div>
-        
-        <div id="loader">Cargando datos en vivo...</div>
+<div class="container">
+    <div class="header">
+        <h1>Chacabuco</h1>
+        <p id="status">Actualizando...</p>
+    </div>
 
-        <div id="weather-content" style="display: none;">
-            <div class="temp-main" id="temp">--°C</div>
-            
-            <div class="grid">
-                <div class="data-item">
-                    <span class="label">HUMEDAD</span>
-                    <span class="value" id="hum">--%</span>
-                </div>
-                <div class="data-item">
-                    <span class="label">VIENTO</span>
-                    <span class="value" id="wind">-- km/h</span>
-                </div>
-                <div class="data-item">
-                    <span class="label">PRESIÓN</span>
-                    <span class="value" id="press">-- hPa</span>
-                </div>
-                <div class="data-item">
-                    <span class="label">LLUVIA 24HS</span>
-                    <span class="value" id="rain">-- mm</span>
-                </div>
+    <div class="card">
+        <div class="grid">
+            <div>
+                <div class="label">Temperatura</div>
+                <div class="value"><span id="temp">--</span><span class="unit">°C</span></div>
             </div>
-
-            <div class="footer">
-                <span class="dot"></span> Actualizado: <span id="time">--:--</span>
+            <div>
+                <div class="label">Humedad</div>
+                <div class="value"><span id="hum">--</span><span class="unit">%</span></div>
             </div>
         </div>
     </div>
 
-    <script src="js/clima.js"></script>
+    <div class="card">
+        <div class="label">Viento Sostenido</div>
+        <div class="value"><span id="wind">--</span><span class="unit">km/h</span></div>
+        <div class="viento-detalles">
+            <span id="wind-dir">Dirección: --</span> | 
+            <span id="gust">Ráfagas: -- km/h</span>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="grid">
+            <div>
+                <div class="label">Presión (Rel)</div>
+                <div class="value"><span id="press">--</span><span class="unit">hPa</span></div>
+            </div>
+            <div>
+                <div class="label">Lluvia Hoy</div>
+                <div class="value"><span id="rain">--</span><span class="unit">mm</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Última actualización: <span id="time">--:--</span> hs
+    </div>
+</div>
+
+<script src="js/clima.js"></script>
 </body>
 </html>
