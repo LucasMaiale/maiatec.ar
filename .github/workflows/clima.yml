@@ -1,27 +1,26 @@
-name: CLIMA_CHACABUCO
+name: Actualizar Clima Chacabuco
 
 on:
   schedule:
-    - cron: '*/5 * * * *' # Probalo cada 5 min solo para ver si arranca
-  workflow_dispatch:
-  
+    - cron: '*/10 * * * *' # Corre cada 10 minutos
+  workflow_dispatch: # Permite correrlo manualmente desde la pestaña Actions
+
 jobs:
   update-weather:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
       - name: Checkout del repositorio
-        uses: actions/checkout@v5
+        uses: actions/checkout@v3
 
       - name: Procesar Datos y Actualizar Historial
         run: |
           mkdir -p data
           
-          # Descargar el JSON
-          curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&temp_unitid=1&pressure_unitid=3&precip_unitid=12&wind_speed_unitid=7&call_back=all" -o data/latest.json          
-          # Extraer valores con Zona Horaria de Argentina
+          # 1. Descargar JSON, forzar unidades (km/h, hPa, mm) y FILTRAR (borrar indoor y battery)
+          curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&temp_unitid=1&pressure_unitid=3&precip_unitid=12&wind_speed_unitid=7&call_back=all" \
+          | jq 'del(.data.indoor, .data.battery)' > data/latest.json
+          
+          # 2. Extraer valores para el CSV usando JQ
           TIME_UNIX=$(jq -r '.time' data/latest.json)
           FECHA=$(TZ="America/Argentina/Buenos_Aires" date -d "@$TIME_UNIX" +"%Y-%m-%d %H:%M")
           
@@ -30,19 +29,21 @@ jobs:
           PRES=$(jq -r '.data.pressure.relative.value' data/latest.json)
           VIENTO=$(jq -r '.data.wind.wind_speed.value' data/latest.json)
           RAFAGA=$(jq -r '.data.wind.wind_gust.value' data/latest.json)
-          DIR_GRADOS=$(jq -r '.data.wind.wind_direction.value' data/latest.json)
+          DIR=$(jq -r '.data.wind.wind_direction.value' data/latest.json)
           LLUVIA=$(jq -r '.data.rainfall.daily.value' data/latest.json)
+          SOLAR=$(jq -r '.data.solar_and_uvi.solar.value' data/latest.json)
+          UVI=$(jq -r '.data.solar_and_uvi.uvi.value' data/latest.json)
 
-          # Guardar en CSV
+          # 3. Crear o actualizar el CSV Histórico
           if [ ! -f data/historial.csv ]; then
-            echo "Fecha,Temperatura,Humedad,Presion,Viento,Rafaga,Direccion,Lluvia" > data/historial.csv
+            echo "Fecha,Temperatura,Humedad,Presion,Viento,Rafaga,Direccion,Lluvia,Solar,UV" > data/historial.csv
           fi
-          echo "$FECHA,$TEMP,$HUM,$PRES,$VIENTO_PROM,$RAFAGA,$DIR_GRADOS,$LLUVIA" >> data/historial.csv
+          echo "$FECHA,$TEMP,$HUM,$PRES,$VIENTO,$RAFAGA,$DIR,$LLUVIA,$SOLAR,$UVI" >> data/historial.csv
 
-      - name: Guardar cambios en GitHub
+      - name: Commit y Push de los cambios
         run: |
-          git config --global user.name "Weather Bot"
-          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
           git add data/latest.json data/historial.csv
-          git commit -m "Update Chacabuco: $(date +'%Y-%m-%d %H:%M')" || exit 0
+          git commit -m "Actualización clima: $(date)" || echo "Sin cambios para commitear"
           git push
