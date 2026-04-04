@@ -1,4 +1,4 @@
-name: CLIMA_CHACABUCO_TEST
+name: CLIMA_CHACABUCO
 
 on:
   schedule:
@@ -24,8 +24,8 @@ jobs:
           
           # 2. Extraer valores usando 'jq'
           TIME_UNIX=$(jq -r '.time' data/latest.json)
-          FECHA=$(date -d "@$TIME_UNIX" +"%Y-%m-%d %H:%M")
-          TEMP=$(jq -r '.data.outdoor.temperature.value' data/latest.json)
+          TIME_UNIX=$(jq -r '.time' data/latest.json)
+          FECHA=$(TZ="America/Argentina/Buenos_Aires" date -d "@$TIME_UNIX" +"%Y-%m-%d %H:%M")
           HUM=$(jq -r '.data.outdoor.humidity.value' data/latest.json)
           PRES=$(jq -r '.data.pressure.relative.value' data/latest.json)
           VIENTO=$(jq -r '.data.wind.wind_speed.value' data/latest.json)
