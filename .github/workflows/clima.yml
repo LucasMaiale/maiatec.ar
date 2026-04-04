@@ -30,13 +30,15 @@ jobs:
           HUM=$(jq -r '.data.outdoor.humidity.value' data/latest.json)
           PRES=$(jq -r '.data.pressure.relative.value' data/latest.json)
           VIENTO=$(jq -r '.data.wind.wind_speed.value' data/latest.json)
+          RAFAGA=$(jq -r '.data.wind.wind_gust.value' data/latest.json)
+          DIR_GRADOS=$(jq -r '.data.wind.wind_direction.value' data/latest.json)
           LLUVIA=$(jq -r '.data.rainfall.daily.value' data/latest.json)
 
           # Guardar en CSV
           if [ ! -f data/historial.csv ]; then
-            echo "Fecha,Temperatura,Humedad,Presion,Viento,Lluvia" > data/historial.csv
+            echo "Fecha,Temperatura,Humedad,Presion,Viento,Rafaga,Direccion,Lluvia" > data/historial.csv
           fi
-          echo "$FECHA,$TEMP,$HUM,$PRES,$VIENTO,$LLUVIA" >> data/historial.csv
+          echo "$FECHA,$TEMP,$HUM,$PRES,$VIENTO_PROM,$RAFAGA,$DIR_GRADOS,$LLUVIA" >> data/historial.csv
 
       - name: Guardar cambios en GitHub
         run: |
