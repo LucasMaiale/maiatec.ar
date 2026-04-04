@@ -19,24 +19,23 @@ jobs:
         run: |
           mkdir -p data
           
-          # 1. Descargar el JSON actual (se sobreescribe siempre)
+          # Descargar el JSON
           curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&temp_unitid=1&pressure_unitid=3&precip_unitid=12&call_back=all" -o data/latest.json
           
-          # 2. Extraer valores usando 'jq'
-          TIME_UNIX=$(jq -r '.time' data/latest.json)
+          # Extraer valores con Zona Horaria de Argentina
           TIME_UNIX=$(jq -r '.time' data/latest.json)
           FECHA=$(TZ="America/Argentina/Buenos_Aires" date -d "@$TIME_UNIX" +"%Y-%m-%d %H:%M")
+          
+          TEMP=$(jq -r '.data.outdoor.temperature.value' data/latest.json)
           HUM=$(jq -r '.data.outdoor.humidity.value' data/latest.json)
           PRES=$(jq -r '.data.pressure.relative.value' data/latest.json)
           VIENTO=$(jq -r '.data.wind.wind_speed.value' data/latest.json)
           LLUVIA=$(jq -r '.data.rainfall.daily.value' data/latest.json)
 
-          # 3. Crear el CSV si no existe con sus encabezados
+          # Guardar en CSV
           if [ ! -f data/historial.csv ]; then
             echo "Fecha,Temperatura,Humedad,Presion,Viento,Lluvia" > data/historial.csv
           fi
-
-          # 4. Agregar la nueva línea al final del archivo
           echo "$FECHA,$TEMP,$HUM,$PRES,$VIENTO,$LLUVIA" >> data/historial.csv
 
       - name: Guardar cambios en GitHub
