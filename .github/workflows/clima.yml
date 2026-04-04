@@ -1,29 +1,15 @@
-name: Actualizar Clima Chacabuco
-
-on:
-  schedule:
-    - cron: '*/10 * * * *' 
-  workflow_dispatch: 
-
-jobs:
-  update-weather:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout del repositorio
-        uses: actions/checkout@v4
-
-      - name: Procesar Datos y Actualizar Historial
+- name: Procesar Datos y Actualizar Historial
         run: |
           mkdir -p data
           
           # 1. DESCARGAR ORIGINAL
           curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&temp_unitid=1&pressure_unitid=3&precip_unitid=13&wind_speed_unitid=7&call_back=all" > data/raw.json
           
-          # 2. LIMPIAR Y CONVERTIR (Corrección de claves numéricas y redondeo)
-          # Usamos .data.rainfall."1_hour" con comillas para que jq no de error
+          # 2. CONVERTIR SOLO RAIN_RATE Y LIMPIAR (Mantenemos el resto igual)
           jq '.data.outdoor |= del(.vpd) | 
               del(.data.indoor, .data.battery) |
+              .data.rainfall.rain_rate.value |= (tonumber * 25.4 * 10 | round / 10) | 
+              .data.rainfall.rain_rate.unit = "mm/hr" |
               .data.rainfall."1_hour".value |= (tonumber * 25.4 * 10 | round / 10) | 
               .data.rainfall."1_hour".unit = "mm" |
               .data.rainfall.daily.value |= (tonumber * 25.4 * 10 | round / 10) | 
@@ -58,11 +44,3 @@ jobs:
           echo "$FECHA,$TEMP,$HUM,$PRES,$VIENTO,$RAFAGA,$DIR,$LLUVIA,$SOLAR,$UVI" >> data/historial.csv
           
           rm data/raw.json
-
-      - name: Commit y Push
-        run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
-          git add data/latest.json data/historial.csv
-          git commit -m "Clima Chacabuco: Conversion corregida" || echo "Sin cambios"
-          git push
