@@ -1,23 +1,34 @@
 async function fetchWeather() {
     try {
-        // El "?t=" ayuda a saltar el caché de GitHub Pages
         const response = await fetch(`./data/latest.json?t=${new Date().getTime()}`);
         const json = await response.json();
         
         const data = json.data;
 
-        // Mapeo de datos (Ajustado a estructura Ecowitt v3)
-        document.getElementById('temp').innerText = `${data.outdoor.temperature.value}°C`;
-        document.getElementById('hum').innerText = `${data.outdoor.humidity.value}%`;
-        document.getElementById('wind').innerText = `${data.wind.wind_speed.value} km/h`;
-        document.getElementById('press').innerText = `${data.pressure.relative.value}`;
-        document.getElementById('rain').innerText = `${data.rainfall.daily.value}`;
+        // --- Mapeo de Datos Estilo SMN ---
         
-        // Hora de la estación
+        // Temperatura y Humedad
+        document.getElementById('temp').innerText = `${Math.round(data.outdoor.temperature.value)}°C`;
+        document.getElementById('hum').innerText = `${data.outdoor.humidity.value}%`;
+        
+        // Viento (Ecowitt devuelve km/h si lo configuraste así, o m/s por defecto)
+        document.getElementById('wind').innerText = `${data.wind.wind_speed.value} km/h`;
+        
+        // Presión Atmosférica (Hecto pascales - hPa)
+        // Usamos la presión RELATIVA que es la referencia oficial
+        document.getElementById('press').innerText = `${data.pressure.relative.value} hPa`;
+        
+        // Lluvia de las últimas 24 Horas
+        // Nota: data.rainfall.24h.value es el acumulado móvil de las últimas 24hs
+        document.getElementById('rain').innerText = `${data.rainfall['24h'].value} mm`;
+        
+        // Hora de la última lectura
         const lastUpdate = new Date(json.time * 1000);
-        document.getElementById('time').innerText = lastUpdate.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        document.getElementById('time').innerText = lastUpdate.toLocaleTimeString('es-AR', {
+            hour: '2-digit', 
+            minute:'2-digit'
+        });
 
-        // Interfaz
         document.getElementById('loader').style.display = 'none';
         document.getElementById('weather-content').style.display = 'block';
 
