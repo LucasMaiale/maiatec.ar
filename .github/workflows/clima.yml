@@ -2,12 +2,13 @@ name: Actualizar Clima Chacabuco
 
 on:
   schedule:
-    - cron: '*/10 * * * *' # Corre cada 10 minutos
-  workflow_dispatch:
+    - cron: '*/10 * * * *' # Ejecuta cada 10 minutos
+  workflow_dispatch: # Permite ejecución manual
 
 jobs:
   update-weather:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout del repositorio
         uses: actions/checkout@v4
@@ -16,16 +17,19 @@ jobs:
         run: |
           mkdir -p data
           
-          # URL CORREGIDA PARA ARGENTINA:
+          # 1. DESCARGAR Y FILTRAR
+          # Unidades forzadas para Argentina:
           # temp_unitid=1 (Celsius)
           # pressure_unitid=3 (hPa)
-          # precip_unitid=13 (Milímetros - mm) <--- ESTE CAMBIÓ
+          # precip_unitid=13 (Milímetros - mm)
           # wind_speed_unitid=7 (km/h)
+          # Filtro jq: Borra 'indoor' y 'battery'
           
           curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&temp_unitid=1&pressure_unitid=3&precip_unitid=13&wind_speed_unitid=7&call_back=all" \
           | jq 'del(.data.indoor, .data.battery)' > data/latest.json
           
-          # Extraer valores para el CSV
+          # 2. EXTRAER VALORES PARA EL HISTORIAL (CSV)
+          # Usamos la zona horaria de Argentina para la fecha del log
           TIME_UNIX=$(jq -r '.time' data/latest.json)
           FECHA=$(TZ="America/Argentina/Buenos_Aires" date -d "@$TIME_UNIX" +"%Y-%m-%d %H:%M")
           
@@ -39,16 +43,16 @@ jobs:
           SOLAR=$(jq -r '.data.solar_and_uvi.solar.value' data/latest.json)
           UVI=$(jq -r '.data.solar_and_uvi.uvi.value' data/latest.json)
 
-          # Guardar en CSV
+          # 3. ACTUALIZAR CSV
           if [ ! -f data/historial.csv ]; then
             echo "Fecha,Temperatura,Humedad,Presion,Viento,Rafaga,Direccion,Lluvia,Solar,UV" > data/historial.csv
           fi
           echo "$FECHA,$TEMP,$HUM,$PRES,$VIENTO,$RAFAGA,$DIR,$LLUVIA,$SOLAR,$UVI" >> data/historial.csv
 
-      - name: Commit y Push
+      - name: Commit y Push de los cambios
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
           git add data/latest.json data/historial.csv
-          git commit -m "Clima Chacabuco: Unidades métricas actualizadas" || echo "Sin cambios"
+          git commit -m "Clima Chacabuco: $(date)" || echo "Sin cambios"
           git push
