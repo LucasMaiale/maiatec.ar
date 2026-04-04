@@ -24,6 +24,8 @@ jobs:
           # Multiplicamos el valor por 25.4 y forzamos la unidad a "mm"
           jq '.data.outdoor |= del(.vpd) | 
               del(.data.indoor, .data.battery) |
+              .data.rainfall.1_hour.value |= (tonumber * 25.4 | tonumber) | 
+              .data.rainfall.1_hour.unit = "mm" |              
               .data.rainfall.daily.value |= (tonumber * 25.4 | tonumber) | 
               .data.rainfall.daily.unit = "mm" |
               .data.rainfall.event.value |= (tonumber * 25.4 | tonumber) | 
