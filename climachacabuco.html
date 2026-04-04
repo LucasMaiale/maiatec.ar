@@ -2,220 +2,182 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    <title>Chacabuco Clima - Estación en Vivo</title>
-    
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌤️</text></svg>">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estación Chacabuco</title>
     <style>
-        /* --- DISEÑO MINIMALISTA --- */
+        /* --- ESTILO HIGH-CONTRAST --- */
+        :root {
+            --bg: #ffffff;
+            --text: #000000;
+            --sub: #888888;
+            --border: #f0f0f0;
+        }
+
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background-color: #ffffff; 
-            color: #000000; 
+            background-color: var(--bg); 
+            color: var(--text); 
             display: flex; 
-            flex-direction: column; 
-            align-items: center; 
+            justify-content: center;
             padding: 40px 20px;
             -webkit-font-smoothing: antialiased;
         }
 
-        .container { 
-            max-width: 500px; 
-            width: 100%; 
-        }
+        .container { max-width: 400px; width: 100%; }
 
-        /* --- CABECERA --- */
-        .header { 
-            margin-bottom: 50px; 
-            border-bottom: 1px solid #000;
-            padding-bottom: 10px;
+        header { 
+            border-bottom: 3px solid var(--text); 
+            padding-bottom: 8px; 
+            margin-bottom: 30px;
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
-        }
-        .header h1 { 
-            font-size: 1.8rem; 
-            font-weight: 800; 
-            letter-spacing: -1.5px;
-            text-transform: uppercase;
-        }
-        #status { 
-            font-size: 0.8rem; 
-            color: #666;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        /* --- LISTADO DE DATOS --- */
-        .weather-list {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .data-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 25px 0;
-            border-bottom: 1px solid #f0f0f0;
-        }
-        
-        .data-item:last-child { border-bottom: none; }
-
-        /* Títulos de datos */
-        .label { 
-            font-size: 1.1rem; 
-            font-weight: 600; 
-            color: #444;
-        }
-
-        /* Bloque de valores */
-        .value-wrapper {
-            text-align: right;
-            display: flex;
             align-items: baseline;
         }
 
-        .value { 
-            font-size: 2.5rem; 
-            font-weight: 800; 
-            letter-spacing: -1px;
-            line-height: 1;
+        h1 { font-size: 1.6rem; font-weight: 900; text-transform: uppercase; letter-spacing: -1.5px; }
+        #status { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--sub); }
+
+        .grid { display: flex; flex-direction: column; }
+
+        .item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 22px 0; 
+            border-bottom: 1px solid var(--border);
         }
 
-        .unit { 
-            font-size: 1.1rem; 
-            font-weight: 600; 
-            color: #888; 
-            margin-left: 5px;
-        }
+        .item:last-child { border-bottom: none; }
 
-        /* --- DETALLES DE VIENTO --- */
-        .wind-group {
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-        }
-        .wind-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .viento-sub { 
-            font-size: 0.9rem; 
-            color: #666; 
-            font-weight: 600;
-            margin-top: 5px;
-            display: flex;
-            gap: 10px;
-        }
+        .label { font-size: 0.95rem; font-weight: 700; text-transform: uppercase; color: var(--sub); letter-spacing: 0.5px; }
 
-        /* --- FOOTER --- */
-        .footer { 
-            font-size: 0.85rem; 
-            color: #999; 
-            margin-top: 60px; 
-            font-weight: 500;
-        }
-        #time { color: #000; font-weight: 700; }
+        .value-box { text-align: right; }
 
-        /* Adaptación móvil */
-        @media (max-width: 400px) {
-            .value { font-size: 2.2rem; }
-            .label { font-size: 1rem; }
-        }
+        .value { font-size: 2.6rem; font-weight: 900; letter-spacing: -2px; line-height: 0.9; }
+        
+        .unit { font-size: 1rem; font-weight: 800; color: var(--sub); margin-left: 4px; }
+
+        .sub-info { font-size: 0.9rem; font-weight: 700; color: var(--sub); margin-top: 6px; }
+
+        footer { margin-top: 50px; font-size: 0.85rem; font-weight: 700; color: var(--sub); border-top: 1px solid var(--border); padding-top: 20px; }
+        #last-update { color: var(--text); }
+
+        /* Resaltado suave para lluvia de evento */
+        .highlight { background-color: #f9f9f9; margin: 0 -15px; padding: 20px 15px; border-radius: 12px; border-bottom: none !important; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
+    <header>
         <h1>Chacabuco</h1>
-        <p id="status">Sincronizando...</p>
-    </div>
+        <span id="status">En Vivo</span>
+    </header>
 
-    <div class="weather-list">
-        
-        <div class="data-item">
-            <div class="label">Temperatura</div>
-            <div class="value-wrapper">
-                <span class="value" id="temp">--</span>
-                <span class="unit">°C</span>
+    <div class="grid">
+        <div class="item">
+            <span class="label">Temperatura</span>
+            <div class="value-box">
+                <span class="value" id="temp">--</span><span class="unit">°C</span>
             </div>
         </div>
 
-        <div class="data-item">
-            <div class="label">Humedad</div>
-            <div class="value-wrapper">
-                <span class="value" id="hum">--</span>
-                <span class="unit">%</span>
+        <div class="item">
+            <span class="label">Humedad</span>
+            <div class="value-box">
+                <span class="value" id="hum">--</span><span class="unit">%</span>
             </div>
         </div>
 
-        <div class="data-item">
-            <div class="wind-group">
-                <div class="wind-top">
-                    <div class="label">Viento</div>
-                    <div class="value-wrapper">
-                        <span class="value" id="wind">--</span>
-                        <span class="unit">km/h</span>
-                    </div>
-                </div>
-                <div class="viento-sub">
-                    <span id="wind-dir">Dir: --</span>
-                    <span>/</span>
-                    <span id="gust">Ráfagas: -- km/h</span>
+        <div class="item">
+            <span class="label">Presión</span>
+            <div class="value-box">
+                <span class="value" id="press">--</span><span class="unit">hPa</span>
+            </div>
+        </div>
+
+        <div class="item">
+            <span class="label">Viento</span>
+            <div class="value-box">
+                <div><span class="value" id="wind">--</span><span class="unit">km/h</span></div>
+                <div class="sub-info">
+                    <span id="wind-dir">--</span> | Ráfaga: <span id="gust">--</span> km/h
                 </div>
             </div>
         </div>
 
-        <div class="data-item">
-            <div class="label">Presión</div>
-            <div class="value-wrapper">
-                <span class="value" id="press">--</span>
-                <span class="unit">hPa</span>
-            </div>
-        </div>
-
-        <div class="data-item">
-            <div class="label">Índice UV</div>
-            <div class="value-wrapper">
+        <div class="item">
+            <span class="label">Índice UV</span>
+            <div class="value-box">
                 <span class="value" id="uv">--</span>
-                <span class="unit" id="solar">-- W/m²</span>
             </div>
         </div>
 
-        <div class="data-item">
-            <div class="label">Lluvia Hoy</div>
-            <div class="value-wrapper">
-                <span class="value" id="rain">--</span>
-                <span class="unit">mm</span>
+        <div class="item">
+            <span class="label">Lluvia 24h</span>
+            <div class="value-box">
+                <span class="value" id="rain-24">--</span><span class="unit">mm</span>
             </div>
         </div>
 
-        <div class="data-item">
-            <div class="label">Luna</div>
-            <div class="value-wrapper">
-                <span class="value" id="moon-icon">--</span>
-                <span class="unit" id="moon-phase">Cargando</span>
+        <div class="item highlight">
+            <span class="label">Último Evento</span>
+            <div class="value-box">
+                <span class="value" id="rain-event">--</span><span class="unit">mm</span>
             </div>
         </div>
-
     </div>
 
-    <div class="footer">
-        Actualizado a las <span id="time">--:--</span> hs
-    </div>
+    <footer>
+        Actualizado <span id="last-update">--:-- hs</span>
+    </footer>
 </div>
 
-<script src="js/clima.js"></script>
+<script>
+    async function update() {
+        try {
+            const res = await fetch('./data/latest.json?t=' + Date.now());
+            const json = await res.json();
+            const d = json.data;
+
+            // Datos directos
+            document.getElementById('temp').innerText = parseFloat(d.outdoor.temperature.value).toFixed(1);
+            document.getElementById('hum').innerText = d.outdoor.humidity.value;
+            document.getElementById('press').innerText = Math.round(d.pressure.relative.value);
+            document.getElementById('uv').innerText = d.solar_and_uvi.uvi.value;
+            
+            // Lluvias
+            document.getElementById('rain-24').innerText = parseFloat(d.rainfall.daily.value).toFixed(1);
+            document.getElementById('rain-event').innerText = parseFloat(d.rainfall.event.value).toFixed(1);
+
+            // Viento (Solo Letras)
+            document.getElementById('wind').innerText = parseFloat(d.wind.wind_speed.value).toFixed(1);
+            document.getElementById('gust').innerText = parseFloat(d.wind.wind_gust.value).toFixed(1);
+            
+            const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO'];
+            const angle = d.wind.wind_direction.value;
+            const dirName = dirs[Math.round(angle / 22.5) % 16];
+            document.getElementById('wind-dir').innerText = dirName;
+
+            // Hora
+            const date = new Date(json.time * 1000);
+            document.getElementById('last-update').innerText = date.toLocaleTimeString('es-AR', {
+                hour: '2-digit', 
+                minute:'2-digit',
+                timeZone: 'America/Argentina/Buenos_Aires'
+            }) + ' hs';
+            
+            document.getElementById('status').innerText = 'En Vivo';
+        } catch (e) {
+            document.getElementById('status').innerText = 'Reconectando...';
+        }
+    }
+
+    update();
+    setInterval(update, 300000); // Cada 5 minutos
+</script>
 
 </body>
 </html>
