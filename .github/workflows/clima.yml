@@ -20,8 +20,7 @@ jobs:
           mkdir -p data
           
           # Descargar el JSON
-          curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&temp_unitid=1&pressure_unitid=3&precip_unitid=12&call_back=all" -o data/latest.json
-          
+          curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&temp_unitid=1&pressure_unitid=3&precip_unitid=12&wind_speed_unitid=7&call_back=all" -o data/latest.json          
           # Extraer valores con Zona Horaria de Argentina
           TIME_UNIX=$(jq -r '.time' data/latest.json)
           FECHA=$(TZ="America/Argentina/Buenos_Aires" date -d "@$TIME_UNIX" +"%Y-%m-%d %H:%M")
