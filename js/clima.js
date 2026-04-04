@@ -4,28 +4,40 @@ async function fetchWeather() {
         const json = await response.json();
         const data = json.data;
 
-        // Temperatura (Outdoor)
-        if (data.outdoor && data.outdoor.temperature) {
-            document.getElementById('temp').innerText = `${data.outdoor.temperature.value}°C`;
-            document.getElementById('hum').innerText = `${data.outdoor.humidity.value}%`;
+        // --- TEMPERATURA ---
+        // Si el JSON viene en ºF, lo convertimos a ºC manualmente por seguridad
+        let tempVal = parseFloat(data.outdoor.temperature.value);
+        if (data.outdoor.temperature.unit === "ºF") {
+            tempVal = (tempVal - 32) * 5 / 9;
         }
+        document.getElementById('temp').innerText = `${tempVal.toFixed(1)}°C`;
+        document.getElementById('hum').innerText = `${data.outdoor.humidity.value}%`;
 
-        // Viento
-        if (data.wind && data.wind.wind_speed) {
-            document.getElementById('wind').innerText = `${data.wind.wind_speed.value} km/h`;
+        // --- VIENTO ---
+        // Si viene en mph, convertimos a km/h
+        let windVal = parseFloat(data.wind.wind_speed.value);
+        if (data.wind.wind_speed.unit === "mph") {
+            windVal = windVal * 1.60934;
         }
+        document.getElementById('wind').innerText = `${windVal.toFixed(1)} km/h`;
 
-        // Presión Relativa
-        if (data.pressure && data.pressure.relative) {
-            document.getElementById('press').innerText = `${data.pressure.relative.value} hPa`;
+        // --- PRESIÓN ---
+        // Si viene en inHg, convertimos a hPa (estándar SMN)
+        let pressVal = parseFloat(data.pressure.relative.value);
+        if (data.pressure.relative.unit === "inHg") {
+            pressVal = pressVal * 33.8639;
         }
+        document.getElementById('press').innerText = `${Math.round(pressVal)} hPa`;
 
-        // Lluvia 24h (Uso de corchetes obligatorio por empezar con número)
-        if (data.rainfall && data.rainfall['24h']) {
-            document.getElementById('rain').innerText = `${data.rainfall['24h'].value} mm`;
+        // --- LLUVIA ---
+        // Usamos "daily" ya que tu JSON no trae "24h"
+        let rainVal = parseFloat(data.rainfall.daily.value);
+        if (data.rainfall.daily.unit === "in") {
+            rainVal = rainVal * 25.4;
         }
+        document.getElementById('rain').innerText = `${rainVal.toFixed(1)} mm`;
 
-        // Hora
+        // --- HORA ---
         const lastUpdate = new Date(json.time * 1000);
         document.getElementById('time').innerText = lastUpdate.toLocaleTimeString('es-AR', {
             hour: '2-digit', 
@@ -36,8 +48,8 @@ async function fetchWeather() {
         document.getElementById('weather-content').style.display = 'block';
 
     } catch (error) {
-        console.error("Error detallado:", error);
-        document.getElementById('loader').innerText = "Error al leer datos del sensor";
+        console.error("Error:", error);
+        document.getElementById('loader').innerText = "Error en formato de datos";
     }
 }
 
