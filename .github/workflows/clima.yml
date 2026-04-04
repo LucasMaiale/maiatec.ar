@@ -1,11 +1,27 @@
-- name: Procesar Datos y Actualizar Historial
+name: Actualizar Clima Chacabuco
+
+on:
+  schedule:
+    - cron: '*/10 * * * *' 
+  workflow_dispatch: 
+
+jobs:
+  update-weather:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Procesar Datos y Actualizar Historial
         run: |
           mkdir -p data
           
-          # 1. DESCARGAR ORIGINAL
+          # 1. DESCARGAR ORIGINAL DE ECOWITT
           curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&temp_unitid=1&pressure_unitid=3&precip_unitid=13&wind_speed_unitid=7&call_back=all" > data/raw.json
           
-          # 2. CONVERTIR SOLO RAIN_RATE Y LIMPIAR (Mantenemos el resto igual)
+          # 2. LIMPIAR PRIVACIDAD Y CONVERTIR UNIDADES (Pulgadas a Milímetros)
+          # Se aplica factor 25.4 y redondeo a 1 decimal
           jq '.data.outdoor |= del(.vpd) | 
               del(.data.indoor, .data.battery) |
               .data.rainfall.rain_rate.value |= (tonumber * 25.4 * 10 | round / 10) | 
@@ -23,7 +39,7 @@
               .data.rainfall.yearly.value |= (tonumber * 25.4 * 10 | round / 10) | 
               .data.rainfall.yearly.unit = "mm"' data/raw.json > data/latest.json
           
-          # 3. EXTRAER VALORES PARA EL CSV
+          # 3. EXTRAER VALORES PARA EL CSV (Usando los datos ya convertidos)
           TIME_UNIX=$(jq -r '.time' data/latest.json)
           FECHA=$(TZ="America/Argentina/Buenos_Aires" date -d "@$TIME_UNIX" +"%Y-%m-%d %H:%M")
           
@@ -37,10 +53,19 @@
           SOLAR=$(jq -r '.data.solar_and_uvi.solar.value' data/latest.json)
           UVI=$(jq -r '.data.solar_and_uvi.uvi.value' data/latest.json)
 
-          # 4. ACTUALIZAR CSV
+          # 4. ACTUALIZAR HISTORIAL CSV
           if [ ! -f data/historial.csv ]; then
             echo "Fecha,Temp(C),Hum(%),Presion(hPa),Viento(kmh),Rafaga(kmh),Dir(deg),Lluvia(mm),Solar(Wm2),UV(index)" > data/historial.csv
           fi
           echo "$FECHA,$TEMP,$HUM,$PRES,$VIENTO,$RAFAGA,$DIR,$LLUVIA,$SOLAR,$UVI" >> data/historial.csv
           
+          # Limpiar archivos temporales
           rm data/raw.json
+
+      - name: Commit y Push de los cambios
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add data/latest.json data/historial.csv
+          git commit -m "Clima Chacabuco: Datos convertidos y filtrados" || echo "Sin cambios"
+          git push
