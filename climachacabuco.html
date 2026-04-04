@@ -6,157 +6,130 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Chacabuco Clima - Realtime</title>
+    <title>Chacabuco Clima - Estación en Vivo</title>
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌤️</text></svg>">
 
     <style>
-        /* --- ESTILOS RESET --- */
+        /* --- DISEÑO MINIMALISTA --- */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
-        /* --- ESTILOS GENERALES --- */
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             background-color: #ffffff; 
-            color: #111111; 
+            color: #000000; 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            min-height: 100vh;
-            padding: 30px 15px;
+            padding: 40px 20px;
             -webkit-font-smoothing: antialiased;
         }
 
         .container { 
-            max-width: 600px; 
+            max-width: 500px; 
             width: 100%; 
         }
 
         /* --- CABECERA --- */
         .header { 
-            text-align: left; 
-            margin-bottom: 40px; 
-            border-bottom: 2px solid #eaeaea;
-            padding-bottom: 15px;
+            margin-bottom: 50px; 
+            border-bottom: 1px solid #000;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
         }
         .header h1 { 
-            font-size: 2rem; /* Tamaño de título grande */
+            font-size: 1.8rem; 
             font-weight: 800; 
-            letter-spacing: -1px;
-            color: #000;
+            letter-spacing: -1.5px;
+            text-transform: uppercase;
         }
         #status { 
-            font-size: 1rem; 
-            color: #28a745; /* Verde en vivo */
-            font-weight: 600; 
-            margin-top: 5px;
+            font-size: 0.8rem; 
+            color: #666;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        /* --- SECCIÓN DE DATOS (LISTADO LIMPIO) --- */
+        /* --- LISTADO DE DATOS --- */
         .weather-list {
             display: flex;
             flex-direction: column;
-            gap: 25px; /* Espacio entre cada dato */
         }
 
         .data-item {
             display: flex;
             justify-content: space-between;
-            align-items: baseline; /* Alinea número y unidad */
-            padding-bottom: 20px;
-            border-bottom: 1px solid #f0f0f0; /* Línea separadora sutil */
+            align-items: center;
+            padding: 25px 0;
+            border-bottom: 1px solid #f0f0f0;
         }
         
-        /* Evita la línea en el último elemento */
-        .data-item:last-child {
-            border-bottom: none;
-        }
+        .data-item:last-child { border-bottom: none; }
 
-        /* --- TÍTULOS DE DATOS (BUEN TAMAÑO) --- */
+        /* Títulos de datos */
         .label { 
-            font-size: 1.2rem; /* Títulos de datos grandes y legibles */
+            font-size: 1.1rem; 
             font-weight: 600; 
-            color: #444444;
-            flex: 1; /* Ocupa espacio a la izquierda */
+            color: #444;
         }
 
-        /* --- DATOS (MUY GRANDES) --- */
+        /* Bloque de valores */
         .value-wrapper {
             text-align: right;
             display: flex;
             align-items: baseline;
-            justify-content: flex-end;
         }
 
         .value { 
-            font-size: 2.8rem; /* Datos grandes y claros */
+            font-size: 2.5rem; 
             font-weight: 800; 
-            color: #000;
+            letter-spacing: -1px;
             line-height: 1;
         }
-        
-        /* Estilo especial para cuando el dato es "--" */
-        .value:empty::before, .value:contains("--") {
-            color: #bbb;
-        }
 
-        /* --- UNIDADES --- */
         .unit { 
-            font-size: 1.2rem; /* Unidades legibles pero más pequeñas que el dato */
-            font-weight: 500; 
-            color: #666666; 
+            font-size: 1.1rem; 
+            font-weight: 600; 
+            color: #888; 
             margin-left: 5px;
         }
 
         /* --- DETALLES DE VIENTO --- */
-        /* Para mostrar Dirección y Ráfagas debajo de la Velocidad */
-        .wind-wrapper {
+        .wind-group {
+            display: flex;
             flex-direction: column;
-            align-items: flex-start;
-        }
-        
-        .wind-main {
             width: 100%;
+        }
+        .wind-top {
             display: flex;
             justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 5px;
+            align-items: center;
         }
-
-        .viento-detalles { 
-            width: 100%;
-            font-size: 1rem; 
-            color: #555555; 
-            display: flex;
-            justify-content: flex-start;
-            gap: 15px;
-            font-weight: 500;
+        .viento-sub { 
+            font-size: 0.9rem; 
+            color: #666; 
+            font-weight: 600;
             margin-top: 5px;
-            padding-left: 2px;
+            display: flex;
+            gap: 10px;
         }
 
         /* --- FOOTER --- */
         .footer { 
-            font-size: 0.95rem; 
-            color: #888888; 
-            text-align: left; 
-            margin-top: 50px; 
-            padding-top: 20px;
-            border-top: 1px solid #eaeaea;
-            width: 100%;
+            font-size: 0.85rem; 
+            color: #999; 
+            margin-top: 60px; 
+            font-weight: 500;
         }
-        #time { 
-            font-weight: 700; 
-            color: #333333; 
-        }
+        #time { color: #000; font-weight: 700; }
 
-        /* --- MEDIA QUERY PARA MÓVILES --- */
-        /* Ajustes pequeños para pantallas muy angostas */
+        /* Adaptación móvil */
         @media (max-width: 400px) {
-            .header h1 { font-size: 1.8rem; }
-            .label { font-size: 1.1rem; }
-            .value { font-size: 2.4rem; }
-            .unit { font-size: 1rem; }
+            .value { font-size: 2.2rem; }
+            .label { font-size: 1rem; }
         }
     </style>
 </head>
@@ -165,7 +138,7 @@
 <div class="container">
     <div class="header">
         <h1>Chacabuco</h1>
-        <p id="status">Sincronizando estación...</p>
+        <p id="status">Sincronizando...</p>
     </div>
 
     <div class="weather-list">
@@ -186,26 +159,36 @@
             </div>
         </div>
 
-        <div class="data-item wind-wrapper">
-            <div class="wind-main">
-                <div class="label">Viento</div>
-                <div class="value-wrapper">
-                    <span class="value" id="wind">--</span>
-                    <span class="unit">km/h</span>
+        <div class="data-item">
+            <div class="wind-group">
+                <div class="wind-top">
+                    <div class="label">Viento</div>
+                    <div class="value-wrapper">
+                        <span class="value" id="wind">--</span>
+                        <span class="unit">km/h</span>
+                    </div>
                 </div>
-            </div>
-            <div class="viento-detalles">
-                <span id="wind-dir">Dir: --</span>
-                <span>|</span>
-                <span id="gust">Ráfagas: -- km/h</span>
+                <div class="viento-sub">
+                    <span id="wind-dir">Dir: --</span>
+                    <span>/</span>
+                    <span id="gust">Ráfagas: -- km/h</span>
+                </div>
             </div>
         </div>
 
         <div class="data-item">
-            <div class="label">Presión Relativa</div>
+            <div class="label">Presión</div>
             <div class="value-wrapper">
                 <span class="value" id="press">--</span>
                 <span class="unit">hPa</span>
+            </div>
+        </div>
+
+        <div class="data-item">
+            <div class="label">Índice UV</div>
+            <div class="value-wrapper">
+                <span class="value" id="uv">--</span>
+                <span class="unit" id="solar">-- W/m²</span>
             </div>
         </div>
 
@@ -217,8 +200,18 @@
             </div>
         </div>
 
-    </div> <div class="footer">
-        Última actualización: <span id="time">--:--</span> hs
+        <div class="data-item">
+            <div class="label">Luna</div>
+            <div class="value-wrapper">
+                <span class="value" id="moon-icon">--</span>
+                <span class="unit" id="moon-phase">Cargando</span>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        Actualizado a las <span id="time">--:--</span> hs
     </div>
 </div>
 
