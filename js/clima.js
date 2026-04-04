@@ -27,8 +27,7 @@ async function fetchWeather() {
         if (data.pressure.relative.unit === "inHg") {
             pressVal = pressVal * 33.8639;
         }
-        document.getElementById('press').innerText = `${Math.round(pressVal)} hPa`;
-
+        document.getElementById('press').innerText = `${pressVal.toFixed(1)} hPa`;
         // --- LLUVIA ---
         // Usamos "daily" ya que tu JSON no trae "24h"
         let rainVal = parseFloat(data.rainfall.daily.value);
