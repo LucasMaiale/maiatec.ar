@@ -6,13 +6,7 @@
     
     <title>Clima Chacabuco en Tiempo Real | Estación Meteorológica Propia Maiatec</title>
     <meta name="description" content="Datos meteorológicos en tiempo real de Chacabuco, Buenos Aires. Estación propia en las inmediaciones del Club Social.">
-    <meta name="keywords" content="clima chacabuco, tiempo chacabuco hoy, lluvia chacabuco, maiatec chacabuco, estacion meteorologica">
     <link rel="canonical" href="https://maiatec.ar/clima-chacabuco/" />
-
-    <meta property="og:title" content="Clima Chacabuco en Tiempo Real - Estación Maiatec">
-    <meta property="og:description" content="Consultá temperatura, ráfagas de viento y lluvia acumulada en tiempo real.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://maiatec.ar/clima-chacabuco/">
 
     <style>
         :root {
@@ -20,7 +14,6 @@
             --text: #000000;
             --sub: #888888;
             --border: #f0f0f0;
-            --accent: #0056b3;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,15 +25,16 @@
             display: flex; 
             flex-direction: column;
             align-items: center;
-            padding-bottom: 60px;
+            padding-bottom: 30px;
+            line-height: 1.4;
         }
 
         .brand-bar {
             width: 100%;
-            padding: 12px 20px;
+            padding: 10px 15px;
             background: #000;
             color: #fff;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-weight: 700;
             text-transform: uppercase;
             text-align: center;
@@ -48,48 +42,59 @@
         }
         .brand-bar a { color: #fff; text-decoration: none; border-bottom: 1px solid #fff; }
 
-        .container { max-width: 400px; width: 100%; padding: 40px 20px; }
+        .container { 
+            max-width: 450px; 
+            width: 100%; 
+            padding: 25px 20px; 
+        }
 
         header { 
             border-bottom: 3px solid var(--text); 
-            padding-bottom: 8px; 
-            margin-bottom: 20px;
+            padding-bottom: 6px; 
+            margin-bottom: 15px;
             display: flex;
             justify-content: space-between;
             align-items: baseline;
         }
 
-        h1 { font-size: 1.6rem; font-weight: 900; text-transform: uppercase; letter-spacing: -1.5px; }
-        #status { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--sub); }
+        h1 { font-size: 1.4rem; font-weight: 900; text-transform: uppercase; letter-spacing: -1px; }
+        #status { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: var(--sub); }
 
         .item { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            padding: 20px 0; 
+            padding: 15px 0; 
             border-bottom: 1px solid var(--border);
         }
 
-        .label { font-size: 0.9rem; font-weight: 700; text-transform: uppercase; color: var(--sub); letter-spacing: 0.5px; }
+        .label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--sub); letter-spacing: 0.5px; }
         .value-box { text-align: right; }
-        .value { font-size: 2.6rem; font-weight: 900; letter-spacing: -2px; line-height: 0.9; }
-        .unit { font-size: 0.9rem; font-weight: 800; color: var(--sub); margin-left: 2px; }
+        
+        /* Tamaño adaptable para móviles */
+        .value { font-size: 2.2rem; font-weight: 900; letter-spacing: -1.5px; line-height: 0.9; }
+        @media (min-width: 400px) {
+            .value { font-size: 2.6rem; }
+            h1 { font-size: 1.6rem; }
+        }
+
+        .unit { font-size: 0.85rem; font-weight: 800; color: var(--sub); margin-left: 2px; }
 
         .gust-sub { 
             display: block;
-            font-size: 0.95rem; 
+            font-size: 0.85rem; 
             font-weight: 700; 
             color: var(--sub); 
-            margin-top: 5px;
+            margin-top: 4px;
         }
 
         footer { 
-            margin-top: 40px; 
+            margin-top: 30px; 
             border-top: 1px solid var(--border); 
-            padding-top: 20px;
+            padding-top: 15px;
         }
         .footer-line {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 700;
             color: var(--sub);
             margin-bottom: 4px;
@@ -97,15 +102,21 @@
         .footer-line b { color: var(--text); }
         
         .location-note {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
             color: #aaa;
-            line-height: 1.4;
-            margin-top: 10px;
+            line-height: 1.3;
+            margin-top: 8px;
             text-transform: uppercase;
         }
 
-        .highlight { background-color: #f9f9f9; margin: 0 -15px; padding: 20px 15px; border-radius: 12px; border-bottom: none !important; }
+        .highlight { 
+            background-color: #f9f9f9; 
+            margin: 0 -10px; 
+            padding: 15px 10px; 
+            border-radius: 10px; 
+            border-bottom: none !important; 
+        }
     </style>
 </head>
 <body>
@@ -190,12 +201,8 @@
 <script>
     async function update() {
         try {
-            /* IMPORTANTE: Usamos la ruta absoluta '/data/latest.json'. 
-               Esto funciona sin importar en qué carpeta estés.
-            */
             const res = await fetch('/data/latest.json?t=' + Date.now());
-            if (!res.ok) throw new Error('No se pudo cargar el archivo');
-            
+            if (!res.ok) throw new Error();
             const json = await res.json();
             const d = json.data;
 
@@ -205,7 +212,6 @@
             document.getElementById('uv').innerText = d.solar_and_uvi.uvi.value;
             document.getElementById('rain-24').innerText = parseFloat(d.rainfall.daily.value).toFixed(1);
             document.getElementById('rain-event').innerText = parseFloat(d.rainfall.event.value).toFixed(1);
-
             document.getElementById('wind').innerText = parseFloat(d.wind.wind_speed.value).toFixed(1);
             document.getElementById('gust').innerText = parseFloat(d.wind.wind_gust.value).toFixed(1);
             
@@ -215,16 +221,11 @@
 
             const date = new Date(json.time * 1000);
             document.getElementById('last-update').innerText = date.toLocaleTimeString('es-AR', {
-                hour: '2-digit', 
-                minute: '2-digit', 
-                hour12: false, 
-                timeZone: 'America/Argentina/Buenos_Aires'
+                hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'America/Argentina/Buenos_Aires'
             });
-            
             document.getElementById('status').innerText = 'En Vivo';
         } catch (e) {
-            console.error(e);
-            document.getElementById('status').innerText = 'Error de conexión';
+            document.getElementById('status').innerText = 'Reconectando...';
         }
     }
     update();
