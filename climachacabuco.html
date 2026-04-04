@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estación Chacabuco</title>
     <style>
-        /* --- ESTILO HIGH-CONTRAST --- */
         :root {
             --bg: #ffffff;
             --text: #000000;
@@ -22,7 +21,6 @@
             display: flex; 
             justify-content: center;
             padding: 40px 20px;
-            -webkit-font-smoothing: antialiased;
         }
 
         .container { max-width: 400px; width: 100%; }
@@ -30,7 +28,7 @@
         header { 
             border-bottom: 3px solid var(--text); 
             padding-bottom: 8px; 
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             display: flex;
             justify-content: space-between;
             align-items: baseline;
@@ -39,32 +37,34 @@
         h1 { font-size: 1.6rem; font-weight: 900; text-transform: uppercase; letter-spacing: -1.5px; }
         #status { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: var(--sub); }
 
-        .grid { display: flex; flex-direction: column; }
-
         .item { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            padding: 22px 0; 
+            padding: 20px 0; 
             border-bottom: 1px solid var(--border);
         }
 
-        .item:last-child { border-bottom: none; }
-
-        .label { font-size: 0.95rem; font-weight: 700; text-transform: uppercase; color: var(--sub); letter-spacing: 0.5px; }
+        .label { font-size: 0.9rem; font-weight: 700; text-transform: uppercase; color: var(--sub); letter-spacing: 0.5px; }
 
         .value-box { text-align: right; }
 
         .value { font-size: 2.6rem; font-weight: 900; letter-spacing: -2px; line-height: 0.9; }
         
-        .unit { font-size: 1rem; font-weight: 800; color: var(--sub); margin-left: 4px; }
+        .unit { font-size: 0.9rem; font-weight: 800; color: var(--sub); margin-left: 2px; }
 
-        .sub-info { font-size: 0.9rem; font-weight: 700; color: var(--sub); margin-top: 6px; }
+        /* Estilo para la ráfaga debajo del viento */
+        .gust-sub { 
+            display: block;
+            font-size: 1rem; 
+            font-weight: 700; 
+            color: var(--sub); 
+            margin-top: 5px;
+        }
 
-        footer { margin-top: 50px; font-size: 0.85rem; font-weight: 700; color: var(--sub); border-top: 1px solid var(--border); padding-top: 20px; }
+        footer { margin-top: 40px; font-size: 0.85rem; font-weight: 700; color: var(--sub); border-top: 1px solid var(--border); padding-top: 15px; }
         #last-update { color: var(--text); }
 
-        /* Resaltado suave para lluvia de evento */
         .highlight { background-color: #f9f9f9; margin: 0 -15px; padding: 20px 15px; border-radius: 12px; border-bottom: none !important; }
     </style>
 </head>
@@ -99,12 +99,17 @@
         </div>
 
         <div class="item">
-            <span class="label">Viento</span>
+            <span class="label">Dirección Viento</span>
+            <div class="value-box">
+                <span class="value" id="wind-dir">--</span>
+            </div>
+        </div>
+
+        <div class="item">
+            <span class="label">Velocidad Viento</span>
             <div class="value-box">
                 <div><span class="value" id="wind">--</span><span class="unit">km/h</span></div>
-                <div class="sub-info">
-                    <span id="wind-dir">--</span> | Ráfaga: <span id="gust">--</span> km/h
-                </div>
+                <span class="gust-sub">(Ráfaga: <span id="gust">--</span> km/h)</span>
             </div>
         </div>
 
@@ -142,31 +147,25 @@
             const json = await res.json();
             const d = json.data;
 
-            // Datos directos
             document.getElementById('temp').innerText = parseFloat(d.outdoor.temperature.value).toFixed(1);
             document.getElementById('hum').innerText = d.outdoor.humidity.value;
             document.getElementById('press').innerText = Math.round(d.pressure.relative.value);
             document.getElementById('uv').innerText = d.solar_and_uvi.uvi.value;
-            
-            // Lluvias
             document.getElementById('rain-24').innerText = parseFloat(d.rainfall.daily.value).toFixed(1);
             document.getElementById('rain-event').innerText = parseFloat(d.rainfall.event.value).toFixed(1);
 
-            // Viento (Solo Letras)
+            // Viento y Ráfaga
             document.getElementById('wind').innerText = parseFloat(d.wind.wind_speed.value).toFixed(1);
             document.getElementById('gust').innerText = parseFloat(d.wind.wind_gust.value).toFixed(1);
             
+            // Dirección (Solo letras)
             const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO'];
             const angle = d.wind.wind_direction.value;
-            const dirName = dirs[Math.round(angle / 22.5) % 16];
-            document.getElementById('wind-dir').innerText = dirName;
+            document.getElementById('wind-dir').innerText = dirs[Math.round(angle / 22.5) % 16];
 
-            // Hora
             const date = new Date(json.time * 1000);
             document.getElementById('last-update').innerText = date.toLocaleTimeString('es-AR', {
-                hour: '2-digit', 
-                minute:'2-digit',
-                timeZone: 'America/Argentina/Buenos_Aires'
+                hour: '2-digit', minute:'2-digit', timeZone: 'America/Argentina/Buenos_Aires'
             }) + ' hs';
             
             document.getElementById('status').innerText = 'En Vivo';
@@ -174,9 +173,8 @@
             document.getElementById('status').innerText = 'Reconectando...';
         }
     }
-
     update();
-    setInterval(update, 300000); // Cada 5 minutos
+    setInterval(update, 300000);
 </script>
 
 </body>
