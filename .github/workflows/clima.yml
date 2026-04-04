@@ -14,9 +14,10 @@ jobs:
 
       - name: Fetch API Data
         run: |
-          mkdir -p data
-          curl -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&call_back=all" \
-          -o data/weather_$(date +%Y%m%d_%H%M%S).json
+            mkdir -p data
+            # Guardamos uno con fecha para el historial y uno fijo para la web
+            curl -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&call_back=all" \
+            -o data/latest.json
 
       - name: Commit and Push
         run: |
