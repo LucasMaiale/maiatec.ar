@@ -17,12 +17,25 @@ jobs:
         run: |
           mkdir -p data
           
-          # 1. DESCARGAR Y FILTRAR (Unidades: C, hPa, mm, km/h)
-          # Forzamos precip_unitid=13 para milímetros (mm)
-          curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&temp_unitid=1&pressure_unitid=3&precip_unitid=13&wind_speed_unitid=7&call_back=all" \
-          | jq 'del(.data.indoor, .data.battery)' > data/latest.json
+          # 1. DESCARGAR ORIGINAL
+          curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&temp_unitid=1&pressure_unitid=3&precip_unitid=13&wind_speed_unitid=7&call_back=all" > data/raw.json
           
-          # 2. EXTRAER VALORES
+          # 2. LIMPIAR Y CONVERTIR LLUVIA (DE PULGADAS A MM) USANDO JQ
+          # Multiplicamos el valor por 25.4 y forzamos la unidad a "mm"
+          jq '.data.outdoor |= del(.vpd) | 
+              del(.data.indoor, .data.battery) |
+              .data.rainfall.daily.value |= (tonumber * 25.4 | tonumber) | 
+              .data.rainfall.daily.unit = "mm" |
+              .data.rainfall.event.value |= (tonumber * 25.4 | tonumber) | 
+              .data.rainfall.event.unit = "mm" |
+              .data.rainfall.weekly.value |= (tonumber * 25.4 | tonumber) | 
+              .data.rainfall.weekly.unit = "mm" |
+              .data.rainfall.monthly.value |= (tonumber * 25.4 | tonumber) | 
+              .data.rainfall.monthly.unit = "mm" |
+              .data.rainfall.yearly.value |= (tonumber * 25.4 | tonumber) | 
+              .data.rainfall.yearly.unit = "mm"' data/raw.json > data/latest.json
+          
+          # 3. EXTRAER VALORES PARA EL CSV (Ya convertidos)
           TIME_UNIX=$(jq -r '.time' data/latest.json)
           FECHA=$(TZ="America/Argentina/Buenos_Aires" date -d "@$TIME_UNIX" +"%Y-%m-%d %H:%M")
           
@@ -36,18 +49,19 @@ jobs:
           SOLAR=$(jq -r '.data.solar_and_uvi.solar.value' data/latest.json)
           UVI=$(jq -r '.data.solar_and_uvi.uvi.value' data/latest.json)
 
-          # 3. ACTUALIZAR CSV CON UNIDADES EN EL ENCABEZADO
-          # Nota: Si el archivo ya existe, no sobreescribe el encabezado viejo.
-          # Sugerencia: Borrá el historial.csv viejo desde GitHub una vez para que se cree con estos títulos.
+          # 4. ACTUALIZAR CSV (Con etiquetas claras)
           if [ ! -f data/historial.csv ]; then
             echo "Fecha,Temp(C),Hum(%),Presion(hPa),Viento(kmh),Rafaga(kmh),Dir(deg),Lluvia(mm),Solar(Wm2),UV(index)" > data/historial.csv
           fi
           echo "$FECHA,$TEMP,$HUM,$PRES,$VIENTO,$RAFAGA,$DIR,$LLUVIA,$SOLAR,$UVI" >> data/historial.csv
+          
+          # Borramos el temporal
+          rm data/raw.json
 
       - name: Commit y Push
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
           git add data/latest.json data/historial.csv
-          git commit -m "Clima Chacabuco: Unidades en encabezado" || echo "Sin cambios"
+          git commit -m "Clima Chacabuco: Conversion forzada a mm" || echo "Sin cambios"
           git push
