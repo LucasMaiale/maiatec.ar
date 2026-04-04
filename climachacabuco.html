@@ -2,32 +2,162 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Clima Chacabuco - Realtime</title>
+    <title>Chacabuco Clima - Realtime</title>
     
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌤️</text></svg>">
 
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f0f2f5; color: #1c1e21; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
-        .container { max-width: 450px; width: 100%; }
-        .header { text-align: center; margin-bottom: 20px; }
-        .header h1 { margin-bottom: 5px; color: #1877f2; }
-        #status { font-size: 0.85rem; color: #28a745; font-weight: bold; margin-top: 0; }
+        /* --- ESTILOS RESET --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         
-        .card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 15px; border: 1px solid #e4e6eb; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        /* --- ESTILOS GENERALES --- */
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background-color: #ffffff; 
+            color: #111111; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            min-height: 100vh;
+            padding: 30px 15px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container { 
+            max-width: 600px; 
+            width: 100%; 
+        }
+
+        /* --- CABECERA --- */
+        .header { 
+            text-align: left; 
+            margin-bottom: 40px; 
+            border-bottom: 2px solid #eaeaea;
+            padding-bottom: 15px;
+        }
+        .header h1 { 
+            font-size: 2rem; /* Tamaño de título grande */
+            font-weight: 800; 
+            letter-spacing: -1px;
+            color: #000;
+        }
+        #status { 
+            font-size: 1rem; 
+            color: #28a745; /* Verde en vivo */
+            font-weight: 600; 
+            margin-top: 5px;
+        }
+
+        /* --- SECCIÓN DE DATOS (LISTADO LIMPIO) --- */
+        .weather-list {
+            display: flex;
+            flex-direction: column;
+            gap: 25px; /* Espacio entre cada dato */
+        }
+
+        .data-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline; /* Alinea número y unidad */
+            padding-bottom: 20px;
+            border-bottom: 1px solid #f0f0f0; /* Línea separadora sutil */
+        }
         
-        .label { font-size: 0.85rem; color: #65676b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-        .value { font-size: 1.8rem; font-weight: 800; display: flex; align-items: baseline; }
-        .unit { font-size: 1rem; font-weight: 500; color: #65676b; margin-left: 3px; }
+        /* Evita la línea en el último elemento */
+        .data-item:last-child {
+            border-bottom: none;
+        }
+
+        /* --- TÍTULOS DE DATOS (BUEN TAMAÑO) --- */
+        .label { 
+            font-size: 1.2rem; /* Títulos de datos grandes y legibles */
+            font-weight: 600; 
+            color: #444444;
+            flex: 1; /* Ocupa espacio a la izquierda */
+        }
+
+        /* --- DATOS (MUY GRANDES) --- */
+        .value-wrapper {
+            text-align: right;
+            display: flex;
+            align-items: baseline;
+            justify-content: flex-end;
+        }
+
+        .value { 
+            font-size: 2.8rem; /* Datos grandes y claros */
+            font-weight: 800; 
+            color: #000;
+            line-height: 1;
+        }
         
-        .viento-detalles { font-size: 0.9rem; color: #444; margin-top: 12px; border-top: 1px solid #f0f2f5; padding-top: 10px; display: flex; justify-content: space-between; }
+        /* Estilo especial para cuando el dato es "--" */
+        .value:empty::before, .value:contains("--") {
+            color: #bbb;
+        }
+
+        /* --- UNIDADES --- */
+        .unit { 
+            font-size: 1.2rem; /* Unidades legibles pero más pequeñas que el dato */
+            font-weight: 500; 
+            color: #666666; 
+            margin-left: 5px;
+        }
+
+        /* --- DETALLES DE VIENTO --- */
+        /* Para mostrar Dirección y Ráfagas debajo de la Velocidad */
+        .wind-wrapper {
+            flex-direction: column;
+            align-items: flex-start;
+        }
         
-        .footer { font-size: 0.85rem; color: #8e9094; text-align: center; margin-top: 20px; padding: 10px; }
-        #time { font-weight: bold; color: #444; }
+        .wind-main {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 5px;
+        }
+
+        .viento-detalles { 
+            width: 100%;
+            font-size: 1rem; 
+            color: #555555; 
+            display: flex;
+            justify-content: flex-start;
+            gap: 15px;
+            font-weight: 500;
+            margin-top: 5px;
+            padding-left: 2px;
+        }
+
+        /* --- FOOTER --- */
+        .footer { 
+            font-size: 0.95rem; 
+            color: #888888; 
+            text-align: left; 
+            margin-top: 50px; 
+            padding-top: 20px;
+            border-top: 1px solid #eaeaea;
+            width: 100%;
+        }
+        #time { 
+            font-weight: 700; 
+            color: #333333; 
+        }
+
+        /* --- MEDIA QUERY PARA MÓVILES --- */
+        /* Ajustes pequeños para pantallas muy angostas */
+        @media (max-width: 400px) {
+            .header h1 { font-size: 1.8rem; }
+            .label { font-size: 1.1rem; }
+            .value { font-size: 2.4rem; }
+            .unit { font-size: 1rem; }
+        }
     </style>
 </head>
 <body>
@@ -38,42 +168,56 @@
         <p id="status">Sincronizando estación...</p>
     </div>
 
-    <div class="card">
-        <div class="grid">
-            <div>
-                <div class="label">Temperatura</div>
-                <div class="value"><span id="temp">--</span><span class="unit">°C</span></div>
-            </div>
-            <div>
-                <div class="label">Humedad</div>
-                <div class="value"><span id="hum">--</span><span class="unit">%</span></div>
+    <div class="weather-list">
+        
+        <div class="data-item">
+            <div class="label">Temperatura</div>
+            <div class="value-wrapper">
+                <span class="value" id="temp">--</span>
+                <span class="unit">°C</span>
             </div>
         </div>
-    </div>
 
-    <div class="card">
-        <div class="label">Viento Sostenido</div>
-        <div class="value"><span id="wind">--</span><span class="unit">km/h</span></div>
-        <div class="viento-detalles">
-            <span id="wind-dir">Dirección: --</span>
-            <span id="gust">Ráfagas: -- km/h</span>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="grid">
-            <div>
-                <div class="label">Presión (Rel)</div>
-                <div class="value"><span id="press">--</span><span class="unit">hPa</span></div>
-            </div>
-            <div>
-                <div class="label">Lluvia Diaria</div>
-                <div class="value"><span id="rain">--</span><span class="unit">mm</span></div>
+        <div class="data-item">
+            <div class="label">Humedad</div>
+            <div class="value-wrapper">
+                <span class="value" id="hum">--</span>
+                <span class="unit">%</span>
             </div>
         </div>
-    </div>
 
-    <div class="footer">
+        <div class="data-item wind-wrapper">
+            <div class="wind-main">
+                <div class="label">Viento</div>
+                <div class="value-wrapper">
+                    <span class="value" id="wind">--</span>
+                    <span class="unit">km/h</span>
+                </div>
+            </div>
+            <div class="viento-detalles">
+                <span id="wind-dir">Dir: --</span>
+                <span>|</span>
+                <span id="gust">Ráfagas: -- km/h</span>
+            </div>
+        </div>
+
+        <div class="data-item">
+            <div class="label">Presión Relativa</div>
+            <div class="value-wrapper">
+                <span class="value" id="press">--</span>
+                <span class="unit">hPa</span>
+            </div>
+        </div>
+
+        <div class="data-item">
+            <div class="label">Lluvia Hoy</div>
+            <div class="value-wrapper">
+                <span class="value" id="rain">--</span>
+                <span class="unit">mm</span>
+            </div>
+        </div>
+
+    </div> <div class="footer">
         Última actualización: <span id="time">--:--</span> hs
     </div>
 </div>
