@@ -1,9 +1,9 @@
-name: Actualizar Clima Ecowitt
+name: Actualizar Clima Chacabuco
 
 on:
   schedule:
-    - cron: '*/10 * * * *' # Cada hora. Puedes poner '*/30 * * * *' para cada 30 min.
-  workflow_dispatch:
+    - cron: '*/10 * * * *' # Cada 10 minutos
+  workflow_dispatch:        # Permite ejecutarlo manualmente
 
 jobs:
   update-weather:
@@ -12,18 +12,17 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout
+      - name: Checkout del repositorio
         uses: actions/checkout@v5
 
-      - name: Fetch and Process Data
+      - name: Procesar Datos y Actualizar Historial
         run: |
           mkdir -p data
           
-          # 1. Descargar el JSON actual (Pisando el anterior)
+          # 1. Descargar el JSON actual (se sobreescribe siempre)
           curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&temp_unitid=1&pressure_unitid=3&precip_unitid=12&call_back=all" -o data/latest.json
           
-          # 2. Extraer valores usando 'jq' (herramienta que ya viene en GitHub Actions)
-          # Extraemos: Fecha, Temp, Humedad, Presión, Viento, LluviaDiaria
+          # 2. Extraer valores usando 'jq'
           TIME_UNIX=$(jq -r '.time' data/latest.json)
           FECHA=$(date -d "@$TIME_UNIX" +"%Y-%m-%d %H:%M")
           TEMP=$(jq -r '.data.outdoor.temperature.value' data/latest.json)
@@ -40,37 +39,10 @@ jobs:
           # 4. Agregar la nueva línea al final del archivo
           echo "$FECHA,$TEMP,$HUM,$PRES,$VIENTO,$LLUVIA" >> data/historial.csv
 
-      - name: Push Changes
+      - name: Guardar cambios en GitHub
         run: |
           git config --global user.name "Weather Bot"
           git config --global user.email "actions@github.com"
           git add data/latest.json data/historial.csv
           git commit -m "Update Chacabuco: $(date +'%Y-%m-%d %H:%M')" || exit 0
-          git push
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Fetch Data
-        run: |
-          mkdir -p data
-          # Agregamos unidades: Celsius (1), hPa (3) y mm (12)
-          curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&temp_unitid=1&pressure_unitid=3&precip_unitid=12&wind_speed_unitid=7&call_back=all" -o data/latest.json
-
-          
-          TIMESTAMP=$(date +%Y%m%d_%H%M)
-          cp data/latest.json data/weather_$TIMESTAMP.json
-          # Llamada a la API v3
-          curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&call_back=all" -o data/latest.json
-          
-          # Creamos una copia histórica por si en el futuro quieres hacer gráficos
-          cp data/latest.json data/weather_$TIMESTAMP.json
-
-      - name: Push Changes
-        run: |
-          git config --global user.name "Weather Bot"
-          git config --global user.email "actions@github.com"
-          git add data/*.json
-          git commit -m "Cron: Actualización de datos meteorológicos $(date)" || exit 0
           git push
