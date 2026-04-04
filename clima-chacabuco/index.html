@@ -20,7 +20,7 @@
             --text: #000000;
             --sub: #888888;
             --border: #f0f0f0;
-            --accent: #0056b3; /* Color para el link a tu web */
+            --accent: #0056b3;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,10 +32,9 @@
             display: flex; 
             flex-direction: column;
             align-items: center;
-            padding-bottom: 40px;
+            padding-bottom: 60px;
         }
 
-        /* Barra de navegación Maiatec */
         .brand-bar {
             width: 100%;
             padding: 12px 20px;
@@ -84,8 +83,27 @@
             margin-top: 5px;
         }
 
-        footer { margin-top: 40px; font-size: 0.85rem; font-weight: 700; color: var(--sub); border-top: 1px solid var(--border); padding-top: 15px; }
-        #last-update { color: var(--text); }
+        footer { 
+            margin-top: 40px; 
+            border-top: 1px solid var(--border); 
+            padding-top: 20px;
+        }
+        .footer-line {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--sub);
+            margin-bottom: 4px;
+        }
+        .footer-line b { color: var(--text); }
+        
+        .location-note {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #aaa;
+            line-height: 1.4;
+            margin-top: 10px;
+            text-transform: uppercase;
+        }
 
         .highlight { background-color: #f9f9f9; margin: 0 -15px; padding: 20px 15px; border-radius: 12px; border-bottom: none !important; }
     </style>
@@ -162,7 +180,10 @@
     </div>
 
     <footer>
-        Actualizado <span id="last-update">--:--</span>
+        <div class="footer-line">Actualizado: <b id="last-update">--:--</b></div>
+        <div class="location-note">
+            Estación meteorológica propia ubicada en las<br>inmediaciones del Club Social
+        </div>
     </footer>
 </div>
 
@@ -189,21 +210,4 @@
             document.getElementById('wind-dir').innerText = dirs[Math.round(angle / 22.5) % 16];
 
             const date = new Date(json.time * 1000);
-            document.getElementById('last-update').innerText = date.toLocaleTimeString('es-AR', {
-                hour: '2-digit', 
-                minute: '2-digit', 
-                hour12: false, 
-                timeZone: 'America/Argentina/Buenos_Aires'
-            });
-            
-            document.getElementById('status').innerText = 'En Vivo';
-        } catch (e) {
-            document.getElementById('status').innerText = 'Reconectando...';
-        }
-    }
-    update();
-    setInterval(update, 300000);
-</script>
-
-</body>
-</html>
+            document.getElementById('last-update').innerText
