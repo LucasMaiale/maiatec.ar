@@ -3,24 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <title>Clima Chacabuco en Vivo | Estación Meteorológica Maiatec</title>
-    <meta name="description" content="Datos meteorológicos en tiempo real de Chacabuco, Buenos Aires. Temperatura, lluvia, viento y presión actualizados cada 10 minutos por Maiatec.">
-    <meta name="keywords" content="clima chacabuco, tiempo chacabuco hoy, lluvia chacabuco, maiatec chacabuco, estacion meteorologica">
-    <link rel="canonical" href="https://maiatec.ar/clima-chacabuco/" />
-
-    <meta property="og:title" content="Clima Chacabuco en Vivo - Estación Maiatec">
-    <meta property="og:description" content="Consultá temperatura, ráfagas de viento y lluvia acumulada en tiempo real.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://maiatec.ar/clima-chacabuco/">
-
+    <title>Estación Chacabuco</title>
     <style>
         :root {
             --bg: #ffffff;
             --text: #000000;
             --sub: #888888;
             --border: #f0f0f0;
-            --accent: #0056b3; /* Color para el link a tu web */
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,26 +19,11 @@
             background-color: var(--bg); 
             color: var(--text); 
             display: flex; 
-            flex-direction: column;
-            align-items: center;
-            padding-bottom: 40px;
+            justify-content: center;
+            padding: 40px 20px;
         }
 
-        /* Barra de navegación Maiatec */
-        .brand-bar {
-            width: 100%;
-            padding: 12px 20px;
-            background: #000;
-            color: #fff;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            text-align: center;
-            letter-spacing: 1px;
-        }
-        .brand-bar a { color: #fff; text-decoration: none; border-bottom: 1px solid #fff; }
-
-        .container { max-width: 400px; width: 100%; padding: 40px 20px; }
+        .container { max-width: 400px; width: 100%; }
 
         header { 
             border-bottom: 3px solid var(--text); 
@@ -72,13 +46,16 @@
         }
 
         .label { font-size: 0.9rem; font-weight: 700; text-transform: uppercase; color: var(--sub); letter-spacing: 0.5px; }
+
         .value-box { text-align: right; }
+
         .value { font-size: 2.6rem; font-weight: 900; letter-spacing: -2px; line-height: 0.9; }
+        
         .unit { font-size: 0.9rem; font-weight: 800; color: var(--sub); margin-left: 2px; }
 
         .gust-sub { 
             display: block;
-            font-size: 0.95rem; 
+            font-size: 1rem; 
             font-weight: 700; 
             color: var(--sub); 
             margin-top: 5px;
@@ -91,10 +68,6 @@
     </style>
 </head>
 <body>
-
-<div class="brand-bar">
-    SERVICIO BRINDADO POR <a href="https://maiatec.ar">MAIATEC.AR</a>
-</div>
 
 <div class="container">
     <header>
@@ -169,8 +142,7 @@
 <script>
     async function update() {
         try {
-            // Se usa ../data/latest.json asumiendo que el archivo está en /clima-chacabuco/
-            const res = await fetch('../data/latest.json?t=' + Date.now());
+            const res = await fetch('./data/latest.json?t=' + Date.now());
             const json = await res.json();
             const d = json.data;
 
