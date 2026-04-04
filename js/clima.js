@@ -2,27 +2,30 @@ async function fetchWeather() {
     try {
         const response = await fetch(`./data/latest.json?t=${new Date().getTime()}`);
         const json = await response.json();
-        
         const data = json.data;
 
-        // --- Mapeo de Datos Estilo SMN ---
-        
-        // Temperatura y Humedad
-        document.getElementById('temp').innerText = `${Math.round(data.outdoor.temperature.value)}°C`;
-        document.getElementById('hum').innerText = `${data.outdoor.humidity.value}%`;
-        
-        // Viento (Ecowitt devuelve km/h si lo configuraste así, o m/s por defecto)
-        document.getElementById('wind').innerText = `${data.wind.wind_speed.value} km/h`;
-        
-        // Presión Atmosférica (Hecto pascales - hPa)
-        // Usamos la presión RELATIVA que es la referencia oficial
-        document.getElementById('press').innerText = `${data.pressure.relative.value} hPa`;
-        
-        // Lluvia de las últimas 24 Horas
-        // Nota: data.rainfall.24h.value es el acumulado móvil de las últimas 24hs
-        document.getElementById('rain').innerText = `${data.rainfall['24h'].value} mm`;
-        
-        // Hora de la última lectura
+        // Temperatura (Outdoor)
+        if (data.outdoor && data.outdoor.temperature) {
+            document.getElementById('temp').innerText = `${data.outdoor.temperature.value}°C`;
+            document.getElementById('hum').innerText = `${data.outdoor.humidity.value}%`;
+        }
+
+        // Viento
+        if (data.wind && data.wind.wind_speed) {
+            document.getElementById('wind').innerText = `${data.wind.wind_speed.value} km/h`;
+        }
+
+        // Presión Relativa
+        if (data.pressure && data.pressure.relative) {
+            document.getElementById('press').innerText = `${data.pressure.relative.value} hPa`;
+        }
+
+        // Lluvia 24h (Uso de corchetes obligatorio por empezar con número)
+        if (data.rainfall && data.rainfall['24h']) {
+            document.getElementById('rain').innerText = `${data.rainfall['24h'].value} mm`;
+        }
+
+        // Hora
         const lastUpdate = new Date(json.time * 1000);
         document.getElementById('time').innerText = lastUpdate.toLocaleTimeString('es-AR', {
             hour: '2-digit', 
@@ -33,8 +36,8 @@ async function fetchWeather() {
         document.getElementById('weather-content').style.display = 'block';
 
     } catch (error) {
-        console.error("Error cargando datos:", error);
-        document.getElementById('loader').innerText = "Estación fuera de línea";
+        console.error("Error detallado:", error);
+        document.getElementById('loader').innerText = "Error al leer datos del sensor";
     }
 }
 
