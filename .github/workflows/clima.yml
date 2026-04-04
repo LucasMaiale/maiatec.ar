@@ -1,26 +1,30 @@
-name: Actualizar Clima Chacabuco
+name: CLIMA CHACABUCO
 
 on:
   schedule:
     - cron: '*/10 * * * *' # Corre cada 10 minutos
-  workflow_dispatch: # Permite correrlo manualmente desde la pestaña Actions
+  workflow_dispatch: # Permite correrlo manualmente
 
 jobs:
   update-weather:
     runs-on: ubuntu-latest
+    # Forzamos el uso de Node 24 para evitar el aviso de deprecación
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
     steps:
       - name: Checkout del repositorio
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 # ACTUALIZADO A V4
 
       - name: Procesar Datos y Actualizar Historial
         run: |
           mkdir -p data
           
-          # 1. Descargar JSON, forzar unidades (km/h, hPa, mm) y FILTRAR (borrar indoor y battery)
+          # 1. Descargar JSON, forzar unidades y FILTRAR (borrar indoor y battery)
           curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&temp_unitid=1&pressure_unitid=3&precip_unitid=12&wind_speed_unitid=7&call_back=all" \
           | jq 'del(.data.indoor, .data.battery)' > data/latest.json
           
-          # 2. Extraer valores para el CSV usando JQ
+          # 2. Extraer valores para el CSV
           TIME_UNIX=$(jq -r '.time' data/latest.json)
           FECHA=$(TZ="America/Argentina/Buenos_Aires" date -d "@$TIME_UNIX" +"%Y-%m-%d %H:%M")
           
@@ -45,5 +49,5 @@ jobs:
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
           git add data/latest.json data/historial.csv
-          git commit -m "Actualización clima: $(date)" || echo "Sin cambios para commitear"
+          git commit -m "Actualización clima: $(date)" || echo "Sin cambios"
           git push
