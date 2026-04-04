@@ -1,1 +1,117 @@
-{"code":0,"msg":"success","time":"1775322110","data":{"outdoor":{"temperature":{"time":"1775322093","unit":"℃","value":"18.4"},"feels_like":{"time":"1775322093","unit":"℃","value":"18.4"},"app_temp":{"time":"1775322093","unit":"℃","value":"14.7"},"dew_point":{"time":"1775322093","unit":"℃","value":"6.6"},"vpd":{"time":"1775322093","unit":"inHg","value":"0.337"},"humidity":{"time":"1775322093","unit":"%","value":"46"}},"indoor":{"temperature":{"time":"1775322093","unit":"℃","value":"24.9"},"humidity":{"time":"1775322093","unit":"%","value":"51"},"dew_point":{"time":"1775322093","unit":"℃","value":"14.1"},"feels_like":{"time":"1775322093","unit":"℃","value":"24.9"},"app_tempin":{"time":"1775322093","unit":"℃","value":"26.2"}},"solar_and_uvi":{"solar":{"time":"1775322093","unit":"W\/m²","value":"356.2"},"uvi":{"time":"1775322093","unit":"","value":"3"}},"rainfall":{"rain_rate":{"time":"1775322093","unit":"in\/hr","value":"0.00"},"daily":{"time":"1775322093","unit":"in","value":"0.00"},"event":{"time":"1775322093","unit":"in","value":"0.57"},"1_hour":{"time":"1775322093","unit":"in","value":"0.00"},"weekly":{"time":"1775322093","unit":"in","value":"1.61"},"monthly":{"time":"1775322093","unit":"in","value":"1.60"},"yearly":{"time":"1775322093","unit":"in","value":"1.97"}},"wind":{"wind_speed":{"time":"1775322093","unit":"km\/h","value":"14.8"},"wind_gust":{"time":"1775322093","unit":"km\/h","value":"20.2"},"wind_direction":{"time":"1775322093","unit":"º","value":"207"}},"pressure":{"relative":{"time":"1775322093","unit":"hPa","value":"1021.1"},"absolute":{"time":"1775322093","unit":"hPa","value":"1016.0"}},"battery":{"sensor_array":{"time":"1775322093","unit":"","value":"0"}}}}
+{
+  "code": 0,
+  "msg": "success",
+  "time": "1775322689",
+  "data": {
+    "outdoor": {
+      "temperature": {
+        "time": "1775322642",
+        "unit": "℃",
+        "value": "18.1"
+      },
+      "feels_like": {
+        "time": "1775322642",
+        "unit": "℃",
+        "value": "18.1"
+      },
+      "app_temp": {
+        "time": "1775322642",
+        "unit": "℃",
+        "value": "12.9"
+      },
+      "dew_point": {
+        "time": "1775322642",
+        "unit": "℃",
+        "value": "6.3"
+      },
+      "vpd": {
+        "time": "1775322642",
+        "unit": "inHg",
+        "value": "0.331"
+      },
+      "humidity": {
+        "time": "1775322642",
+        "unit": "%",
+        "value": "46"
+      }
+    },
+    "solar_and_uvi": {
+      "solar": {
+        "time": "1775322642",
+        "unit": "W/m²",
+        "value": "396.8"
+      },
+      "uvi": {
+        "time": "1775322642",
+        "unit": "",
+        "value": "3"
+      }
+    },
+    "rainfall": {
+      "rain_rate": {
+        "time": "1775322642",
+        "unit": "in/hr",
+        "value": "0.00"
+      },
+      "daily": {
+        "time": "1775322642",
+        "unit": "in",
+        "value": "0.00"
+      },
+      "event": {
+        "time": "1775322642",
+        "unit": "in",
+        "value": "0.57"
+      },
+      "1_hour": {
+        "time": "1775322642",
+        "unit": "in",
+        "value": "0.00"
+      },
+      "weekly": {
+        "time": "1775322642",
+        "unit": "in",
+        "value": "1.61"
+      },
+      "monthly": {
+        "time": "1775322642",
+        "unit": "in",
+        "value": "1.60"
+      },
+      "yearly": {
+        "time": "1775322642",
+        "unit": "in",
+        "value": "1.97"
+      }
+    },
+    "wind": {
+      "wind_speed": {
+        "time": "1775322642",
+        "unit": "km/h",
+        "value": "22.3"
+      },
+      "wind_gust": {
+        "time": "1775322642",
+        "unit": "km/h",
+        "value": "27.7"
+      },
+      "wind_direction": {
+        "time": "1775322642",
+        "unit": "º",
+        "value": "166"
+      }
+    },
+    "pressure": {
+      "relative": {
+        "time": "1775322642",
+        "unit": "hPa",
+        "value": "1021.1"
+      },
+      "absolute": {
+        "time": "1775322642",
+        "unit": "hPa",
+        "value": "1016.0"
+      }
+    }
+  }
+}
