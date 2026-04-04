@@ -1,4 +1,4 @@
-name: CLIMA CHACABUCO
+name: Actualizar Clima Chacabuco
 
 on:
   schedule:
@@ -8,13 +8,10 @@ on:
 jobs:
   update-weather:
     runs-on: ubuntu-latest
-    # Forzamos el uso de Node 24 para evitar el aviso de deprecación
-    env:
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: Checkout del repositorio
-        uses: actions/checkout@v4 # ACTUALIZADO A V4
+        uses: actions/checkout@v4 
 
       - name: Procesar Datos y Actualizar Historial
         run: |
