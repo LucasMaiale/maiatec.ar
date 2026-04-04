@@ -1,106 +1,74 @@
-async function fetchWeather() {
+/**
+ * Lógica de Estación Meteorológica Chacabuco
+ * Procesa el JSON generado por el Workflow de GitHub Actions
+ */
+
+async function actualizarClima() {
+    const statusEl = document.getElementById('status');
+    
     try {
-        // Evitamos el cache del navegador con un timestamp
+        // Agregamos un timestamp para evitar que el navegador guarde el JSON en caché
         const response = await fetch(`./data/latest.json?t=${new Date().getTime()}`);
+        
+        if (!response.ok) throw new Error('No se pudo obtener el JSON');
+        
         const json = await response.json();
-        const data = json.data;
+        const d = json.data;
 
-        // --- TEMPERATURA Y HUMEDAD ---
-        let tempVal = parseFloat(data.outdoor.temperature.value);
-        if (data.outdoor.temperature.unit === "ºF") {
-            tempVal = (tempVal - 32) * 5 / 9;
-        }
-        document.getElementById('temp').innerText = tempVal.toFixed(1);
-        document.getElementById('hum').innerText = data.outdoor.humidity.value;
+        // --- 1. TEMPERATURA Y HUMEDAD ---
+        document.getElementById('temp').innerText = parseFloat(d.outdoor.temperature.value).toFixed(1);
+        document.getElementById('hum').innerText = d.outdoor.humidity.value;
 
-        // --- VIENTO Y RÁFAGAS ---
-        let windVal = parseFloat(data.wind.wind_speed.value);
-        let gustVal = parseFloat(data.wind.wind_gust.value);
-        const windUnit = data.wind.wind_speed.unit;
+        // --- 2. PRESIÓN (Redondeada a entero) ---
+        document.getElementById('press').innerText = Math.round(d.pressure.relative.value);
 
-        // Conversión manual si llega en millas
-        if (windUnit === "mph" || windUnit === "mi/h") {
-            windVal *= 1.60934;
-            gustVal *= 1.60934;
-        }
+        // --- 3. VIENTO Y RÁFAGAS ---
+        document.getElementById('wind').innerText = parseFloat(d.wind.wind_speed.value).toFixed(1);
+        document.getElementById('gust').innerText = parseFloat(d.wind.wind_gust.value).toFixed(1);
 
-        const grados = parseInt(data.wind.wind_direction.value);
+        // Conversión de grados a rosa de los vientos (16 rumbos)
+        const grados = parseInt(d.wind.wind_direction.value);
         const direcciones = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSO', 'SO', 'OSO', 'O', 'ONO', 'NO', 'NNO'];
-        const punto = direcciones[Math.round(grados / 22.5) % 16];
+        const indice = Math.round(grados / 22.5) % 16;
+        document.getElementById('wind-dir').innerText = `${direcciones[indice]} (${grados}°)`;
 
-        document.getElementById('wind').innerText = windVal.toFixed(1);
-        document.getElementById('gust').innerText = `Ráfagas: ${gustVal.toFixed(1)} km/h`;
-        document.getElementById('wind-dir').innerText = `Dir: ${punto} (${grados}°)`;
+        // --- 4. ÍNDICE UV ---
+        document.getElementById('uv').innerText = d.solar_and_uvi.uvi.value;
 
-        // --- PRESIÓN ---
-        let pressVal = parseFloat(data.pressure.relative.value);
-        if (data.pressure.relative.unit === "inHg") {
-            pressVal *= 33.8639;
-        }
-        document.getElementById('press').innerText = pressVal.toFixed(1);
+        // --- 5. LLUVIAS (Ya vienen en mm desde el YAML) ---
+        // Lluvia 24hs (acumulado del día civil)
+        document.getElementById('rain-24').innerText = parseFloat(d.rainfall.daily.value).toFixed(1);
+        
+        // Lluvia del último evento (la tormenta completa)
+        document.getElementById('rain-event').innerText = parseFloat(d.rainfall.event.value).toFixed(1);
 
-        // --- LLUVIA ---
-        let rainVal = parseFloat(data.rainfall.daily.value);
-        if (data.rainfall.daily.unit === "in") {
-            rainVal *= 25.4;
-        }
-        document.getElementById('rain').innerText = rainVal.toFixed(1);
-
-        // --- SOLAR Y UV ---
-        const uvVal = data.solar_and_uvi.uvi.value;
-        const solarVal = data.solar_and_uvi.solar.value;
-        document.getElementById('uv').innerText = uvVal;
-        document.getElementById('solar').innerText = `(${solarVal} W/m²)`;
-
-        // --- FASE LUNAR ---
-        const hoy = new Date();
-        const luna = getMoonPhase(hoy.getFullYear(), hoy.getMonth() + 1, hoy.getDate());
-        document.getElementById('moon-icon').innerText = luna.icon;
-        document.getElementById('moon-phase').innerText = luna.name;
-
-        // --- HORA (ARGENTINA) ---
-        const lastUpdate = new Date(json.time * 1000);
-        document.getElementById('time').innerText = lastUpdate.toLocaleTimeString('es-AR', {
-            timeZone: 'America/Argentina/Buenos_Aires',
+        // --- 6. HORA DE ACTUALIZACIÓN ---
+        // Usamos la marca de tiempo del JSON (Unix)
+        const fechaActualizacion = new Date(json.time * 1000);
+        const opcionesHora = { 
             hour: '2-digit', 
-            minute: '2-digit',
-            hour12: false
-        });
+            minute: '2-digit', 
+            hour12: false,
+            timeZone: 'America/Argentina/Buenos_Aires' 
+        };
+        document.getElementById('last-update').innerText = fechaActualizacion.toLocaleTimeString('es-AR', opcionesHora) + ' hs';
 
-        // Actualizamos el estado
-        document.getElementById('status').innerText = "Estación en Vivo";
+        // Feedback visual de éxito
+        statusEl.innerText = "EN VIVO";
+        statusEl.style.color = "#666";
 
     } catch (error) {
-        console.error("Error:", error);
-        document.getElementById('status').innerText = "Error al sincronizar";
+        console.error("Error al actualizar datos:", error);
+        statusEl.innerText = "RECONECTANDO...";
+        statusEl.style.color = "red";
     }
 }
 
-// --- FUNCIÓN MATEMÁTICA PARA LA LUNA ---
-function getMoonPhase(year, month, day) {
-    if (month < 3) { year--; month += 12; }
-    month++;
-    let c = 365.25 * year;
-    let e = 30.6 * month;
-    let jd = c + e + day - 694039.09; 
-    jd /= 29.5305882; 
-    let b = parseInt(jd);
-    jd -= b; 
-    b = Math.round(jd * 8); 
-    if (b >= 8) b = 0;
-
-    const phases = [
-        { name: "Nueva", icon: "🌑" },
-        { name: "Creciente", icon: "🌒" },
-        { name: "Creciente", icon: "🌓" },
-        { name: "Gibosa", icon: "🌔" },
-        { name: "Llena", icon: "🌕" },
-        { name: "Gibosa", icon: "🌖" },
-        { name: "Menguante", icon: "🌗" },
-        { name: "Menguante", icon: "🌘" }
-    ];
-    return phases[b];
-}
-
-// Iniciar al cargar
-document.addEventListener('DOMContentLoaded', fetchWeather);
+// Ejecutar al cargar la página
+document.addEventListener('DOMContentLoaded', () => {
+    actualizarClima();
+    
+    // Refrescar automáticamente cada 5 minutos (300.000 ms)
+    // El workflow corre cada 10 min, así que 5 min es ideal para no perderse nada.
+    setInterval(actualizarClima, 300000);
+});
