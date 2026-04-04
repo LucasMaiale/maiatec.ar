@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <title>Clima Chacabuco en Tiempo Real | Estación Meteorológica Propia Maiatec</title>
-    <meta name="description" content="Datos meteorológicos en tiempo real de Chacabuco, Buenos Aires. Temperatura, lluvia, viento y presión actualizados cada 10 minutos por Maiatec.">
+    <meta name="description" content="Datos meteorológicos en tiempo real de Chacabuco, Buenos Aires. Estación propia en las inmediaciones del Club Social.">
     <meta name="keywords" content="clima chacabuco, tiempo chacabuco hoy, lluvia chacabuco, maiatec chacabuco, estacion meteorologica">
     <link rel="canonical" href="https://maiatec.ar/clima-chacabuco/" />
 
@@ -190,8 +190,12 @@
 <script>
     async function update() {
         try {
-            // Se usa ../data/latest.json asumiendo que el archivo está en /clima-chacabuco/
-            const res = await fetch('../data/latest.json?t=' + Date.now());
+            /* IMPORTANTE: Usamos la ruta absoluta '/data/latest.json'. 
+               Esto funciona sin importar en qué carpeta estés.
+            */
+            const res = await fetch('/data/latest.json?t=' + Date.now());
+            if (!res.ok) throw new Error('No se pudo cargar el archivo');
+            
             const json = await res.json();
             const d = json.data;
 
@@ -210,4 +214,22 @@
             document.getElementById('wind-dir').innerText = dirs[Math.round(angle / 22.5) % 16];
 
             const date = new Date(json.time * 1000);
-            document.getElementById('last-update').innerText
+            document.getElementById('last-update').innerText = date.toLocaleTimeString('es-AR', {
+                hour: '2-digit', 
+                minute: '2-digit', 
+                hour12: false, 
+                timeZone: 'America/Argentina/Buenos_Aires'
+            });
+            
+            document.getElementById('status').innerText = 'En Vivo';
+        } catch (e) {
+            console.error(e);
+            document.getElementById('status').innerText = 'Error de conexión';
+        }
+    }
+    update();
+    setInterval(update, 300000);
+</script>
+
+</body>
+</html>
