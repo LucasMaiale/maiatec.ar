@@ -53,7 +53,6 @@
         
         .unit { font-size: 0.9rem; font-weight: 800; color: var(--sub); margin-left: 2px; }
 
-        /* Estilo para la ráfaga debajo del viento */
         .gust-sub { 
             display: block;
             font-size: 1rem; 
@@ -154,19 +153,20 @@
             document.getElementById('rain-24').innerText = parseFloat(d.rainfall.daily.value).toFixed(1);
             document.getElementById('rain-event').innerText = parseFloat(d.rainfall.event.value).toFixed(1);
 
-            // Viento y Ráfaga
             document.getElementById('wind').innerText = parseFloat(d.wind.wind_speed.value).toFixed(1);
             document.getElementById('gust').innerText = parseFloat(d.wind.wind_gust.value).toFixed(1);
             
-            // Dirección (Solo letras)
             const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO'];
             const angle = d.wind.wind_direction.value;
             document.getElementById('wind-dir').innerText = dirs[Math.round(angle / 22.5) % 16];
 
             const date = new Date(json.time * 1000);
             document.getElementById('last-update').innerText = date.toLocaleTimeString('es-AR', {
-                hour: '2-digit', minute:'2-digit', timeZone: 'America/Argentina/Buenos_Aires'
-            }) + ' hs';
+                hour: '2-digit', 
+                minute: '2-digit', 
+                hour12: false, 
+                timeZone: 'America/Argentina/Buenos_Aires'
+            });
             
             document.getElementById('status').innerText = 'En Vivo';
         } catch (e) {
