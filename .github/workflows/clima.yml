@@ -12,7 +12,9 @@ jobs:
     steps:
       - name: Checkout del repositorio
         uses: actions/checkout@v4
-
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Procesar Datos y Actualizar Historial
         run: |
           mkdir -p data
