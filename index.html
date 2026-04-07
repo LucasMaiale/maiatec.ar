@@ -3,21 +3,51 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MAIATEC</title>
-  <meta name="description" content="MAIATEC - Soluciones Electrónicas">
+  
+  <title>MAIATEC | Servicio Técnico Electrónico en Chacabuco</title>
+  
+  <meta name="description" content="Especialistas en diagnóstico y reparación de soldadoras (MIG/TIG), boyeros eléctricos, automatismos de portones, sistemas solares y UPS en Chacabuco.">
+  <meta name="keywords" content="reparación electrónica, soldadoras inverter, boyeros eléctricos, portones automáticos, service electrónica Chacabuco, sistemas solares, UPS">
+
+  <meta property="og:title" content="MAIATEC - Soluciones Electrónicas">
+  <meta property="og:description" content="Servicio técnico especializado en soldadoras, boyeros, portones y energía solar.">
+  <meta property="og:image" content="logo-maiatec.png">
+  <meta property="og:url" content="https://maiatec.ar">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "MAIATEC",
+    "image": "https://maiatec.ar/logo-maiatec.png",
+    "description": "Diagnóstico, reparación y mantenimiento de equipos electrónicos: Soldadoras, boyeros, portones automáticos y sistemas solares.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Chacabuco",
+      "addressRegion": "Buenos Aires",
+      "addressCountry": "AR"
+    },
+    "telephone": "+5492352502050",
+    "url": "https://maiatec.ar",
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Servicios Técnicos",
+      "itemListElement": [
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Reparación de Soldadoras eléctricas"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Reparación de Boyeros eléctricos"}},
+        {"@type": "Offer", "itemOffered": {"@type": "Service", "name": "Automatismos para portones"}}
+      ]
+    }
+  }
+  </script>
 
   <style>
-    /* 1. Definición de variables con gestión de color */
     :root {
-      /* Usamos formato color(srgb) para obligar a Chrome a no saturar en LCD */
-      /* Equivale a tu #2E3092 original */
       --bg-color: color(srgb 0.18 0.188 0.573); 
     }
 
-    /* 2. Compensación para pantallas AMOLED y dispositivos móviles */
     @media (max-width: 768px) or (color-gamut: p3) {
       :root {
-        /* Color ajustado para evitar el viraje a violeta en AMOLED (#1B438A) */
         --bg-color: #1B438A; 
       }
     }
@@ -29,14 +59,26 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: #2E3092; /* Fallback para navegadores viejos */
+      background-color: #2E3092;
       background-color: var(--bg-color);
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
       overflow: hidden;
       position: relative;
     }
 
-    /* Estabilizador de color: Capa casi invisible que unifica el renderizado */
+    /* Clase para contenido SEO que Google debe leer pero el usuario no necesita ver */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
     body::after {
       content: "";
       position: absolute;
@@ -63,11 +105,9 @@
       max-width: 600px;
       width: 80vw;
       height: auto;
-      /* Filtro suave para que el logo se integre mejor en cualquier panel */
       filter: drop-shadow(0 4px 10px rgba(0,0,0,0.1));
     }
 
-    /* Contenedor WhatsApp */
     .wsp-container {
       position: fixed;
       right: 30px;
@@ -96,38 +136,42 @@
     }
 
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(8px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes wsp-attention {
-      0%, 70%, 90%, 100% {
-        transform: scale(1) rotate(0deg);
-      }
-      75%, 85% {
-        transform: scale(1.08) rotate(-10deg);
-      }
-      80% {
-        transform: scale(1.08) rotate(10deg);
-      }
+      0%, 70%, 90%, 100% { transform: scale(1) rotate(0deg); }
+      75%, 85% { transform: scale(1.08) rotate(-10deg); }
+      80% { transform: scale(1.08) rotate(10deg); }
     }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <img src="logo-maiatec.png" alt="MAIATEC - Soluciones Electrónicas" class="logo" />
-  </div>
+  <main class="container">
+    <h1 class="sr-only">MAIATEC - Servicio Técnico en Chacabuco: Reparación de Soldadoras, Boyeros y Portones</h1>
+    
+    <img src="logo-maiatec.png" alt="MAIATEC - Diagnóstico, reparación y mantenimiento de equipos electrónicos" class="logo" />
 
-  <a href="https://wa.me/5492352502050" target="_blank" class="wsp-container">
+    <section class="sr-only">
+      <h2>Nuestros Servicios Electrónicos en Chacabuco</h2>
+      <ul>
+        <li>Soldadoras eléctricas MMA, MIG, MAG y TIG (inverter y convencionales)</li>
+        <li>Electrificadores rurales / boyeros eléctricos</li>
+        <li>Automatismos electrónicos para portones corredizos y levadizos</li>
+        <li>Fuentes de alimentación lineales y conmutadas</li>
+        <li>Controladores electrónicos para sistemas solares</li>
+        <li>UPS, estabilizadores y protección de tensión</li>
+        <li>Reparación de placas de equipos eléctricos y electrónicos</li>
+		<li>Electrónica en general</li>
+      </ul>
+    </section>
+  </main>
+
+  <a href="https://wa.me/5492352502050" target="_blank" class="wsp-container" aria-label="Consultar presupuesto por WhatsApp">
     <span class="wsp-text">Consúltenos</span>
-    <img src="wsp.png" alt="WhatsApp" class="wsp" />
+    <img src="wsp.png" alt="WhatsApp MAIATEC" class="wsp" />
   </a>
 
 </body>
