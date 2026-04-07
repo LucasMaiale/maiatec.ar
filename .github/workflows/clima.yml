@@ -2,7 +2,7 @@ name: Actualizar Clima Chacabuco
 
 on:
   schedule:
-    - cron: '*/10 * * * *' 
+    - cron: '*/3 * * * *' 
   workflow_dispatch: 
 
 jobs:
@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Checkout del repositorio
         uses: actions/checkout@v4
-
+          
       - name: Procesar Datos y Actualizar Historial
         run: |
           mkdir -p data
