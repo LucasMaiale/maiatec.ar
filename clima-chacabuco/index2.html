@@ -4,39 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <title>Clima en Chacabuco hoy en Tiempo Real | Estación Maiatec</title>
-    <meta name="description" content="Consulta el clima en Chacabuco en tiempo real. Datos exactos de temperatura, viento y lluvia actualizados cada 5 minutos desde nuestra estación propia en el Club Social.">
+    <title>Clima Chacabuco en Tiempo Real | Estación Meteorológica Propia Maiatec</title>
+    <meta name="description" content="Datos meteorológicos en tiempo real de Chacabuco, Buenos Aires. Estación propia en las inmediaciones del Club Social.">
     <link rel="canonical" href="https://maiatec.ar/clima-chacabuco/" />
-    
-    <meta property="og:title" content="Clima en Chacabuco en Tiempo Real">
-    <meta property="og:description" content="Datos meteorológicos exactos desde el centro de Chacabuco.">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://maiatec.ar/clima-chacabuco/">
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "Dataset",
-      "name": "Clima en Chacabuco en Tiempo Real - Estación Maiatec",
-      "description": "Datos meteorológicos precisos de la ciudad de Chacabuco, incluyendo temperatura, humedad, viento y precipitaciones.",
-      "license": "https://creativecommons.org/licenses/by/4.0/",
-      "spatialCoverage": {
-        "@type": "Place",
-        "name": "Chacabuco, Buenos Aires, Argentina"
-      },
-      "variableMeasured": [
-        "Temperature",
-        "Humidity",
-        "Wind Speed",
-        "Rainfall"
-      ],
-      "publisher": {
-        "@type": "Organization",
-        "name": "Maiatec",
-        "url": "https://maiatec.ar"
-      }
-    }
-    </script>
 
     <style>
         :root {
@@ -101,6 +71,7 @@
         .label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--sub); letter-spacing: 0.5px; }
         .value-box { text-align: right; }
         
+        /* Tamaño adaptable para móviles */
         .value { font-size: 2.2rem; font-weight: 900; letter-spacing: -1.5px; line-height: 0.9; }
         @media (min-width: 400px) {
             .value { font-size: 2.6rem; }
@@ -139,18 +110,6 @@
             text-transform: uppercase;
         }
 
-        /* Oculto para el usuario, visible para Google */
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            border: 0;
-        }
-
         .highlight { 
             background-color: #f9f9f9; 
             margin: 0 -10px; 
@@ -168,14 +127,9 @@
 
 <div class="container">
     <header>
-        <h1>Clima Chacabuco</h1>
+        <h1>Chacabuco</h1>
         <span id="status">En Vivo</span>
     </header>
-
-    <div class="sr-only">
-        <h2>Estado del tiempo en la ciudad de Chacabuco hoy</h2>
-        <p>Datos meteorológicos actualizados en tiempo real para Chacabuco, Buenos Aires. Incluye temperatura, humedad, presión atmosférica, viento, índice UV y lluvia.</p>
-    </div>
 
     <div class="grid">
         <div class="item">
@@ -239,7 +193,7 @@
     <footer>
         <div class="footer-line">Actualizado: <b id="last-update">--:--</b></div>
         <div class="location-note">
-            Estación meteorológica propia ubicada en las<br>inmediaciones del Club Social en Chacabuco
+            Estación meteorológica propia ubicada en las<br>inmediaciones del Club Social
         </div>
     </footer>
 </div>
