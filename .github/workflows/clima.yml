@@ -1,8 +1,7 @@
 name: Actualizar Clima Chacabuco
 
 on:
-  schedule:
-    - cron: '*/3 * * * *' 
+    # Dispara desde cron-job 
   workflow_dispatch: 
 
 jobs:
