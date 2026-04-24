@@ -107,7 +107,7 @@
         .label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--sub); letter-spacing: 0.5px; }
         .value-box { text-align: right; }
         
-        .value { font-size: 2.2rem; font-weight: 900; letter-spacing: -1.5px; line-height: 0.9; min-width: 1.5ch; display: inline-block; }
+        .value { font-size: 2.2rem; font-weight: 900; letter-spacing: -1.5px; line-height: 0.9; }
         @media (min-width: 400px) {
             .value { font-size: 2.6rem; }
             h1 { font-size: 1.6rem; }
@@ -170,79 +170,79 @@
 </head>
 <body>
 
-<nav class="brand-bar">
+<div class="brand-bar">
     SERVICIO A LA COMUNIDAD BRINDADO POR <a href="https://maiatec.ar">MAIATEC.AR</a>
-</nav>
+</div>
 
 <div class="container">
     <header>
         <h1>Clima en Chacabuco</h1>
-        <span id="status" aria-live="polite">Cargando...</span>
+        <span id="status">En Vivo</span>
     </header>
 
-    <main class="grid">
-        <div class="sr-only">
-            <h2>Estado del tiempo en Chacabuco hoy</h2>
-            <p>Datos actualizados cada 5 minutos. Estación meteorológica propia de Maiatec ubicada cerca del Club Social.</p>
-        </div>
+    <div class="sr-only">
+        <h2>Estado del tiempo en Chacabuco hoy</h2>
+        <p>Datos actualizados cada 5 minutos. Estación meteorológica propia de Maiatec.</p>
+    </div>
 
-        <article class="item">
+    <div class="grid" data-nosnippet>
+        <div class="item">
             <span class="label">Temperatura</span>
             <div class="value-box">
-                <span class="value" id="temp">&nbsp;</span><span class="unit">°C</span>
+                <span class="value" id="temp">--</span><span class="unit">°C</span>
             </div>
-        </article>
+        </div>
 
-        <article class="item">
+        <div class="item">
             <span class="label">Humedad</span>
             <div class="value-box">
-                <span class="value" id="hum">&nbsp;</span><span class="unit">%</span>
+                <span class="value" id="hum">--</span><span class="unit">%</span>
             </div>
-        </article>
+        </div>
 
-        <article class="item">
+        <div class="item">
             <span class="label">Presión</span>
             <div class="value-box">
-                <span class="value" id="press">&nbsp;</span><span class="unit">hPa</span>
+                <span class="value" id="press">--</span><span class="unit">hPa</span>
             </div>
-        </article>
+        </div>
 
-        <article class="item">
+        <div class="item">
             <span class="label">Dirección Viento</span>
             <div class="value-box">
-                <span class="value" id="wind-dir">&nbsp;</span>
+                <span class="value" id="wind-dir">--</span>
             </div>
-        </article>
+        </div>
 
-        <article class="item">
+        <div class="item">
             <span class="label">Velocidad Viento</span>
             <div class="value-box">
-                <div><span class="value" id="wind">&nbsp;</span><span class="unit">km/h</span></div>
-                <span class="gust-sub">(Ráfaga: <span id="gust">&nbsp;</span> km/h)</span>
+                <div><span class="value" id="wind">--</span><span class="unit">km/h</span></div>
+                <span class="gust-sub">(Ráfaga: <span id="gust">--</span> km/h)</span>
             </div>
-        </article>
+        </div>
 
-        <article class="item">
+        <div class="item">
             <span class="label">Índice UV</span>
             <div class="value-box">
-                <span class="value" id="uv">&nbsp;</span>
+                <span class="value" id="uv">--</span>
             </div>
-        </article>
+        </div>
 
-        <article class="item">
+        <div class="item">
             <span class="label">Lluvia 24h</span>
             <div class="value-box">
-                <span class="value" id="rain-24">&nbsp;</span><span class="unit">mm</span>
+                <span class="value" id="rain-24">--</span><span class="unit">mm</span>
             </div>
-        </article>
+        </div>
 
-        <article class="item highlight">
+        <div class="item highlight">
             <span class="label">Último Evento</span>
             <div class="value-box">
-                <span class="value" id="rain-event">&nbsp;</span><span class="unit">mm</span>
+                <span class="value" id="rain-event">--</span><span class="unit">mm</span>
             </div>
-        </article>
-    </main>
+        </div>
+    </div>
 
     <footer>
         <div class="footer-line">Actualizado: <b id="last-update">--:--</b></div>
