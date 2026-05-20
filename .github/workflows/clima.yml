@@ -1,7 +1,8 @@
 name: Actualizar Clima Chacabuco
 
 on:
-  workflow_dispatch:
+    # Dispara desde cron-job 
+  workflow_dispatch: 
 
 jobs:
   update-weather:
@@ -15,49 +16,65 @@ jobs:
         run: |
           mkdir -p data
           
-          # 1. DESCARGAR ORIGINAL con reintentos
-          for i in {1..3}; do
-            curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&temp_unitid=1&pressure_unitid=3&precip_unitid=13&wind_speed_unitid=7&call_back=all" > data/raw.json && break
-            echo "Reintento $i..."
-            sleep 5
-          done
+          # 1. DESCARGAR ORIGINAL
+          curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&temp_unitid=1&pressure_unitid=3&precip_unitid=13&wind_speed_unitid=7&call_back=all" > data/raw.json
           
-          # Validar JSON antes de seguir
-          if ! jq empty data/raw.json; then
-            echo "Error: JSON inválido"
-            exit 1
-          fi
-          
-          # 2. LIMPIAR PRIVACIDAD Y CONVERTIR BLOQUE DE LLUVIA
+          # 2. LIMPIAR PRIVACIDAD Y CONVERTIR TODO EL BLOQUE DE LLUVIA (in a mm)
           jq '.data.outdoor |= del(.vpd) | 
               del(.data.indoor, .data.battery) |
-              .data.rainfall.rain_rate.value |= (tonumber * 25.4 * 10 | round / 10) |
+              .data.rainfall.rain_rate.value |= (tonumber * 25.4 * 10 | round / 10) | 
               .data.rainfall.rain_rate.unit = "mm/hr" |
-              .data.rainfall."1_hour".value |= (tonumber * 25.4 * 10 | round / 10) |
+              .data.rainfall."1_hour".value |= (tonumber * 25.4 * 10 | round / 10) | 
               .data.rainfall."1_hour".unit = "mm" |
-              .data.rainfall.daily.value |= (tonumber * 25.4 * 10 | round / 10) |
+              .data.rainfall.daily.value |= (tonumber * 25.4 * 10 | round / 10) | 
               .data.rainfall.daily.unit = "mm" |
-              .data.rainfall.event.value |= (tonumber * 25.4 * 10 | round / 10) |
+              .data.rainfall.event.value |= (tonumber * 25.4 * 10 | round / 10) | 
               .data.rainfall.event.unit = "mm" |
-              .data.rainfall.weekly.value |= (tonumber * 25.4 * 10 | round / 10) |
+              .data.rainfall.weekly.value |= (tonumber * 25.4 * 10 | round / 10) | 
               .data.rainfall.weekly.unit = "mm" |
-              .data.rainfall.monthly.value |= (tonumber * 25.4 * 10 | round / 10) |
+              .data.rainfall.monthly.value |= (tonumber * 25.4 * 10 | round / 10) | 
               .data.rainfall.monthly.unit = "mm" |
-              .data.rainfall.yearly.value |= (tonumber * 25.4 * 10 | round / 10) |
+              .data.rainfall.yearly.value |= (tonumber * 25.4 * 10 | round / 10) | 
               .data.rainfall.yearly.unit = "mm"' data/raw.json > data/latest.json
           
-          # 3. EXTRAER TODO (igual que antes)
+          # 3. EXTRAER ABSOLUTAMENTE TODO
           TIME_UNIX=$(jq -r '.time' data/latest.json)
           FECHA=$(TZ="America/Argentina/Buenos_Aires" date -d "@$TIME_UNIX" +"%Y-%m-%d %H:%M")
-          TEMP=$(jq -r '.data.outdoor.temperature.value' data/latest.json)
-          HUM=$(jq -r '.data.outdoor.humidity.value' data/latest.json)
-          # ... resto de variables igual que tu script original ...
           
-          # 4. ACTUALIZAR CSV
+          # Outdoor
+          TEMP=$(jq -r '.data.outdoor.temperature.value' data/latest.json)
+          FEELS=$(jq -r '.data.outdoor.feels_like.value' data/latest.json)
+          APP=$(jq -r '.data.outdoor.app_temp.value' data/latest.json)
+          DEW=$(jq -r '.data.outdoor.dew_point.value' data/latest.json)
+          HUM=$(jq -r '.data.outdoor.humidity.value' data/latest.json)
+          
+          # Solar & UV
+          SOLAR=$(jq -r '.data.solar_and_uvi.solar.value' data/latest.json)
+          UVI=$(jq -r '.data.solar_and_uvi.uvi.value' data/latest.json)
+          
+          # Pressure
+          PRES_REL=$(jq -r '.data.pressure.relative.value' data/latest.json)
+          PRES_ABS=$(jq -r '.data.pressure.absolute.value' data/latest.json)
+          
+          # Wind
+          W_SPEED=$(jq -r '.data.wind.wind_speed.value' data/latest.json)
+          W_GUST=$(jq -r '.data.wind.wind_gust.value' data/latest.json)
+          W_DIR=$(jq -r '.data.wind.wind_direction.value' data/latest.json)
+          
+          # Rainfall (Todas las métricas ya en mm)
+          R_RATE=$(jq -r '.data.rainfall.rain_rate.value' data/latest.json)
+          R_1H=$(jq -r '.data.rainfall."1_hour".value' data/latest.json)
+          R_DAY=$(jq -r '.data.rainfall.daily.value' data/latest.json)
+          R_EVE=$(jq -r '.data.rainfall.event.value' data/latest.json)
+          R_WEE=$(jq -r '.data.rainfall.weekly.value' data/latest.json)
+          R_MON=$(jq -r '.data.rainfall.monthly.value' data/latest.json)
+          R_YEA=$(jq -r '.data.rainfall.yearly.value' data/latest.json)
+
+          # 4. ACTUALIZAR CSV (Encabezado Completo)
           if [ ! -f data/historial.csv ]; then
-            echo "Fecha,Temp(C),Hum(%)" > data/historial.csv
+            echo "Fecha,Temp(C),SensTerm(C),TempApar(C),PtoRocio(C),Hum(%),Solar(Wm2),UV,PresRel(hPa),PresAbs(hPa),Viento(kmh),Rafaga(kmh),Dir(deg),Lluvia_Intens(mmh),Lluvia_1h(mm),Lluvia_Dia(mm),Lluvia_Ev(mm),Lluvia_Sem(mm),Lluvia_Mes(mm),Lluvia_Anio(mm)" > data/historial.csv
           fi
-          echo "$FECHA,$TEMP,$HUM" >> data/historial.csv
+          echo "$FECHA,$TEMP,$FEELS,$APP,$DEW,$HUM,$SOLAR,$UVI,$PRES_REL,$PRES_ABS,$W_SPEED,$W_GUST,$W_DIR,$R_RATE,$R_1H,$R_DAY,$R_EVE,$R_WEE,$R_MON,$R_YEA" >> data/historial.csv
           
           rm data/raw.json
 
@@ -66,6 +83,5 @@ jobs:
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
           git add data/latest.json data/historial.csv
-          git commit -m "Clima Chacabuco: actualización" || echo "Sin cambios"
+          git commit -m "Clima Chacabuco: CSV clon completo del JSON" || echo "Sin cambios"
           git push
-        continue-on-error: true   # <- evita que falle si no hay cambios
