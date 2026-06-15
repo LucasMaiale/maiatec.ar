@@ -20,22 +20,24 @@ jobs:
           curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&temp_unitid=1&pressure_unitid=3&precip_unitid=13&wind_speed_unitid=7&call_back=all" > data/raw.json
           
           # 2. LIMPIAR PRIVACIDAD Y CONVERTIR TODO EL BLOQUE DE LLUVIA (in a mm)
-          jq '.data.outdoor |= del(.vpd) | \
-              del(.data.indoor, .data.battery) | \
-              .data.rainfall.rain_rate.value |= (tonumber * 25.4 * 10 | round / 10) | \
-              .data.rainfall.rain_rate.unit = "mm/hr" | \
-              .data.rainfall."1_hour".value |= (tonumber * 25.4 * 10 | round / 10) | \
-              .data.rainfall."1_hour".unit = "mm" | \
-              .data.rainfall.daily.value |= (tonumber * 25.4 * 10 | round / 10) | \
-              .data.rainfall.daily.unit = "mm" | \
-              .data.rainfall.event.value |= (tonumber * 25.4 * 10 | round / 10) | \
-              .data.rainfall.event.unit = "mm" | \
-              .data.rainfall.weekly.value |= (tonumber * 25.4 * 10 | round / 10) | \
-              .data.rainfall.weekly.unit = "mm" | \
-              .data.rainfall.monthly.value |= (tonumber * 25.4 * 10 | round / 10) | \
-              .data.rainfall.monthly.unit = "mm" | \
-              .data.rainfall.yearly.value |= (tonumber * 25.4 * 10 | round / 10) | \
-              .data.rainfall.yearly.unit = "mm"' data/raw.json > data/latest.json
+          jq '
+            .data.outdoor |= del(.vpd) | 
+            del(.data.indoor, .data.battery) |
+            .data.rainfall.rain_rate.value |= (tonumber * 25.4 * 10 | round / 10) | 
+            .data.rainfall.rain_rate.unit = "mm/hr" |
+            .data.rainfall."1_hour".value |= (tonumber * 25.4 * 10 | round / 10) | 
+            .data.rainfall."1_hour".unit = "mm" |
+            .data.rainfall.daily.value |= (tonumber * 25.4 * 10 | round / 10) | 
+            .data.rainfall.daily.unit = "mm" |
+            .data.rainfall.event.value |= (tonumber * 25.4 * 10 | round / 10) | 
+            .data.rainfall.event.unit = "mm" |
+            .data.rainfall.weekly.value |= (tonumber * 25.4 * 10 | round / 10) | 
+            .data.rainfall.weekly.unit = "mm" |
+            .data.rainfall.monthly.value |= (tonumber * 25.4 * 10 | round / 10) | 
+            .data.rainfall.monthly.unit = "mm" |
+            .data.rainfall.yearly.value |= (tonumber * 25.4 * 10 | round / 10) | 
+            .data.rainfall.yearly.unit = "mm"
+          ' data/raw.json > data/latest.json
           
           # 3. EXTRAER ABSOLUTAMENTE TODO
           TIME_UNIX=$(jq -r '.time' data/latest.json)
