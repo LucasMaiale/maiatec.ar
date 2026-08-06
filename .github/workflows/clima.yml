@@ -1,12 +1,8 @@
 name: Actualizar Clima Chacabuco
 
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - 'data/**'
-  workflow_dispatch:
+    # Dispara desde cron-job 
+  workflow_dispatch: 
 
 jobs:
   update-weather:
