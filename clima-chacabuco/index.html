@@ -145,6 +145,29 @@
             text-transform: uppercase;
         }
 
+        /* Estilo para el botón de marcadores */
+        .bookmark-btn {
+            display: block;
+            width: 100%;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: transparent;
+            border: 1.5px solid var(--text);
+            color: var(--text);
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .bookmark-btn:hover {
+            background-color: var(--text);
+            color: var(--bg);
+        }
+
         .sr-only {
             position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
             overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;
@@ -249,6 +272,11 @@
         <div class="location-note">
             Estación meteorológica propia ubicada en las<br>inmediaciones del Club Social en Chacabuco
         </div>
+
+        <!-- Botón para guardar en marcadores -->
+        <button type="button" class="bookmark-btn" onclick="addBookmark()">
+            ★ Agregá esta página a marcadores para volver más tarde
+        </button>
     </footer>
 </div>
 
@@ -284,6 +312,13 @@
     }
     update();
     setInterval(update, 300000);
+
+    // Función de Marcadores
+    function addBookmark() {
+        const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+        const shortcut = isMac ? 'Cmd + D' : 'Ctrl + D';
+        alert('Para guardar esta página en tus favoritos, presiona ' + shortcut + ' en tu teclado o usa el menú de opciones de tu navegador en el celular.');
+    }
 </script>
 
 </body>
