@@ -1,111 +1,111 @@
 {
   "code": 0,
   "msg": "success",
-  "time": "1786564872",
+  "time": "1786565444",
   "data": {
     "outdoor": {
       "temperature": {
-        "time": "1786564869",
+        "time": "1786565409",
         "unit": "℃",
         "value": "10.5"
       },
       "feels_like": {
-        "time": "1786564869",
+        "time": "1786565409",
         "unit": "℃",
         "value": "10.5"
       },
       "app_temp": {
-        "time": "1786564869",
+        "time": "1786565409",
         "unit": "℃",
-        "value": "7.3"
+        "value": "7.4"
       },
       "dew_point": {
-        "time": "1786564869",
+        "time": "1786565409",
         "unit": "℃",
         "value": "6.7"
       },
       "humidity": {
-        "time": "1786564869",
+        "time": "1786565409",
         "unit": "%",
         "value": "77"
       }
     },
     "solar_and_uvi": {
       "solar": {
-        "time": "1786564869",
+        "time": "1786565409",
         "unit": "W/m²",
-        "value": "67.3"
+        "value": "54.0"
       },
       "uvi": {
-        "time": "1786564869",
+        "time": "1786565409",
         "unit": "",
         "value": "0"
       }
     },
     "rainfall": {
       "rain_rate": {
-        "time": "1786564869",
+        "time": "1786565409",
         "unit": "mm/hr",
         "value": 0
       },
       "daily": {
-        "time": "1786564869",
+        "time": "1786565409",
         "unit": "mm",
         "value": 0
       },
       "event": {
-        "time": "1786564869",
+        "time": "1786565409",
         "unit": "mm",
         "value": 0
       },
       "1_hour": {
-        "time": "1786564869",
+        "time": "1786565409",
         "unit": "mm",
         "value": 0
       },
       "weekly": {
-        "time": "1786564869",
+        "time": "1786565409",
         "unit": "mm",
         "value": 0
       },
       "monthly": {
-        "time": "1786564869",
+        "time": "1786565409",
         "unit": "mm",
         "value": 32
       },
       "yearly": {
-        "time": "1786564869",
+        "time": "1786565409",
         "unit": "mm",
         "value": 227.6
       }
     },
     "wind": {
       "wind_speed": {
-        "time": "1786564869",
+        "time": "1786565409",
         "unit": "km/h",
-        "value": "12.2"
+        "value": "11.9"
       },
       "wind_gust": {
-        "time": "1786564869",
+        "time": "1786565409",
         "unit": "km/h",
         "value": "14.8"
       },
       "wind_direction": {
-        "time": "1786564869",
+        "time": "1786565409",
         "unit": "º",
-        "value": "174"
+        "value": "176"
       }
     },
     "pressure": {
       "relative": {
-        "time": "1786564869",
+        "time": "1786565409",
         "unit": "hPa",
-        "value": "1018.2"
+        "value": "1018.1"
       },
       "absolute": {
-        "time": "1786564869",
+        "time": "1786565409",
         "unit": "hPa",
-        "value": "1013.1"
+        "value": "1013.0"
       }
     }
   }
