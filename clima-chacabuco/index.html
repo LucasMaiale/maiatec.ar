@@ -314,6 +314,7 @@
 
             document.getElementById('temp').innerText = parseFloat(d.outdoor.temperature.value).toFixed(1);
             document.getElementById('hum').innerText = d.outdoor.humidity.value;
+			document.getElementById('dewpoint').innerText = parseFloat(d.outdoor.dew_point.value).toFixed(1);
             document.getElementById('press').innerText = Math.round(d.pressure.relative.value);
             document.getElementById('uv').innerText = d.solar_and_uvi.uvi.value;
             document.getElementById('rain-24').innerText = parseFloat(d.rainfall.daily.value).toFixed(1);
