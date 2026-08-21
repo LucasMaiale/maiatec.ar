@@ -19,7 +19,7 @@ async function actualizarClima() {
         document.getElementById('temp').innerText = parseFloat(d.outdoor.temperature.value).toFixed(1);
         document.getElementById('hum').innerText = d.outdoor.humidity.value;
 		
-		document.getElementById('dewpoint').innerText = d.outdoor.dew_point.value;
+		document.getElementById('dewpoint').innerText = parseFloat(d.outdoor.dew_point.value).toFixed(1);
        
 	   // --- 2. PRESIÓN (Redondeada a entero) ---
         document.getElementById('press').innerText = Math.round(d.pressure.relative.value);
