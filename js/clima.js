@@ -8,7 +8,7 @@ async function actualizarClima() {
     
     try {
         // Agregamos un timestamp para evitar que el navegador guarde el JSON en caché
-        const response = await fetch(`./data/latest.json?t=${new Date().getTime()}`);
+        const response = await fetch(`/data/latest.json?t=${new Date().getTime()}`);
         
         if (!response.ok) throw new Error('No se pudo obtener el JSON');
         
@@ -19,7 +19,8 @@ async function actualizarClima() {
         document.getElementById('temp').innerText = parseFloat(d.outdoor.temperature.value).toFixed(1);
         document.getElementById('hum').innerText = d.outdoor.humidity.value;
 		document.getElementById('dewpoint').innerText = parseFloat(d.outdoor.dew_point.value).toFixed(1);
-        // --- 2. PRESIÓN (Redondeada a entero) ---
+       
+	   // --- 2. PRESIÓN (Redondeada a entero) ---
         document.getElementById('press').innerText = Math.round(d.pressure.relative.value);
 
         // --- 3. VIENTO Y RÁFAGAS ---
