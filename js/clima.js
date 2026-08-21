@@ -18,7 +18,8 @@ async function actualizarClima() {
         // --- 1. TEMPERATURA Y HUMEDAD ---
         document.getElementById('temp').innerText = parseFloat(d.outdoor.temperature.value).toFixed(1);
         document.getElementById('hum').innerText = d.outdoor.humidity.value;
-		document.getElementById('dewpoint').innerText = parseFloat(d.outdoor.dew_point.value).toFixed(1);
+		
+		document.getElementById('dewpoint').innerText = d.outdoor.dew_point.value;
        
 	   // --- 2. PRESIÓN (Redondeada a entero) ---
         document.getElementById('press').innerText = Math.round(d.pressure.relative.value);
