@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Servicio técnico electrónico Maiatec en Chacabuco. Diagnóstico y reparación de equipos industriales, rurales y del hogar." />
+  <meta name="theme-color" content="#091d36" />
+  <title>MAIATEC | Servicio técnico electrónico</title>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": "https://maiatec.ar/#organization",
+    "name": "MAIATEC Servicios Técnicos",
+    "url": "https://maiatec.ar/",
+    "telephone": "+5492352502050",
+    "image": "https://maiatec.ar/assets/logo-maiatec.png",
+    "logo": "https://maiatec.ar/assets/logo-maiatec.png",
+    "description": "Diagnóstico, reparación y mantenimiento de equipos electrónicos industriales, rurales y del hogar en Chacabuco.",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Juan José Paso 272",
+      "addressLocality": "Chacabuco",
+      "addressRegion": "Buenos Aires",
+      "postalCode": "B6740",
+      "addressCountry": "AR"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": -34.63797751814227,
+      "longitude": -60.48544502476414
+    },
+    "hasMap": "https://www.google.com/maps/search/?api=1&query=-34.63797751814227%2C-60.48544502476414",
+    "areaServed": ["Chacabuco", "Provincia de Buenos Aires"]
+  }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --navy: #091d36;
+      --blue: #3a4e7a;
+      --steel: #5e83ba;
+      --mist: #c2d2e9;
+      --paper: #f1f1f0;
+      --white: #ffffff;
+      --line: rgba(9, 29, 54, 0.16);
+      --gutter: clamp(20px, 5vw, 76px);
+      --type-display: 68px;
+      --type-heading: 52px;
+      --type-card-heading: 22px;
+      --type-lead: 20px;
+      --type-body: 16px;
+      --type-small: 14px;
+      --type-label: 12px;
+      --type-micro: 10px;
+      color-scheme: light;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; scroll-padding-top: 88px; }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--navy);
+      font-family: "DM Sans", sans-serif;
+      font-size: var(--type-body);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img { max-width: 100%; }
+    a { color: inherit; }
+
+    .mono {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: var(--type-label);
+      font-weight: 500;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    .header-inner {
+      width: min(100%, 1600px);
+      min-height: 78px;
+      margin: 0 auto;
+      padding: 10px var(--gutter);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+    }
+
+    .brand { display: inline-flex; flex: 0 0 auto; align-items: center; }
+    .brand img { display: block; width: 204px; height: auto; }
+
+    .main-nav { display: flex; align-items: center; gap: 30px; }
+    .main-nav a {
+      color: var(--white);
+      font-size: var(--type-small);
+      text-decoration: none;
+      transition: color 160ms ease;
+    }
+    .main-nav a:hover, .main-nav a:focus-visible { color: var(--mist); }
+
+    .nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 17px;
+      border: 1px solid var(--steel);
+      background: var(--steel);
+      color: var(--white) !important;
+      font-weight: 700;
+    }
+    .nav-cta::after { content: "↗"; font-size: 17px; }
+
+    main { overflow: clip; }
+
+    .hero {
+      position: relative;
+      min-height: 690px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      background: var(--navy);
+      color: var(--white);
+      text-align: center;
+      isolation: isolate;
+    }
+
+    .hero-photo {
+      position: absolute;
+      z-index: -2;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 54%;
+      filter: brightness(0.72);
+    }
+
+    .hero::after {
+      position: absolute;
+      z-index: -1;
+      inset: 0;
+      content: "";
+      background: rgba(9, 29, 54, 0.24);
+    }
+
+    .hero-inner {
+      width: min(100%, 1320px);
+      padding: 74px var(--gutter) 68px;
+      animation: hero-entry 700ms ease-out both;
+    }
+
+    .hero-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 18px;
+      color: var(--mist);
+    }
+    .hero-tag::before {
+      width: 8px;
+      height: 8px;
+      content: "";
+      background: var(--steel);
+    }
+
+    .hero-wordmark {
+      width: min(100%, 920px);
+      margin: 0;
+      margin-inline: auto;
+    }
+    .hero-wordmark img { display: block; width: 100%; height: auto; }
+
+    .hero-copy {
+      max-width: 640px;
+      margin: 25px auto 0;
+      color: var(--white);
+      font-size: var(--type-lead);
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    .hero-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 29px;
+    }
+
+    .button {
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 12px 19px;
+      border: 1px solid transparent;
+      background: var(--steel);
+      color: var(--white);
+      font-size: var(--type-small);
+      font-weight: 700;
+      text-decoration: none;
+      transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
+    }
+    .button:hover, .button:focus-visible { background: var(--navy); border-color: var(--mist); }
+    .button-light { background: var(--paper); color: var(--navy); }
+    .button-light:hover, .button-light:focus-visible { background: var(--mist); color: var(--navy); }
+    .button-arrow { font-size: 18px; line-height: 1; }
+
+    .hero-note {
+      position: absolute;
+      right: var(--gutter);
+      bottom: 25px;
+      left: var(--gutter);
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      color: rgba(255,255,255,0.82);
+    }
+
+    .section { padding: 112px var(--gutter); }
+    .section-inner { width: min(100%, 1420px); margin: 0 auto; }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin: 0 0 24px;
+      color: var(--blue);
+    }
+    .section-label .number { color: var(--steel); }
+    .section-label .slash { color: var(--steel); }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.08fr 0.92fr;
+      align-items: center;
+      gap: clamp(38px, 7vw, 110px);
+    }
+
+    .about-copy h2,
+    .section-title {
+      margin: 0;
+      font-size: var(--type-heading);
+      line-height: 1.04;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .about-copy > p {
+      max-width: 620px;
+      margin: 23px 0 0;
+      color: var(--blue);
+      font-size: var(--type-body);
+      line-height: 1.65;
+    }
+
+    .about-image {
+      width: 100%;
+      aspect-ratio: 1.08 / 1;
+      display: block;
+      object-fit: cover;
+      object-position: center;
+      background: var(--mist);
+    }
+
+    .facts {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 57px;
+      border-top: 1px solid var(--line);
+    }
+
+    .fact {
+      min-height: 112px;
+      padding: 20px 22px 0 0;
+      border-right: 1px solid var(--line);
+    }
+    .fact + .fact { padding-left: 22px; }
+    .fact:last-child { border-right: 0; }
+    .fact strong { display: block; margin-bottom: 8px; font-size: var(--type-card-heading); }
+    .fact span { color: var(--blue); line-height: 1.4; }
+
+    .services { background: var(--mist); }
+    .services-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 30px;
+      margin-bottom: 43px;
+    }
+    .services-head .section-title { max-width: 700px; }
+    .services-head > p {
+      max-width: 360px;
+      margin: 0 0 4px;
+      color: var(--blue);
+      font-size: var(--type-body);
+      line-height: 1.55;
+    }
+
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .service-card {
+      min-height: 220px;
+      padding: 24px 23px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      background: var(--paper);
+      border: 1px solid rgba(9, 29, 54, 0.12);
+    }
+    .service-card .card-index { margin-bottom: 37px; color: var(--steel); }
+    .service-card h3 { margin: 0 0 10px; font-size: var(--type-card-heading); line-height: 1.2; }
+    .service-card p { margin: 0; color: var(--blue); font-size: var(--type-small); line-height: 1.55; }
+
+    .process { background: var(--navy); color: var(--paper); }
+    .process .section-label { color: var(--mist); }
+    .process .section-label .number,
+    .process .section-label .slash { color: var(--steel); }
+    .process-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 34px;
+      margin-bottom: 48px;
+    }
+    .process-head .section-title { max-width: 740px; }
+    .process-head > p { max-width: 370px; margin: 0 0 3px; color: var(--mist); line-height: 1.6; }
+    .process-list { border-top: 1px solid rgba(241,241,240,0.3); }
+    .process-step {
+      display: grid;
+      grid-template-columns: 70px minmax(180px, 0.65fr) 1fr;
+      align-items: baseline;
+      gap: 25px;
+      padding: 22px 0;
+      border-bottom: 1px solid rgba(241,241,240,0.3);
+    }
+    .process-step .mono { color: var(--mist); }
+    .process-step h3 { margin: 0; font-size: var(--type-card-heading); font-weight: 600; }
+    .process-step p { max-width: 520px; margin: 0; color: var(--mist); line-height: 1.55; }
+
+    .faq-head { max-width: 780px; margin-bottom: 42px; }
+    .faq-head .section-title { margin-bottom: 15px; }
+    .faq-head > p { margin: 0; color: var(--blue); line-height: 1.55; }
+    .faq-list { border-top: 1px solid var(--line); }
+    .faq-list details { border-bottom: 1px solid var(--line); }
+    .faq-list summary {
+      position: relative;
+      padding: 21px 48px 21px 0;
+      cursor: pointer;
+      list-style: none;
+      font-size: var(--type-lead);
+      font-weight: 600;
+    }
+    .faq-list summary::-webkit-details-marker { display: none; }
+    .faq-list summary::after {
+      position: absolute;
+      top: 18px;
+      right: 4px;
+      content: "+";
+      color: var(--steel);
+      font-size: 26px;
+      font-weight: 400;
+    }
+    .faq-list details[open] summary::after { content: "−"; }
+    .faq-list details p { max-width: 780px; margin: 0; padding: 0 42px 22px 0; color: var(--blue); line-height: 1.6; }
+
+    .location { background: var(--mist); }
+    .location-layout {
+      display: grid;
+      grid-template-columns: minmax(220px, 0.72fr) minmax(0, 1.28fr);
+      align-items: stretch;
+      gap: clamp(28px, 5vw, 72px);
+    }
+    .location-copy h2 { max-width: 500px; margin: 0; font-size: var(--type-heading); line-height: 1.04; }
+    .location-copy > p { max-width: 390px; margin: 18px 0 0; color: var(--blue); line-height: 1.6; }
+    .location-address { display: block; margin-top: 28px; font-style: normal; font-weight: 600; line-height: 1.6; }
+    .map-directions { margin-top: 24px; }
+    .map-frame { min-width: 0; min-height: 360px; background: var(--paper); }
+    .map-frame iframe { display: block; width: 100%; height: 100%; min-height: 360px; border: 0; }
+
+    .contact {
+      background: var(--steel);
+      color: var(--white);
+      padding: 90px var(--gutter) 28px;
+    }
+    .contact-inner { width: min(100%, 1420px); margin: 0 auto; }
+    .contact .section-label { color: var(--white); }
+    .contact .section-label .number,
+    .contact .section-label .slash { color: var(--mist); }
+    .contact-main {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 35px;
+      padding: 15px 0 75px;
+    }
+    .contact h2 { max-width: 850px; margin: 0; font-size: var(--type-display); line-height: 1; font-weight: 700; }
+    .contact .button { flex: 0 0 auto; background: var(--navy); }
+    .contact .button:hover { background: var(--blue); border-color: var(--white); }
+    .footer-bottom {
+      display: flex;
+      justify-content: space-between;
+      gap: 24px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,0.45);
+    }
+    .footer-bottom a { text-decoration: none; }
+
+    @keyframes hero-entry {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 960px) {
+      :root {
+        --type-display: 56px;
+        --type-heading: 46px;
+        --type-card-heading: 21px;
+        --type-lead: 19px;
+        --type-label: 11px;
+      }
+      .hero { min-height: 620px; }
+      .about-grid { gap: 35px; }
+      .service-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .service-card { min-height: 200px; }
+      .services-head, .process-head { display: block; }
+      .services-head > p, .process-head > p { max-width: 620px; margin: 16px 0 0; }
+      .process-step { grid-template-columns: 55px 1fr; gap: 8px 18px; }
+      .process-step p { grid-column: 2; }
+      .location-layout { grid-template-columns: 1fr; gap: 28px; }
+      .contact-main { display: block; }
+      .contact .button { margin-top: 24px; }
+    }
+
+    @media (max-width: 640px) {
+      :root {
+        --gutter: 20px;
+        --type-display: 42px;
+        --type-heading: 36px;
+        --type-card-heading: 20px;
+        --type-lead: 18px;
+        --type-body: 15px;
+        --type-small: 13px;
+        --type-label: 10px;
+        --type-micro: 9px;
+      }
+      html { scroll-padding-top: 72px; }
+      .header-inner { min-height: 70px; gap: 12px; }
+      .brand img { width: 145px; }
+      .main-nav { gap: 13px; }
+      .main-nav a { font-size: var(--type-small); }
+      .main-nav a:not(.nav-cta) { display: none; }
+      .nav-cta { min-height: 40px; padding: 9px 11px; }
+      .hero { min-height: 620px; }
+      .hero-inner { padding: 62px 20px 82px; }
+      .hero-wordmark { width: min(100%, 410px); }
+      .hero-copy { max-width: 360px; margin-top: 21px; }
+      .hero-note { bottom: 17px; font-size: var(--type-micro); }
+      .section { padding: 76px var(--gutter); }
+      .about-grid { grid-template-columns: 1fr; gap: 30px; }
+      .about-image { aspect-ratio: 1.35 / 1; }
+      .facts { grid-template-columns: 1fr; margin-top: 35px; }
+      .fact, .fact + .fact { min-height: 0; padding: 16px 0; border-right: 0; border-bottom: 1px solid var(--line); }
+      .fact:last-child { border-bottom: 0; }
+      .services-head, .process-head { display: block; margin-bottom: 32px; }
+      .services-head > p, .process-head > p { margin-top: 16px; }
+      .service-grid { grid-template-columns: 1fr; gap: 10px; }
+      .service-card { min-height: 0; padding: 20px; }
+      .service-card .card-index { margin-bottom: 24px; }
+      .process-step { grid-template-columns: 38px 1fr; gap: 7px 12px; padding: 19px 0; }
+      .process-step p { grid-column: 2; font-size: var(--type-small); }
+      .location-copy h2 { font-size: var(--type-heading); }
+      .map-frame, .map-frame iframe { min-height: 300px; }
+      .faq-head { margin-bottom: 29px; }
+      .faq-list summary { padding: 18px 36px 18px 0; }
+      .faq-list summary::after { top: 15px; }
+      .contact { padding: 68px var(--gutter) 22px; }
+      .contact-main { display: block; padding: 10px 0 45px; }
+      .contact .button { margin-top: 25px; }
+      .footer-bottom { flex-wrap: wrap; gap: 12px 20px; }
+      .footer-bottom span, .footer-bottom a { font-size: var(--type-micro); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#inicio" aria-label="Maiatec, inicio">
+        <img src="assets/logo-maiatec.png" alt="MAIATEC, soluciones electrónicas" />
+      </a>
+      <nav class="main-nav" aria-label="Navegación principal">
+        <a href="#nosotros">Nosotros</a>
+        <a href="#servicios">Servicios</a>
+        <a href="#proceso">Proceso</a>
+        <a href="#ubicacion">Ubicación</a>
+        <a class="nav-cta" href="#contacto">Contactar</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="inicio">
+    <section class="hero" aria-labelledby="hero-title">
+      <img class="hero-photo" src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&amp;fit=crop&amp;w=2000&amp;q=85" alt="" fetchpriority="high" />
+      <div class="hero-inner">
+        <p class="hero-tag mono">Servicio técnico · Chacabuco</p>
+        <h1 class="hero-wordmark" id="hero-title"><img src="assets/logo-maiatec.png" alt="MAIATEC soluciones electrónicas" /></h1>
+        <p class="hero-copy">Electrónica que vuelve<br />a poner el trabajo en marcha.</p>
+        <div class="hero-bottom">
+          <a class="button button-light" href="#servicios">Conocer servicios <span class="button-arrow" aria-hidden="true">↓</span></a>
+          <a class="button" href="https://wa.me/5492352502050" target="_blank" rel="noopener noreferrer">Consultar por WhatsApp <span class="button-arrow" aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+      <div class="hero-note mono"><span>Diagnóstico / Reparación / Mantenimiento</span><span>Chacabuco, Buenos Aires</span></div>
+    </section>
+
+    <section class="section about" id="nosotros" aria-labelledby="about-title">
+      <div class="section-inner">
+        <p class="section-label mono"><span class="number">01</span><span class="slash">/</span><span>Maiatec</span></p>
+        <div class="about-grid">
+          <div class="about-copy">
+            <h2 id="about-title">Tecnología entendida desde adentro.</h2>
+            <p>En MAIATEC diagnosticamos, reparamos y mantenemos equipos electrónicos para industria, agro y hogar. Buscamos la causa de cada falla y una solución adecuada para el equipo y su uso.</p>
+            <p>Desde Chacabuco, trabajamos con sistemas de soldadura, automatización, energía, medición y electrónica aplicada.</p>
+          </div>
+          <img class="about-image" src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&amp;fit=crop&amp;w=1000&amp;q=85" alt="Técnica trabajando con componentes electrónicos en una mesa" loading="lazy" />
+        </div>
+        <div class="facts" aria-label="Datos de servicio">
+          <div class="fact"><strong>Chacabuco</strong><span>Atención local y zonas aledañas</span></div>
+          <div class="fact"><strong>Multimarca</strong><span>Servicio para distintas marcas y modelos</span></div>
+          <div class="fact"><strong>A nivel componente</strong><span>Diagnóstico de electrónica y placas</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section services" id="servicios" aria-labelledby="services-title">
+      <div class="section-inner">
+        <p class="section-label mono"><span class="number">02</span><span class="slash">/</span><span>Especialidades</span></p>
+        <div class="services-head">
+          <h2 class="section-title" id="services-title">Un servicio técnico para cada desafío.</h2>
+          <p>Soluciones electrónicas para equipos que cumplen un papel importante en el taller, el campo y el hogar.</p>
+        </div>
+        <div class="service-grid">
+          <article class="service-card"><span class="card-index mono">01 / Potencia</span><h3>Soldadoras y corte</h3><p>Inverter, MIG / MAG, TIG, equipos de alambre y punto, plasma y soldadura láser.</p></article>
+          <article class="service-card"><span class="card-index mono">02 / Agro</span><h3>Drones y estaciones</h3><p>Baterías, cargadores, motores, variadores, radiocontroles, sensores y estaciones meteorológicas.</p></article>
+          <article class="service-card"><span class="card-index mono">03 / Rural</span><h3>Boyeros y cercas</h3><p>Electrificadores rurales, solares, de batería y sistemas de media y alta potencia.</p></article>
+          <article class="service-card"><span class="card-index mono">04 / Acceso</span><h3>Portones y automatismos</h3><p>Motores, placas, controles remotos, sensores de seguridad y conectividad Wi-Fi.</p></article>
+          <article class="service-card"><span class="card-index mono">05 / Energía</span><h3>Fuentes y UPS</h3><p>Fuentes switching, estabilizadores, protectores de tensión, UPS y baterías.</p></article>
+          <article class="service-card"><span class="card-index mono">06 / Equipamiento</span><h3>Electrónica y medición</h3><p>Balanzas, equipamiento odontológico, audio de potencia y electrónica a nivel componente.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section process" id="proceso" aria-labelledby="process-title">
+      <div class="section-inner">
+        <p class="section-label mono">Proceso</p>
+        <div class="process-head">
+          <h2 class="section-title" id="process-title">De la falla a una respuesta concreta.</h2>
+          <p>Un recorrido claro para entender el problema, evaluar alternativas y comprobar el funcionamiento.</p>
+        </div>
+        <div class="process-list">
+          <article class="process-step"><span class="mono">01</span><h3>Nos contás qué pasa</h3><p>Recibimos los síntomas y la información del equipo.</p></article>
+          <article class="process-step"><span class="mono">02</span><h3>Revisamos el equipo</h3><p>Inspeccionamos sus componentes y buscamos el origen de la falla.</p></article>
+          <article class="process-step"><span class="mono">03</span><h3>Evaluamos opciones</h3><p>Definimos el alcance de la reparación según el diagnóstico.</p></article>
+          <article class="process-step"><span class="mono">04</span><h3>Realizamos el servicio</h3><p>Intervenimos el sistema o componente afectado.</p></article>
+          <article class="process-step"><span class="mono">05</span><h3>Comprobamos el resultado</h3><p>Verificamos el funcionamiento del equipo reparado.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section faq" id="preguntas" aria-labelledby="faq-title">
+      <div class="section-inner">
+        <p class="section-label mono"><span class="number">03</span><span class="slash">/</span><span>Preguntas frecuentes</span></p>
+        <div class="faq-head">
+          <h2 class="section-title" id="faq-title">Antes de traer tu equipo.</h2>
+          <p>Algunas respuestas para empezar la consulta.</p>
+        </div>
+        <div class="faq-list">
+          <details><summary>¿Qué equipos reciben?</summary><p>Trabajamos con soldadoras, equipos de corte, drones agrícolas, boyeros, portones, fuentes, UPS, balanzas, estaciones meteorológicas y otros equipos electrónicos.</p></details>
+          <details><summary>¿Dónde está ubicado el servicio técnico?</summary><p>MAIATEC está en Chacabuco, provincia de Buenos Aires, y también atiende consultas de zonas aledañas.</p></details>
+          <details><summary>¿Puedo consultar antes de acercarme?</summary><p>Sí. Escribinos por WhatsApp con la marca, el modelo y una descripción de la falla para iniciar la consulta.</p></details>
+          <details><summary>¿Reparan equipos multimarca?</summary><p>Brindamos servicio multimarca en distintas categorías. La posibilidad de reparación se confirma según el equipo y el diagnóstico.</p></details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section location" id="ubicacion" aria-labelledby="location-title">
+      <div class="section-inner">
+        <p class="section-label mono"><span class="number">04</span><span class="slash">/</span><span>Ubicación</span></p>
+        <div class="location-layout">
+          <div class="location-copy">
+            <h2 id="location-title">Estamos en Chacabuco.</h2>
+            <p>Acercate con tu equipo o escribinos antes para consultar por el servicio.</p>
+            <address class="location-address">Juan José Paso 272<br />Chacabuco, Buenos Aires<br />B6740 · Argentina</address>
+            <a class="button map-directions" href="https://www.google.com/maps/dir/?api=1&amp;destination=-34.63797751814227%2C-60.48544502476414" target="_blank" rel="noopener noreferrer">Cómo llegar <span class="button-arrow" aria-hidden="true">↗</span></a>
+          </div>
+          <div class="map-frame">
+            <iframe title="Mapa de MAIATEC en Juan José Paso 272, Chacabuco" src="https://maps.google.com/maps?q=-34.63797751814227%2C-60.48544502476414&amp;z=16&amp;output=embed" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="contact" id="contacto">
+      <div class="contact-inner">
+        <p class="section-label mono"><span class="number">05</span><span class="slash">/</span><span>Contacto</span></p>
+        <div class="contact-main">
+          <h2>Contanos qué equipo necesita volver a funcionar.</h2>
+          <a class="button" href="https://wa.me/5492352502050" target="_blank" rel="noopener noreferrer">Hablemos por WhatsApp <span class="button-arrow" aria-hidden="true">↗</span></a>
+        </div>
+        <div class="footer-bottom mono">
+          <span>MAIATEC · Servicio técnico electrónico</span>
+          <span>Chacabuco, Buenos Aires</span>
+          <a href="#inicio">Volver arriba ↑</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+</body>
+</html>
