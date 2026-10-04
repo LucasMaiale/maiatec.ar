@@ -18,41 +18,61 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Dataset",
-      "name": "Clima, Tiempo y Pronóstico en Chacabuco en Vivo - Estación Maiatec",
-      "description": "Datos meteorológicos exactos de la ciudad de Chacabuco. Fuente original y proveedor de datos en tiempo real para Chacabuco en Red y la comunidad, obtenidos de estación propia.",
-"keywords": [
-  "clima chacabuco",
-  "tiempo chacabuco",
-  "estacion meteorologica chacabuco",
-  "temperatura actual chacabuco",
-  "pronostico extendido chacabuco"
-]
-      "license": "https://creativecommons.org/licenses/by/4.0/",
-      "url": "https://maiatec.ar/clima-chacabuco/",
-      "creator": {
-         "@type": "Organization",
-         "url": "https://maiatec.ar",
-         "name": "Maiatec"
-      },
-      "spatialCoverage": {
-        "@type": "Place",
-        "name": "Chacabuco, Buenos Aires, Argentina"
-      },
-      "variableMeasured": [
-        "Temperature",
-        "Humidity",
-        "Wind Speed",
-        "Rainfall",
-        "Dew Point",
-        "Atmospheric Pressure",
-        "UV Index"
-      ],
-      "publisher": {
-        "@type": "Organization",
-        "name": "Maiatec",
-        "url": "https://maiatec.ar"
-      }
+      "@graph": [
+        {
+          "@type": "WebPage",
+          "@id": "https://maiatec.ar/clima-chacabuco/#webpage",
+          "url": "https://maiatec.ar/clima-chacabuco/",
+          "name": "Clima y Tiempo en Chacabuco Hoy | Estación Meteorológica en Vivo - Maiatec",
+          "description": "Consultá el clima y el tiempo en Chacabuco en tiempo real. Datos exactos para el pronóstico local: temperatura, viento y lluvia actualizados cada 10 minutos.",
+          "about": {
+            "@type": "Place",
+            "name": "Chacabuco, Buenos Aires, Argentina",
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": -34.63797751814227,
+              "longitude": -60.48544502476414
+            }
+          }
+        },
+        {
+          "@type": "Dataset",
+          "@id": "https://maiatec.ar/clima-chacabuco/#dataset",
+          "name": "Clima, Tiempo y Pronóstico en Chacabuco en Vivo - Estación Maiatec",
+          "description": "Datos meteorológicos exactos de la ciudad de Chacabuco. Fuente original y proveedor de datos en tiempo real para Chacabuco en Red y la comunidad, obtenidos de estación propia.",
+          "url": "https://maiatec.ar/clima-chacabuco/",
+          "license": "https://creativecommons.org/licenses/by/4.0/",
+          "keywords": [
+            "clima chacabuco",
+            "tiempo chacabuco",
+            "estacion meteorologica chacabuco",
+            "temperatura actual chacabuco",
+            "pronostico extendido chacabuco"
+          ],
+          "spatialCoverage": {
+            "@type": "Place",
+            "name": "Chacabuco, Buenos Aires, Argentina"
+          },
+          "variableMeasured": [
+            "Temperature",
+            "Humidity",
+            "Wind Speed",
+            "Rainfall",
+            "Dew Point",
+            "Atmospheric Pressure",
+            "UV Index"
+          ],
+          "creator": {
+            "@type": "LocalBusiness",
+            "@id": "https://maiatec.ar/#organization",
+            "name": "MAIATEC",
+            "url": "https://maiatec.ar"
+          },
+          "publisher": {
+            "@id": "https://maiatec.ar/#organization"
+          }
+        }
+      ]
     }
     </script>
 
