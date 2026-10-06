@@ -82,6 +82,49 @@ jobs:
           fi
           echo "$FECHA,$TEMP,$FEELS,$APP,$DEW,$HUM,$SOLAR,$UVI,$PRES_REL,$PRES_ABS,$W_SPEED,$W_GUST,$W_DIR,$R_RATE,$R_1H,$R_DAY,$R_EVE,$R_WEE,$R_MON,$R_YEA" >> "$CSV_PATH"
           
+          
+          # ----------------------------------------------
+          
+          
+          # 4.5. GENERAR CSV DE 3HS Y TENDENCIA PARA ZAMBRETTI (100% BASH)
+          # Calcular el timestamp de hace 3 horas (10800 segundos) exactas
+          LIMITE_UNIX=$((TIME_UNIX - 10800))
+          # Formatear a la misma estructura de fecha que tu CSV ("YYYY-MM-DD HH:MM")
+          LIMITE_FECHA=$(TZ="America/Argentina/Buenos_Aires" date -d "@$LIMITE_UNIX" +"%Y-%m-%d %H:%M")
+          
+          CSV_3HS_PATH="data/zambretti_3hs.csv"
+          
+          # awk lee el CSV diario, pasa de largo si es menor a la fecha límite, y guarda el resto
+          awk -F',' -v limite="$LIMITE_FECHA" 'NR==1 {print $0; next} $1 >= limite {print $0}' "$CSV_PATH" > "$CSV_3HS_PATH"
+          
+          # Extraer la presión más antigua del bloque de 3 horas (columna 9 = PresRel)
+          P_VIEJA=$(awk -F',' 'NR==2 {print $9}' "$CSV_3HS_PATH")
+          
+          # Si por alguna razón no hay P_VIEJA (ej. script recién instalado), usamos la actual para que no tire error
+          if [ -z "$P_VIEJA" ]; then P_VIEJA=$PRES_REL; fi
+          
+          # Calcular la diferencia matemática con awk (porque Bash nativo no maneja decimales bien)
+          VARIACION=$(awk -v p1="$PRES_REL" -v p2="$P_VIEJA" 'BEGIN { printf "%.2f", p1 - p2 }')
+          
+          # Determinar el estado de la tendencia con los umbrales del Excel
+          ESTADO=$(awk -v diff="$VARIACION" 'BEGIN {
+              if (diff >= 2.03) print "Sube rápido"
+              else if (diff >= 0.67 && diff < 2.03) print "Sube lento"
+              else if (diff <= -2.03) print "Baja rápido"
+              else if (diff > -2.03 && diff <= -0.67) print "Baja lento"
+              else print "Estable"
+          }')
+          
+          echo "Presión Actual: $PRES_REL hPa | Hace 3hs: $P_VIEJA hPa"
+          echo "Tendencia Zambretti: $VARIACION hPa -> $ESTADO"
+          
+          
+          
+        # ----------------------------------------------------------------
+          
+          
+          
+          
           # 5. ACTUALIZAR SITEMAP EN LA RAIZ (Hora actual en formato W3C)
           if [ -f "sitemap.xml" ]; then
             SITEMAP_DATE=$(TZ="America/Argentina/Buenos_Aires" date -d "@$TIME_UNIX" +"%Y-%m-%dT%H:%M:%S-03:00")
