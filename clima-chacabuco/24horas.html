@@ -7,138 +7,228 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pronóstico Zambretti - Clima Chacabuco</title>
+    <meta name="theme-color" content="#1B438A">
+    
+    <title>Pronóstico Zambretti - Clima Chacabuco | Maiatec</title>
     <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --accent: #38bdf8;
-            --border: #334155;
+            --bg: #ffffff;
+            --text: #000000;
+            --sub: #888888;
+            --border: #f0f0f0;
+            --accent: #1B438A;
         }
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text); 
+            display: flex; 
+            flex-direction: column;
             align-items: center;
+            padding-bottom: 30px;
+            line-height: 1.4;
             min-height: 100vh;
         }
-        .container {
+
+        .brand-bar {
             width: 100%;
-            max-width: 650px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        }
-        h1 {
-            font-size: 1.5rem;
-            margin-top: 0;
-            color: var(--accent);
-            text-align: center;
-        }
-        .forecast-box {
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid var(--accent);
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .forecast-title {
-            font-size: 0.85rem;
+            padding: 10px 15px;
+            background: #1B438A;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 1000;
             text-transform: uppercase;
+            text-align: center;
             letter-spacing: 1px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
         }
+        .brand-bar a { color: #fff; text-decoration: none; border-bottom: 1px solid #fff; }
+
+        .container { 
+            max-width: 480px; 
+            width: 100%; 
+            padding: 25px 20px; 
+        }
+
+        header { 
+            border-bottom: 3px solid var(--text); 
+            padding-bottom: 10px; 
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        h1 { 
+            font-size: 1.1rem; 
+            font-weight: 900; 
+            text-align: center;
+            text-transform: uppercase; 
+            letter-spacing: -1px; 
+            width: 100%; 
+            margin-bottom: 5px; 
+        }
+
+        @media (min-width: 400px) {
+            h1 { font-size: 1.3rem; }
+        }
+
+        .forecast-box {
+            background: #f9f9f9;
+            border: 1.5px solid var(--text);
+            border-radius: 10px;
+            padding: 18px 15px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .forecast-title {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--sub);
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
         .forecast-text {
-            font-size: 1.3rem;
-            font-weight: bold;
-            margin: 0 0 8px 0;
+            font-size: 1.6rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            margin: 0 0 6px 0;
+            text-transform: uppercase;
         }
+
         .forecast-details {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--sub);
+            text-transform: uppercase;
         }
+        .forecast-details strong {
+            color: var(--text);
+        }
+
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-bottom: 15px;
         }
+
         .metric-card {
-            background: rgba(255,255,255,0.03);
+            background: var(--bg);
             border: 1px solid var(--border);
             border-radius: 8px;
-            padding: 12px;
+            padding: 12px 8px;
             text-align: center;
         }
+
         .metric-label {
-            font-size: 0.75rem;
-            color: var(--text-secondary);
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--sub);
+            text-transform: uppercase;
             margin-bottom: 4px;
+            letter-spacing: 0.5px;
         }
+
         .metric-value {
-            font-size: 1.1rem;
-            font-weight: bold;
+            font-size: 1rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
         }
+
         .chart-container {
             position: relative;
-            background: rgba(255,255,255,0.02);
+            background: var(--bg);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 15px;
+            border-radius: 10px;
+            padding: 12px;
             margin-bottom: 20px;
             height: 220px;
         }
+
         .history-section h2 {
-            font-size: 1rem;
-            border-bottom: 1px solid var(--border);
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--sub);
+            border-bottom: 2px solid var(--text);
             padding-bottom: 6px;
             margin-bottom: 10px;
-            color: var(--text-secondary);
+            letter-spacing: 0.5px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
         }
+
         th, td {
-            padding: 8px;
+            padding: 8px 6px;
             text-align: left;
             border-bottom: 1px solid var(--border);
+            font-weight: 600;
         }
+
         th {
-            color: var(--text-secondary);
+            color: var(--sub);
+            text-transform: uppercase;
+            font-weight: 700;
+            font-size: 0.7rem;
         }
+
+        td {
+            color: var(--text);
+        }
+
         .loading {
             text-align: center;
-            color: var(--text-secondary);
-            padding: 20px;
+            color: var(--sub);
+            padding: 30px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
         }
     </style>
 </head>
 <body>
+
+    <nav class="brand-bar">
+        SERVICIO A LA COMUNIDAD BRINDADO POR <a href="https://maiatec.ar">MAIATEC ELECTRÓNICA</a>
+    </nav>
+
     <div class="container">
-        <h1>Pronóstico Zambretti - MAIATEC</h1>
+        <header>
+            <h1>Pronóstico Zambretti experimental</h1>
+        </header>
         <div id="app">
-            <div class="loading">Cargando datos y generando pronóstico...</div>
+            <div class="loading">Cargando datos...</div>
         </div>
     </div>
 
     <script>
         const zambrettiMeanings = {
-/*             'A': 'Tiempo excelente (Settled fine)',
+            'A': 'Buen tiempo', 'B': 'Buen tiempo',
+            'C': 'Mejorando', 'F': 'Mejorando', 'J': 'Mejorando', 'M': 'Mejorando',
+            'D': 'Inestable / Cambiante', 'E': 'Inestable / Cambiante', 'G': 'Inestable / Cambiante', 
+            'H': 'Inestable / Cambiante', 'I': 'Inestable / Cambiante', 'K': 'Inestable / Cambiante', 
+            'L': 'Inestable / Cambiante', 'P': 'Inestable / Cambiante', 'Q': 'Inestable / Cambiante',
+            'N': 'Lluvioso', 'O': 'Lluvioso', 'R': 'Lluvioso', 'S': 'Lluvioso', 
+            'T': 'Lluvioso', 'U': 'Lluvioso', 'V': 'Lluvioso', 'W': 'Lluvioso',
+            'X': 'Lluvia incesante',
+            'Y': 'Tormentoso', 'Z': 'Tormentoso'
+            
+            /* 'A': 'Tiempo excelente (Settled fine)',
             'B': 'Buen tiempo (Fine weather)',
             'C': 'Mejorando (Becoming fine)',
             'D': 'Bueno, luego desmejorando (Fine becoming less settled)',
@@ -165,24 +255,8 @@
             'Y': 'Tormentoso, probabilidad de mejora',
             'Z': 'Tormentoso mucha lluvia (Stormy much rain)' */
 
-            // 1. Excelente / Estable (A, B)
-            'A': 'Buen tiempo', 'B': 'Buen tiempo',
-            // 2. Mejorando (C, F, J, M)
-            'C': 'Mejorando', 'F': 'Mejorando', 'J': 'Mejorando', 'M': 'Mejorando',
-            // 3. Inestable / Cambiante (D, E, G, H, I, K, L, P, Q)
-            'D': 'Inestable / Cambiante', 'E': 'Inestable / Cambiante', 'G': 'Inestable / Cambiante', 
-            'H': 'Inestable / Cambiante', 'I': 'Inestable / Cambiante', 'K': 'Inestable / Cambiante', 
-            'L': 'Inestable / Cambiante', 'P': 'Inestable / Cambiante', 'Q': 'Inestable / Cambiante',
-            // 4. Lluvioso (N, O, R, S, T, U, V, W)
-            'N': 'Lluvioso', 'O': 'Lluvioso', 'R': 'Lluvioso', 'S': 'Lluvioso', 
-            'T': 'Lluvioso', 'U': 'Lluvioso', 'V': 'Lluvioso', 'W': 'Lluvioso',
-            // 5. Lluvia incesante (X)
-            'X': 'Lluvia incesante',
-            // 6. Tormentoso (Y, Z)
-            'Y': 'Tormentoso', 'Z': 'Tormentoso'
         };
 
-        // Matriz oficial extraída del Excel de Zambretti (Hemisferio Sur)
         const zambrettiMatrix = {
             "1030": {
                 "E": {"S": "A", "SW": "A", "SE": "A", "CALMA": "A", "W": "B", "E": "B", "NW": "B", "NE": "B", "N": "B"},
@@ -249,11 +323,9 @@
         }
 
         function getZambrettiCode(pressure, deltaP, windSpeed, windDirDeg) {
-            // Encontrar el bin de presión más cercano (970, 980, 990, 1000, 1010, 1020, 1030)
             const bins = [970, 980, 990, 1000, 1010, 1020, 1030];
             let pBin = bins.reduce((prev, curr) => Math.abs(curr - pressure) < Math.abs(prev - pressure) ? curr : prev).toString();
 
-            // Calcular tendencia barométrica según umbrales del Excel
             let tendency = 'E';
             if (deltaP >= 2.03) tendency = 'SR';
             else if (deltaP >= 0.67 && deltaP < 2.03) tendency = 'SL';
@@ -261,14 +333,12 @@
             else if (deltaP > -2.03 && deltaP <= -0.67) tendency = 'BL';
             else if (deltaP <= -2.03) tendency = 'BR';
 
-            // Obtener dirección cardinal del viento
             let windCard = (windSpeed === 0 || windSpeed === undefined) ? 'CALMA' : getWindCardinal(windDirDeg);
 
-            // Buscar en la matriz oficial del Excel
             if (zambrettiMatrix[pBin] && zambrettiMatrix[pBin][tendency] && zambrettiMatrix[pBin][tendency][windCard]) {
                 return zambrettiMatrix[pBin][tendency][windCard];
             }
-            return 'B'; // Valor por defecto de seguridad
+            return 'B';
         }
 
         async function initZambrettiApp() {
@@ -307,16 +377,16 @@
 
                     <div class="metrics-grid">
                         <div class="metric-card">
-                            <div class="metric-label">Presión Relativa</div>
-                            <div class="metric-value">${actual.pressure} hPa</div>
+                            <div class="metric-label">Presión Relat.</div>
+                            <div class="metric-value">${actual.pressure} <span style="font-size:0.7rem; font-weight:700; color:var(--sub);">hPa</span></div>
                         </div>
                         <div class="metric-card">
                             <div class="metric-label">Viento</div>
-                            <div class="metric-value">${actual.wind_speed} km/h</div>
+                            <div class="metric-value">${actual.wind_speed} <span style="font-size:0.7rem; font-weight:700; color:var(--sub);">km/h</span></div>
                         </div>
                         <div class="metric-card">
                             <div class="metric-label">Dirección</div>
-                            <div class="metric-value">${getWindCardinal(actual.wind_direction)} (${actual.wind_direction}°)</div>
+                            <div class="metric-value">${getWindCardinal(actual.wind_direction)}</div>
                         </div>
                     </div>
 
@@ -356,7 +426,6 @@
 
                 appDiv.innerHTML = html;
 
-                // Renderizar Gráfico de Presión con Chart.js
                 const labels = data.map(d => d.fecha.split(' ')[1]);
                 const pressures = data.map(d => d.pressure);
 
@@ -368,12 +437,13 @@
                         datasets: [{
                             label: 'Presión Relativa (hPa)',
                             data: pressures,
-                            borderColor: '#38bdf8',
-                            backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                            borderColor: '#1B438A',
+                            backgroundColor: 'rgba(27, 67, 138, 0.05)',
                             borderWidth: 2,
                             fill: true,
                             tension: 0.3,
-                            pointRadius: 3
+                            pointRadius: 3,
+                            pointBackgroundColor: '#1B438A'
                         }]
                     },
                     options: {
@@ -384,18 +454,18 @@
                             title: {
                                 display: true,
                                 text: 'Evolución de Presión Atmosférica (Últimas 3 Horas)',
-                                color: '#f8fafc',
-                                font: { size: 12 }
+                                color: '#000000',
+                                font: { size: 11, weight: '700' }
                             }
                         },
                         scales: {
                             x: {
-                                ticks: { color: '#94a3b8', font: { size: 10 } },
-                                grid: { color: '#334155' }
+                                ticks: { color: '#888888', font: { size: 10, weight: '600' } },
+                                grid: { color: '#f0f0f0' }
                             },
                             y: {
-                                ticks: { color: '#94a3b8', font: { size: 10 } },
-                                grid: { color: '#334155' }
+                                ticks: { color: '#888888', font: { size: 10, weight: '600' } },
+                                grid: { color: '#f0f0f0' }
                             }
                         }
                     }
@@ -403,7 +473,7 @@
 
             } catch (error) {
                 console.error(error);
-                appDiv.innerHTML = `<div class="loading" style="color: #f87171;">Error al cargar los datos: ${error.message}</div>`;
+                appDiv.innerHTML = `<div class="loading" style="color: #d9534f;">Error al cargar los datos: ${error.message}</div>`;
             }
         }
 
