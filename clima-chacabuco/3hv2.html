@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pronóstico Zambretti - Clima Chacabuco</title>
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #38bdf8;
+            --border: #334155;
+        }
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        h1 {
+            font-size: 1.5rem;
+            margin-top: 0;
+            color: var(--accent);
+            text-align: center;
+        }
+        .forecast-box {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .forecast-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .forecast-text {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin: 0 0 8px 0;
+        }
+        .forecast-details {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .metric-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+        .metric-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+        .metric-value {
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+        .chart-container {
+            position: relative;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            height: 220px;
+        }
+        .history-section h2 {
+            font-size: 1rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 6px;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+        th {
+            color: var(--text-secondary);
+        }
+        .loading {
+            text-align: center;
+            color: var(--text-secondary);
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Pronóstico Zambretti - MAIATEC</h1>
+        <div id="app">
+            <div class="loading">Cargando datos y generando pronóstico...</div>
+        </div>
+    </div>
+
+    <script>
+        const zambrettiMeanings = {
+            'A': 'Tiempo excelente (Settled fine)',
+            'B': 'Buen tiempo (Fine weather)',
+            'C': 'Mejorando (Becoming fine)',
+            'D': 'Bueno, luego desmejorando (Fine becoming less settled)',
+            'E': 'Bueno, probabilidad de lluvias (Fine, possibly showers)',
+            'F': 'Bastante bueno, luego mejorando (Fairly fine, improving)',
+            'G': 'Bastante bueno, probabilidades de lluvias tempranas',
+            'H': 'Bastante bueno, chaparrones más tarde',
+            'I': 'Chubascos tempranos, mejorando',
+            'J': 'Cambiando, mejorando (Changeable, mending)',
+            'K': 'Bastante bueno, probabilidad de lluvias',
+            'L': 'Más bien inestable, despejándose más tarde',
+            'M': 'Inestable, probabilidad de mejora',
+            'N': 'Lluvioso con mejoras temporales',
+            'O': 'Lluvioso, cada vez más inestable',
+            'P': 'Cambiante, un poco de lluvia',
+            'Q': 'Inestable, intervalos cortos buenos',
+            'R': 'Inestable, lluvia más tarde',
+            'S': 'Inestable, al momento lluvia',
+            'T': 'Muy inestable, al momento más fina',
+            'U': 'Al momento lluvias, más tarde peor',
+            'V': 'Al momento lluvias, cada vez más inestable',
+            'W': 'Lluvias a intervalos frecuentes',
+            'X': 'Muy inestable, lluvias',
+            'Y': 'Tormentoso, probabilidad de mejora',
+            'Z': 'Tormentoso mucha lluvia (Stormy much rain)'
+        };
+
+        // Matriz oficial extraída del Excel de Zambretti (Hemisferio Sur)
+        const zambrettiMatrix = {
+            "1030": {
+                "E": {"S": "A", "SW": "A", "SE": "A", "CALMA": "A", "W": "B", "E": "B", "NW": "B", "NE": "B", "N": "B"},
+                "SR": {"S": "A", "SW": "A", "SE": "A", "CALMA": "A", "W": "A", "E": "B", "NW": "B", "NE": "B", "N": "B"},
+                "SL": {"S": "A", "SW": "A", "SE": "A", "CALMA": "A", "W": "B", "E": "B", "NW": "B", "NE": "B", "N": "B"},
+                "BL": {"S": "B", "SW": "B", "SE": "B", "CALMA": "B", "W": "B", "E": "D", "NW": "D", "NE": "D", "N": "H"},
+                "BR": {"S": "B", "SW": "B", "SE": "B", "CALMA": "B", "W": "D", "E": "D", "NW": "D", "NE": "H", "N": "H"}
+            },
+            "1020": {
+                "E": {"S": "B", "SW": "B", "SE": "B", "CALMA": "B", "W": "B", "E": "B", "NW": "E", "NE": "E", "N": "K"},
+                "SR": {"S": "B", "SW": "B", "SE": "B", "CALMA": "B", "W": "B", "E": "B", "NW": "B", "NE": "C", "N": "C"},
+                "SL": {"S": "B", "SW": "B", "SE": "B", "CALMA": "B", "W": "B", "E": "C", "NW": "C", "NE": "C", "N": "F"},
+                "BL": {"S": "D", "SW": "D", "SE": "D", "CALMA": "H", "W": "H", "E": "H", "NW": "H", "NE": "O", "N": "O"},
+                "BR": {"S": "D", "SW": "H", "SE": "H", "CALMA": "H", "W": "H", "E": "O", "NW": "O", "NE": "O", "N": "R"}
+            },
+            "1010": {
+                "E": {"S": "E", "SW": "E", "SE": "K", "CALMA": "K", "W": "K", "E": "K", "NW": "N", "NE": "N", "N": "N"},
+                "SR": {"S": "B", "SW": "C", "SE": "C", "CALMA": "C", "W": "C", "E": "F", "NW": "F", "NE": "F", "N": "G"},
+                "SL": {"S": "C", "SW": "C", "SE": "F", "CALMA": "F", "W": "F", "E": "F", "NW": "G", "NE": "G", "N": "G"},
+                "BL": {"S": "H", "SW": "O", "SE": "O", "CALMA": "O", "W": "O", "E": "R", "NW": "R", "NE": "R", "N": "U"},
+                "BR": {"S": "O", "SW": "O", "SE": "O", "CALMA": "R", "W": "R", "E": "R", "NW": "R", "NE": "U", "N": "U"}
+            },
+            "1000": {
+                "E": {"S": "N", "SW": "N", "SE": "N", "CALMA": "N", "W": "N", "E": "P", "NW": "P", "NE": "P", "N": "S"},
+                "SR": {"S": "F", "SW": "F", "SE": "G", "CALMA": "G", "W": "G", "E": "G", "NW": "I", "NE": "I", "N": "J"},
+                "SL": {"S": "G", "SW": "G", "SE": "G", "CALMA": "G", "W": "G", "E": "I", "NW": "I", "NE": "J", "N": "J"},
+                "BL": {"S": "R", "SW": "R", "SE": "R", "CALMA": "U", "W": "U", "E": "U", "NW": "U", "NE": "V", "N": "V"},
+                "BR": {"S": "R", "SW": "U", "SE": "U", "CALMA": "U", "W": "U", "E": "V", "NW": "V", "NE": "V", "N": "X"}
+            },
+            "990": {
+                "E": {"S": "P", "SW": "P", "SE": "P", "CALMA": "S", "W": "S", "E": "S", "NW": "W", "NE": "W", "N": "W"},
+                "SR": {"S": "I", "SW": "F", "SE": "I", "CALMA": "I", "W": "I", "E": "J", "NW": "J", "NE": "L", "N": "L"},
+                "SL": {"S": "I", "SW": "I", "SE": "J", "CALMA": "J", "W": "J", "E": "J", "NW": "L", "NE": "L", "N": "M"},
+                "BL": {"S": "V", "SW": "R", "SE": "V", "CALMA": "V", "W": "V", "E": "X", "NW": "X", "NE": "X", "N": "X"},
+                "BR": {"S": "V", "SW": "U", "SE": "X", "CALMA": "X", "W": "X", "E": "X", "NW": "X", "NE": "X", "N": "Z"}
+            },
+            "980": {
+                "E": {"S": "S", "SW": "W", "SE": "W", "CALMA": "W", "W": "W", "E": "W", "NW": "X", "NE": "X", "N": "X"},
+                "SR": {"S": "J", "SW": "L", "SE": "L", "CALMA": "L", "W": "L", "E": "M", "NW": "M", "NE": "M", "N": "M"},
+                "SL": {"S": "L", "SW": "L", "SE": "M", "CALMA": "M", "W": "M", "E": "M", "NW": "M", "NE": "M", "N": "Q"},
+                "BL": {"S": "X", "SW": "X", "SE": "X", "CALMA": "X", "W": "X", "E": "X", "NW": "Z", "NE": "Z", "N": "Z"},
+                "BR": {"S": "X", "SW": "X", "SE": "X", "CALMA": "X", "W": "X", "E": "Z", "NW": "Z", "NE": "Z", "N": "Z"}
+            },
+            "970": {
+                "E": {"S": "X", "SW": "X", "SE": "X", "CALMA": "X", "W": "X", "E": "X", "NW": "X", "NE": "Z", "N": "Z"},
+                "SR": {"S": "M", "SW": "M", "SE": "M", "CALMA": "Q", "W": "Q", "E": "Q", "NW": "Q", "NE": "T", "N": "T"},
+                "SL": {"S": "M", "SW": "Q", "SE": "Q", "CALMA": "Q", "W": "Q", "E": "T", "NW": "T", "NE": "T", "N": "Y"},
+                "BL": {"S": "Z", "SW": "Z", "SE": "Z", "CALMA": "Z", "W": "Z", "E": "Z", "NW": "Z", "NE": "Z", "N": "Z"},
+                "BR": {"S": "Z", "SW": "Z", "SE": "Z", "CALMA": "Z", "W": "Z", "E": "Z", "NW": "Z", "NE": "Z", "N": "Z"}
+            }
+        };
+
+        function getWindCardinal(degrees) {
+            if (degrees === undefined || isNaN(degrees)) return 'CALMA';
+            if (degrees >= 337.5 || degrees < 22.5) return 'N';
+            if (degrees >= 22.5 && degrees < 67.5) return 'NE';
+            if (degrees >= 67.5 && degrees < 112.5) return 'E';
+            if (degrees >= 112.5 && degrees < 157.5) return 'SE';
+            if (degrees >= 157.5 && degrees < 202.5) return 'S';
+            if (degrees >= 202.5 && degrees < 247.5) return 'SW';
+            if (degrees >= 247.5 && degrees < 292.5) return 'W';
+            if (degrees >= 292.5 && degrees < 337.5) return 'NW';
+            return 'N';
+        }
+
+        function getZambrettiCode(pressure, deltaP, windSpeed, windDirDeg) {
+            // Encontrar el bin de presión más cercano (970, 980, 990, 1000, 1010, 1020, 1030)
+            const bins = [970, 980, 990, 1000, 1010, 1020, 1030];
+            let pBin = bins.reduce((prev, curr) => Math.abs(curr - pressure) < Math.abs(prev - pressure) ? curr : prev).toString();
+
+            // Calcular tendencia barométrica según umbrales del Excel
+            let tendency = 'E';
+            if (deltaP >= 2.03) tendency = 'SR';
+            else if (deltaP >= 0.67 && deltaP < 2.03) tendency = 'SL';
+            else if (deltaP > -0.67 && deltaP < 0.67) tendency = 'E';
+            else if (deltaP > -2.03 && deltaP <= -0.67) tendency = 'BL';
+            else if (deltaP <= -2.03) tendency = 'BR';
+
+            // Obtener dirección cardinal del viento
+            let windCard = (windSpeed === 0 || windSpeed === undefined) ? 'CALMA' : getWindCardinal(windDirDeg);
+
+            // Buscar en la matriz oficial del Excel
+            if (zambrettiMatrix[pBin] && zambrettiMatrix[pBin][tendency] && zambrettiMatrix[pBin][tendency][windCard]) {
+                return zambrettiMatrix[pBin][tendency][windCard];
+            }
+            return 'B'; // Valor por defecto de seguridad
+        }
+
+        async function initZambrettiApp() {
+            const appDiv = document.getElementById('app');
+            try {
+                const response = await fetch('https://maiatec.ar/data/3h.json');
+                if (!response.ok) throw new Error('No se pudo descargar data/3h.json');
+                
+                const data = await response.json();
+                if (!data || data.length === 0) {
+                    appDiv.innerHTML = '<div class="loading">No hay suficientes datos registrados todavía.</div>';
+                    return;
+                }
+
+                const actual = data[data.length - 1];
+                const inicial = data[0];
+                const diffPresion = actual.pressure - inicial.pressure;
+                
+                let tendenciaText = 'Estable';
+                if (diffPresion >= 2.03) tendenciaText = 'Suba Rápida';
+                else if (diffPresion >= 0.67) tendenciaText = 'Suba Lenta';
+                else if (diffPresion <= -2.03) tendenciaText = 'Baja Rápida';
+                else if (diffPresion <= -0.67) tendenciaText = 'Baja Lenta';
+
+                const zCode = getZambrettiCode(actual.pressure, diffPresion, actual.wind_speed, actual.wind_direction);
+                const pronostico = zambrettiMeanings[zCode] || 'Pronóstico variable';
+
+                let html = `
+                    <div class="forecast-box">
+                        <div class="forecast-title">Pronóstico Zambretti (Hemisferio Sur)</div>
+                        <div class="forecast-text">${pronostico}</div>
+                        <div class="forecast-details">
+                            Tendencia (3h): <strong>${tendenciaText}</strong> (${diffPresion > 0 ? '+' : ''}${diffPresion.toFixed(1)} hPa)
+                        </div>
+                    </div>
+
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-label">Presión Relativa</div>
+                            <div class="metric-value">${actual.pressure} hPa</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Viento</div>
+                            <div class="metric-value">${actual.wind_speed} km/h</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-label">Dirección</div>
+                            <div class="metric-value">${getWindCardinal(actual.wind_direction)} (${actual.wind_direction}°)</div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="pressureChart"></canvas>
+                    </div>
+
+                    <div class="history-section">
+                        <h2>Historial reciente (${data.length} registros)</h2>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Hora</th>
+                                    <th>Presión</th>
+                                    <th>Viento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                const sortedData = [...data].reverse();
+                sortedData.forEach(row => {
+                    html += `
+                        <tr>
+                            <td>${row.fecha}</td>
+                            <td>${row.pressure} hPa</td>
+                            <td>${row.wind_speed} km/h (${getWindCardinal(row.wind_direction)})</td>
+                        </tr>
+                    `;
+                });
+
+                html += `
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+                appDiv.innerHTML = html;
+
+                // Renderizar Gráfico de Presión con Chart.js
+                const labels = data.map(d => d.fecha.split(' ')[1]);
+                const pressures = data.map(d => d.pressure);
+
+                const ctx = document.getElementById('pressureChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Presión Relativa (hPa)',
+                            data: pressures,
+                            borderColor: '#38bdf8',
+                            backgroundColor: 'rgba(56, 189, 248, 0.1)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            title: {
+                                display: true,
+                                text: 'Evolución de Presión Atmosférica (Últimas 3 Horas)',
+                                color: '#f8fafc',
+                                font: { size: 12 }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { color: '#94a3b8', font: { size: 10 } },
+                                grid: { color: '#334155' }
+                            },
+                            y: {
+                                ticks: { color: '#94a3b8', font: { size: 10 } },
+                                grid: { color: '#334155' }
+                            }
+                        }
+                    }
+                });
+
+            } catch (error) {
+                console.error(error);
+                appDiv.innerHTML = `<div class="loading" style="color: #f87171;">Error al cargar los datos: ${error.message}</div>`;
+            }
+        }
+
+        initZambrettiApp();
+    </script>
+</body>
+</html>
