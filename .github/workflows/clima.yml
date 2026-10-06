@@ -83,7 +83,7 @@ jobs:
           echo "$FECHA,$TEMP,$FEELS,$APP,$DEW,$HUM,$SOLAR,$UVI,$PRES_REL,$PRES_ABS,$W_SPEED,$W_GUST,$W_DIR,$R_RATE,$R_1H,$R_DAY,$R_EVE,$R_WEE,$R_MON,$R_YEA" >> "$CSV_PATH"
           
           # 5. ACTUALIZAR HISTORIAL DE 3 HORAS (Zambretti)
-          3H_JSON="data/3h.json"
+          JSON_3H="data/3h.json"
           CURRENT_RECORD=$(jq -n \
             --arg time "$TIME_UNIX" \
             --arg fecha "$FECHA" \
@@ -92,11 +92,11 @@ jobs:
             --argjson w_dir "$W_DIR" \
             '{time: ($time | tonumber), fecha: $fecha, pressure: $pres, wind_speed: $w_speed, wind_direction: $w_dir}')
 
-          if [ -f "$3H_JSON" ]; then
+          if [ -f "$JSON_3H" ]; then
             jq --argjson new "$CURRENT_RECORD" --argjson cutoff "$((TIME_UNIX - 10800))" \
-              '. + [$new] | map(select(.time >= $cutoff))' "$3H_JSON" > "$3H_JSON.tmp" && mv "$3H_JSON.tmp" "$3H_JSON"
+              '. + [$new] | map(select(.time >= $cutoff))' "$JSON_3H" > "$JSON_3H.tmp" && mv "$JSON_3H.tmp" "$JSON_3H"
           else
-            echo "[$CURRENT_RECORD]" > "$3H_JSON"
+            echo "[$CURRENT_RECORD]" > "$JSON_3H"
           fi
 
           # 6. ACTUALIZAR SITEMAP EN LA RAIZ (Hora actual en formato W3C)
