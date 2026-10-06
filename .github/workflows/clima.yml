@@ -113,4 +113,5 @@ jobs:
           git config --global user.email "action@github.com"
           git add data/latest.json data/*.csv data/3h.json sitemap.xml
           git commit -m "Clima Chacabuco: Actualización de datos, historial 3h y sitemap" || echo "Sin cambios"
+          git pull --rebase origin main
           git push
