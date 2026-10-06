@@ -138,7 +138,7 @@
 
     <script>
         const zambrettiMeanings = {
-            'A': 'Tiempo excelente (Settled fine)',
+/*             'A': 'Tiempo excelente (Settled fine)',
             'B': 'Buen tiempo (Fine weather)',
             'C': 'Mejorando (Becoming fine)',
             'D': 'Bueno, luego desmejorando (Fine becoming less settled)',
@@ -163,7 +163,23 @@
             'W': 'Lluvias a intervalos frecuentes',
             'X': 'Muy inestable, lluvias',
             'Y': 'Tormentoso, probabilidad de mejora',
-            'Z': 'Tormentoso mucha lluvia (Stormy much rain)'
+            'Z': 'Tormentoso mucha lluvia (Stormy much rain)' */
+
+            // 1. Excelente / Estable (A, B)
+            'A': 'Buen tiempo', 'B': 'Buen tiempo',
+            // 2. Mejorando (C, F, J, M)
+            'C': 'Mejorando', 'F': 'Mejorando', 'J': 'Mejorando', 'M': 'Mejorando',
+            // 3. Inestable / Cambiante (D, E, G, H, I, K, L, P, Q)
+            'D': 'Inestable / Cambiante', 'E': 'Inestable / Cambiante', 'G': 'Inestable / Cambiante', 
+            'H': 'Inestable / Cambiante', 'I': 'Inestable / Cambiante', 'K': 'Inestable / Cambiante', 
+            'L': 'Inestable / Cambiante', 'P': 'Inestable / Cambiante', 'Q': 'Inestable / Cambiante',
+            // 4. Lluvioso (N, O, R, S, T, U, V, W)
+            'N': 'Lluvioso', 'O': 'Lluvioso', 'R': 'Lluvioso', 'S': 'Lluvioso', 
+            'T': 'Lluvioso', 'U': 'Lluvioso', 'V': 'Lluvioso', 'W': 'Lluvioso',
+            // 5. Lluvia incesante (X)
+            'X': 'Lluvia incesante',
+            // 6. Tormentoso (Y, Z)
+            'Y': 'Tormentoso', 'Z': 'Tormentoso'
         };
 
         // Matriz oficial extraída del Excel de Zambretti (Hemisferio Sur)
