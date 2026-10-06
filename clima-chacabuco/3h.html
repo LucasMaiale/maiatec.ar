@@ -130,7 +130,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Experimento Zambretti - MAIATEC </h1>
+        <h1>Pronóstico Zambretti - MAIATEC</h1>
         <div id="app">
             <div class="loading">Cargando datos y generando pronóstico...</div>
         </div>
@@ -166,6 +166,59 @@
             'Z': 'Tormentoso mucha lluvia (Stormy much rain)'
         };
 
+        // Matriz oficial extraída del Excel de Zambretti (Hemisferio Sur)
+        const zambrettiMatrix = {
+            "1030": {
+                "E": {"S": "A", "SW": "A", "SE": "A", "CALMA": "A", "W": "B", "E": "B", "NW": "B", "NE": "B", "N": "B"},
+                "SR": {"S": "A", "SW": "A", "SE": "A", "CALMA": "A", "W": "A", "E": "B", "NW": "B", "NE": "B", "N": "B"},
+                "SL": {"S": "A", "SW": "A", "SE": "A", "CALMA": "A", "W": "B", "E": "B", "NW": "B", "NE": "B", "N": "B"},
+                "BL": {"S": "B", "SW": "B", "SE": "B", "CALMA": "B", "W": "B", "E": "D", "NW": "D", "NE": "D", "N": "H"},
+                "BR": {"S": "B", "SW": "B", "SE": "B", "CALMA": "B", "W": "D", "E": "D", "NW": "D", "NE": "H", "N": "H"}
+            },
+            "1020": {
+                "E": {"S": "B", "SW": "B", "SE": "B", "CALMA": "B", "W": "B", "E": "B", "NW": "E", "NE": "E", "N": "K"},
+                "SR": {"S": "B", "SW": "B", "SE": "B", "CALMA": "B", "W": "B", "E": "B", "NW": "B", "NE": "C", "N": "C"},
+                "SL": {"S": "B", "SW": "B", "SE": "B", "CALMA": "B", "W": "B", "E": "C", "NW": "C", "NE": "C", "N": "F"},
+                "BL": {"S": "D", "SW": "D", "SE": "D", "CALMA": "H", "W": "H", "E": "H", "NW": "H", "NE": "O", "N": "O"},
+                "BR": {"S": "D", "SW": "H", "SE": "H", "CALMA": "H", "W": "H", "E": "O", "NW": "O", "NE": "O", "N": "R"}
+            },
+            "1010": {
+                "E": {"S": "E", "SW": "E", "SE": "K", "CALMA": "K", "W": "K", "E": "K", "NW": "N", "NE": "N", "N": "N"},
+                "SR": {"S": "B", "SW": "C", "SE": "C", "CALMA": "C", "W": "C", "E": "F", "NW": "F", "NE": "F", "N": "G"},
+                "SL": {"S": "C", "SW": "C", "SE": "F", "CALMA": "F", "W": "F", "E": "F", "NW": "G", "NE": "G", "N": "G"},
+                "BL": {"S": "H", "SW": "O", "SE": "O", "CALMA": "O", "W": "O", "E": "R", "NW": "R", "NE": "R", "N": "U"},
+                "BR": {"S": "O", "SW": "O", "SE": "O", "CALMA": "R", "W": "R", "E": "R", "NW": "R", "NE": "U", "N": "U"}
+            },
+            "1000": {
+                "E": {"S": "N", "SW": "N", "SE": "N", "CALMA": "N", "W": "N", "E": "P", "NW": "P", "NE": "P", "N": "S"},
+                "SR": {"S": "F", "SW": "F", "SE": "G", "CALMA": "G", "W": "G", "E": "G", "NW": "I", "NE": "I", "N": "J"},
+                "SL": {"S": "G", "SW": "G", "SE": "G", "CALMA": "G", "W": "G", "E": "I", "NW": "I", "NE": "J", "N": "J"},
+                "BL": {"S": "R", "SW": "R", "SE": "R", "CALMA": "U", "W": "U", "E": "U", "NW": "U", "NE": "V", "N": "V"},
+                "BR": {"S": "R", "SW": "U", "SE": "U", "CALMA": "U", "W": "U", "E": "V", "NW": "V", "NE": "V", "N": "X"}
+            },
+            "990": {
+                "E": {"S": "P", "SW": "P", "SE": "P", "CALMA": "S", "W": "S", "E": "S", "NW": "W", "NE": "W", "N": "W"},
+                "SR": {"S": "I", "SW": "F", "SE": "I", "CALMA": "I", "W": "I", "E": "J", "NW": "J", "NE": "L", "N": "L"},
+                "SL": {"S": "I", "SW": "I", "SE": "J", "CALMA": "J", "W": "J", "E": "J", "NW": "L", "NE": "L", "N": "M"},
+                "BL": {"S": "V", "SW": "R", "SE": "V", "CALMA": "V", "W": "V", "E": "X", "NW": "X", "NE": "X", "N": "X"},
+                "BR": {"S": "V", "SW": "U", "SE": "X", "CALMA": "X", "W": "X", "E": "X", "NW": "X", "NE": "X", "N": "Z"}
+            },
+            "980": {
+                "E": {"S": "S", "SW": "W", "SE": "W", "CALMA": "W", "W": "W", "E": "W", "NW": "X", "NE": "X", "N": "X"},
+                "SR": {"S": "J", "SW": "L", "SE": "L", "CALMA": "L", "W": "L", "E": "M", "NW": "M", "NE": "M", "N": "M"},
+                "SL": {"S": "L", "SW": "L", "SE": "M", "CALMA": "M", "W": "M", "E": "M", "NW": "M", "NE": "M", "N": "Q"},
+                "BL": {"S": "X", "SW": "X", "SE": "X", "CALMA": "X", "W": "X", "E": "X", "NW": "Z", "NE": "Z", "N": "Z"},
+                "BR": {"S": "X", "SW": "X", "SE": "X", "CALMA": "X", "W": "X", "E": "Z", "NW": "Z", "NE": "Z", "N": "Z"}
+            },
+            "970": {
+                "E": {"S": "X", "SW": "X", "SE": "X", "CALMA": "X", "W": "X", "E": "X", "NW": "X", "NE": "Z", "N": "Z"},
+                "SR": {"S": "M", "SW": "M", "SE": "M", "CALMA": "Q", "W": "Q", "E": "Q", "NW": "Q", "NE": "T", "N": "T"},
+                "SL": {"S": "M", "SW": "Q", "SE": "Q", "CALMA": "Q", "W": "Q", "E": "T", "NW": "T", "NE": "T", "N": "Y"},
+                "BL": {"S": "Z", "SW": "Z", "SE": "Z", "CALMA": "Z", "W": "Z", "E": "Z", "NW": "Z", "NE": "Z", "N": "Z"},
+                "BR": {"S": "Z", "SW": "Z", "SE": "Z", "CALMA": "Z", "W": "Z", "E": "Z", "NW": "Z", "NE": "Z", "N": "Z"}
+            }
+        };
+
         function getWindCardinal(degrees) {
             if (degrees === undefined || isNaN(degrees)) return 'CALMA';
             if (degrees >= 337.5 || degrees < 22.5) return 'N';
@@ -180,9 +233,11 @@
         }
 
         function getZambrettiCode(pressure, deltaP, windSpeed, windDirDeg) {
+            // Encontrar el bin de presión más cercano (970, 980, 990, 1000, 1010, 1020, 1030)
             const bins = [970, 980, 990, 1000, 1010, 1020, 1030];
-            let pBin = bins.reduce((prev, curr) => Math.abs(curr - pressure) < Math.abs(prev - pressure) ? curr : prev);
+            let pBin = bins.reduce((prev, curr) => Math.abs(curr - pressure) < Math.abs(prev - pressure) ? curr : prev).toString();
 
+            // Calcular tendencia barométrica según umbrales del Excel
             let tendency = 'E';
             if (deltaP >= 2.03) tendency = 'SR';
             else if (deltaP >= 0.67 && deltaP < 2.03) tendency = 'SL';
@@ -190,27 +245,19 @@
             else if (deltaP > -2.03 && deltaP <= -0.67) tendency = 'BL';
             else if (deltaP <= -2.03) tendency = 'BR';
 
-            if (tendency === 'SR' || tendency === 'SL') {
-                if (pBin >= 1020) return 'A';
-                if (pBin >= 1010) return 'C';
-                if (pBin >= 1000) return 'F';
-                return 'M';
-            } else if (tendency === 'BR' || tendency === 'BL') {
-                if (pBin >= 1020) return 'D';
-                if (pBin >= 1010) return 'H';
-                if (pBin >= 1000) return 'R';
-                return 'Z';
-            } else {
-                if (pBin >= 1020) return 'B';
-                if (pBin >= 1010) return 'J';
-                return 'Q';
+            // Obtener dirección cardinal del viento
+            let windCard = (windSpeed === 0 || windSpeed === undefined) ? 'CALMA' : getWindCardinal(windDirDeg);
+
+            // Buscar en la matriz oficial del Excel
+            if (zambrettiMatrix[pBin] && zambrettiMatrix[pBin][tendency] && zambrettiMatrix[pBin][tendency][windCard]) {
+                return zambrettiMatrix[pBin][tendency][windCard];
             }
+            return 'B'; // Valor por defecto de seguridad
         }
 
         async function initZambrettiApp() {
             const appDiv = document.getElementById('app');
             try {
-                // Apuntando directo al JSON en la raíz del sitio
                 const response = await fetch('https://maiatec.ar/data/3h.json');
                 if (!response.ok) throw new Error('No se pudo descargar data/3h.json');
                 
@@ -225,8 +272,10 @@
                 const diffPresion = actual.pressure - inicial.pressure;
                 
                 let tendenciaText = 'Estable';
-                if (diffPresion >= 0.67) tendenciaText = 'Subiendo';
-                else if (diffPresion <= -0.67) tendenciaText = 'Bajando';
+                if (diffPresion >= 2.03) tendenciaText = 'Suba Rápida';
+                else if (diffPresion >= 0.67) tendenciaText = 'Suba Lenta';
+                else if (diffPresion <= -2.03) tendenciaText = 'Baja Rápida';
+                else if (diffPresion <= -0.67) tendenciaText = 'Baja Lenta';
 
                 const zCode = getZambrettiCode(actual.pressure, diffPresion, actual.wind_speed, actual.wind_direction);
                 const pronostico = zambrettiMeanings[zCode] || 'Pronóstico variable';
@@ -291,7 +340,7 @@
 
                 appDiv.innerHTML = html;
 
-                // Renderizar Gráfico de Presión
+                // Renderizar Gráfico de Presión con Chart.js
                 const labels = data.map(d => d.fecha.split(' ')[1]);
                 const pressures = data.map(d => d.pressure);
 
