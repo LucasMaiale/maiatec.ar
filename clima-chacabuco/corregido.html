@@ -218,33 +218,6 @@
 
     <script>
         const zambrettiMeanings = {
-/*             'A': 'Tiempo excelente',
-            'B': 'Buen tiempo',
-            'C': 'Mejorando',
-            'D': 'Bueno, luego desmejorando',
-            'E': 'Bueno, probabilidad de lluvias',
-            'F': 'Bastante bueno, luego mejorando',
-            'G': 'Bastante bueno, probabilidades de lluvias tempranas',
-            'H': 'Bastante bueno, chaparrones más tarde',
-            'I': 'Chubascos tempranos, mejorando',
-            'J': 'Cambiando, mejorando',
-            'K': 'Bastante bueno, probabilidad de lluvias',
-            'L': 'Más bien inestable, despejándose más tarde',
-            'M': 'Inestable, probabilidad de mejora',
-            'N': 'Lluvioso con mejoras temporales',
-            'O': 'Lluvioso, cada vez más inestable',
-            'P': 'Cambiante, un poco de lluvia',
-            'Q': 'Inestable, intervalos cortos buenos',
-            'R': 'Inestable, lluvia más tarde',
-            'S': 'Inestable, al momento lluvia',
-            'T': 'Muy inestable, al momento más fina',
-            'U': 'Al momento lluvias, más tarde peor',
-            'V': 'Al momento lluvias, cada vez más inestable',
-            'W': 'Lluvias a intervalos frecuentes',
-            'X': 'Muy inestable, lluvias',
-            'Y': 'Tormentoso, probabilidad de mejora',
-            'Z': 'Tormentoso mucha lluvia' */
-
             'A': 'Buen tiempo', 'B': 'Buen tiempo',
             'C': 'Mejorando', 'F': 'Mejorando', 'J': 'Mejorando', 'M': 'Mejorando',
             'D': 'Inestable / Cambiante', 'E': 'Inestable / Cambiante', 'G': 'Inestable / Cambiante', 
@@ -346,19 +319,16 @@
             const rainyCodes = ['N', 'O', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
             const unsettledCodes = ['D', 'E', 'G', 'H', 'I', 'K', 'L', 'P', 'Q'];
 
-            // Si la humedad es muy baja (< 50%), evitamos falsos positivos de lluvia
             if (humidity < 50) {
                 if (rainyCodes.includes(zCode) || unsettledCodes.includes(zCode)) {
                     return 'B'; 
                 }
             } 
-            // Si la humedad es moderada-baja (50% - 65%), suavizamos tormentas fuertes
             else if (humidity >= 50 && humidity < 65) {
                 if (['U', 'V', 'W', 'X', 'Y', 'Z'].includes(zCode)) {
                     return 'D'; 
                 }
             }
-            // Si la humedad es alta (> 85%), elevamos el nivel de alerta si el barómetro amagaba estabilidad
             else if (humidity > 85) {
                 if (['A', 'B', 'C'].includes(zCode)) {
                     return 'E'; 
@@ -463,6 +433,11 @@
                 const labels = data.map(d => d.fecha.split(' ')[1]);
                 const pressures = data.map(d => d.pressure);
 
+                // --- RANGO FIJO DE 8 hPa (centrado en la última lectura o promedio actual) ---
+                const currentPressure = actual.pressure;
+                const fixedMin = Math.round((currentPressure - 4) * 10) / 10;
+                const fixedMax = Math.round((currentPressure + 4) * 10) / 10;
+
                 const ctx = document.getElementById('pressureChart').getContext('2d');
                 new Chart(ctx, {
                     type: 'line',
@@ -498,8 +473,8 @@
                                 grid: { color: '#f0f0f0' }
                             },
                             y: {
-                                min: 995,
-                                max: 1030,
+                                min: fixedMin,
+                                max: fixedMax,
                                 ticks: { color: '#888888', font: { size: 10, weight: '600' } },
                                 grid: { color: '#f0f0f0' }
                             }
