@@ -232,46 +232,44 @@
 <script>
     async function updateForecast() {
         try {
-            // Consumimos el array de 36 horas generado por el workflow
-            const res = await fetch('data/36hs.json');
+            const url = 'https://api.open-meteo.com/v1/forecast?latitude=-34.64&longitude=-60.47&daily=precipitation_sum,precipitation_probability_max&timezone=America%2FBuenos_Aires&forecast_days=3';
+            const res = await fetch(url);
             if (!res.ok) throw new Error();
-            const history = await res.json();
+            const data = await res.json();
 
-            // Verificamos que el array tenga elementos y tomamos el registro más reciente (el último)
-            if (!Array.isArray(history) || history.length === 0) throw new Error('Array vacío');
-            const latest = history[history.length - 1];
+            const fechas = data.daily.time;
+            const lluvias = data.daily.precipitation_sum;
+            const probabilidades = data.daily.precipitation_probability_max;
 
-            // Ejemplo utilizando las métricas de lluvia del último registro disponible en el JSON de 36h
-            // (Si después querés mapear los 3 días completos con más registros del historial, podés adaptarlo acá)
-            document.getElementById('rain-0').innerText = parseFloat(latest.rain_daily || 0).toFixed(1);
-            document.getElementById('prob-0').innerText = '-';
-            document.getElementById('label-0').innerText = 'Hoy';
+            fechas.forEach((fecha, index) => {
+                // Actualizamos valores de lluvia y probabilidad
+                document.getElementById('rain-' + index).innerText = parseFloat(lluvias[index]).toFixed(1);
+                document.getElementById('prob-' + index).innerText = probabilidades[index];
 
-            document.getElementById('rain-1').innerText = parseFloat(latest.rain_1h || 0).toFixed(1);
-            document.getElementById('prob-1').innerText = '-';
-            document.getElementById('label-1').innerText = 'Reciente';
+                // Lógica de "Hoy", "Mañana" y nombre del día
+                let nombreDia = '';
+                if (index === 0) {
+                    nombreDia = 'Hoy';
+                } else if (index === 1) {
+                    nombreDia = 'Mañana';
+                } else {
+                    const fechaObj = new Date(fecha + 'T12:00:00');
+                    nombreDia = fechaObj.toLocaleDateString('es-AR', { weekday: 'long' });
+                    nombreDia = nombreDia.charAt(0).toUpperCase() + nombreDia.slice(1);
+                }
+                document.getElementById('label-' + index).innerText = nombreDia;
+            });
 
-            document.getElementById('rain-2').innerText = parseFloat(latest.rain_rate || 0).toFixed(1);
-            document.getElementById('prob-2').innerText = '-';
-            document.getElementById('label-2').innerText = 'Intensidad';
-
-            // Ponemos la hora de la última actualización basándonos en el campo fecha o time del registro
-            if (latest.fecha) {
-                // El campo fecha viene como "YYYY-MM-DD HH:MM", extraemos la hora
-                const horaStr = latest.fecha.split(' ')[1];
-                document.getElementById('last-update').innerText = horaStr || '--:--';
-            } else {
-                const date = new Date(latest.time * 1000);
-                document.getElementById('last-update').innerText = date.toLocaleTimeString('es-AR', {
-                    hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'America/Argentina/Buenos_Aires'
-                });
-            }
-            
+            // Ponemos la hora de la última actualización
+            const date = new Date();
+            document.getElementById('last-update').innerText = date.toLocaleTimeString('es-AR', {
+                hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'America/Argentina/Buenos_Aires'
+            });
             document.getElementById('status').innerText = 'En Vivo';
 
         } catch (e) {
             document.getElementById('status').innerText = 'Error al cargar...';
-            console.error('Error obteniendo los datos:', e);
+            console.error('Error obteniendo el pronóstico:', e);
         }
     }
     
