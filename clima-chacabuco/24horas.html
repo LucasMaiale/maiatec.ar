@@ -227,35 +227,6 @@
             'T': 'Lluvioso', 'U': 'Lluvioso', 'V': 'Lluvioso', 'W': 'Lluvioso',
             'X': 'Lluvia incesante',
             'Y': 'Tormentoso', 'Z': 'Tormentoso'
-
-/*             'A': 'Tiempo excelente',
-            'B': 'Buen tiempo',
-            'C': 'Mejorando',
-            'D': 'Bueno, luego desmejorando',
-            'E': 'Bueno, probabilidad de lluvias',
-            'F': 'Bastante bueno, luego mejorando',
-            'G': 'Bastante bueno, probabilidades de lluvias tempranas',
-            'H': 'Bastante bueno, chaparrones más tarde',
-            'I': 'Chubascos tempranos, mejorando',
-            'J': 'Cambiando, mejorando',
-            'K': 'Bastante bueno, probabilidad de lluvias',
-            'L': 'Más bien inestable, despejándose más tarde',
-            'M': 'Inestable, probabilidad de mejora',
-            'N': 'Lluvioso con mejoras temporales',
-            'O': 'Lluvioso, cada vez más inestable',
-            'P': 'Cambiante, un poco de lluvia',
-            'Q': 'Inestable, intervalos cortos buenos',
-            'R': 'Inestable, lluvia más tarde',
-            'S': 'Inestable, al momento lluvia',
-            'T': 'Muy inestable, al momento más fina',
-            'U': 'Al momento lluvias, más tarde peor',
-            'V': 'Al momento lluvias, cada vez más inestable',
-            'W': 'Lluvias a intervalos frecuentes',
-            'X': 'Muy inestable, lluvias',
-            'Y': 'Tormentoso, probabilidad de mejora',
-            'Z': 'Tormentoso mucha lluvia' */
-
-
         };
 
         const zambrettiMatrix = {
@@ -430,6 +401,11 @@
                 const labels = data.map(d => d.fecha.split(' ')[1]);
                 const pressures = data.map(d => d.pressure);
 
+                // Cálculo dinámico para la escala: 4 hPa arriba y 4 hPa abajo del último valor
+                const ultimoValor = actual.pressure;
+                const minScale = ultimoValor - 4;
+                const maxScale = ultimoValor + 4;
+
                 const ctx = document.getElementById('pressureChart').getContext('2d');
                 new Chart(ctx, {
                     type: 'line',
@@ -445,7 +421,7 @@
                             tension: 0.3,
                             pointRadius: 3,
                             pointBackgroundColor: '#1B438A'
-                          }]
+                        }]
                     },
                     options: {
                         responsive: true,
@@ -465,8 +441,8 @@
                                 grid: { color: '#f0f0f0' }
                             },
                             y: {
-                                min: 995,
-                                max: 1030,
+                                min: minScale,
+                                max: maxScale,
                                 ticks: { color: '#888888', font: { size: 10, weight: '600' } },
                                 grid: { color: '#f0f0f0' }
                             }
