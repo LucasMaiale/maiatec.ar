@@ -433,10 +433,10 @@
                 const labels = data.map(d => d.fecha.split(' ')[1]);
                 const pressures = data.map(d => d.pressure);
 
-                // --- RANGO FIJO DE 8 hPa (centrado en la última lectura o promedio actual) ---
+                // --- RANGO DINÁMICO ENTERO (Math.floor y Math.ceil para evitar decimales extraños) ---
                 const currentPressure = actual.pressure;
-                const fixedMin = Math.round((currentPressure - 4) * 10) / 10;
-                const fixedMax = Math.round((currentPressure + 4) * 10) / 10;
+                const fixedMin = Math.floor(currentPressure - 4);
+                const fixedMax = Math.ceil(currentPressure + 4);
 
                 const ctx = document.getElementById('pressureChart').getContext('2d');
                 new Chart(ctx, {
