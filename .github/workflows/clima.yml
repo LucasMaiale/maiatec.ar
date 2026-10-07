@@ -81,7 +81,7 @@ jobs:
             echo "Fecha,Temp(C),SensTerm(C),TempApar(C),PtoRocio(C),Hum(%),Solar(Wm2),UV,PresRel(hPa),PresAbs(hPa),Viento(kmh),Rafaga(kmh),Dir(deg),Lluvia_Intens(mmh),Lluvia_1h(mm),Lluvia_Dia(mm),Lluvia_Ev(mm),Lluvia_Sem(mm),Lluvia_Mes(mm),Lluvia_Anio(mm)" > "$CSV_PATH"
           fi
           echo "$FECHA,$TEMP,$FEELS,$APP,$DEW,$HUM,$SOLAR,$UVI,$PRES_REL,$PRES_ABS,$W_SPEED,$W_GUST,$W_DIR,$R_RATE,$R_1H,$R_DAY,$R_EVE,$R_WEE,$R_MON,$R_YEA" >> "$CSV_PATH"
-          
+
           # 5. ACTUALIZAR HISTORIAL DE 3 HORAS (Zambretti)
           JSON_3H="data/3h.json"
           CURRENT_RECORD=$(jq -n \
@@ -90,7 +90,8 @@ jobs:
             --argjson pres "$PRES_REL" \
             --argjson w_speed "$W_SPEED" \
             --argjson w_dir "$W_DIR" \
-            '{time: ($time | tonumber), fecha: $fecha, pressure: $pres, wind_speed: $w_speed, wind_direction: $w_dir}')
+            --argjson hum "$HUM" \
+            '{time: ($time | tonumber), fecha: $fecha, pressure: $pres, wind_speed: $w_speed, wind_direction: $w_dir, humidity: $hum}')
 
           if [ -f "$JSON_3H" ]; then
             jq --argjson new "$CURRENT_RECORD" --argjson cutoff "$((TIME_UNIX - 10800))" \
