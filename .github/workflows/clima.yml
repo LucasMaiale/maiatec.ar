@@ -83,7 +83,7 @@ jobs:
           echo "$FECHA,$TEMP,$FEELS,$APP,$DEW,$HUM,$SOLAR,$UVI,$PRES_REL,$PRES_ABS,$W_SPEED,$W_GUST,$W_DIR,$R_RATE,$R_1H,$R_DAY,$R_EVE,$R_WEE,$R_MON,$R_YEA" >> "$CSV_PATH"
 
           # 5. ACTUALIZAR HISTORIAL DE 36 HORAS PARA GRÁFICOS
-          JSON_36H="data/36h.json"
+          JSON_36H="data/36hs.json"
           CURRENT_RECORD=$(jq -n \
             --arg time "$TIME_UNIX" \
             --arg fecha "$FECHA" \
@@ -150,7 +150,7 @@ jobs:
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
           # Limpiamos el viejo json de 3h si existiera en el repo y agregamos el nuevo 36h
-          git add data/latest.json data/*.csv data/36h.json sitemap.xml
+          git add data/latest.json data/*.csv data/36hs.json sitemap.xml
           git commit -m "Clima Chacabuco: Actualización de datos, historial 36h y sitemap" || echo "Sin cambios"
           # git pull --rebase origin main
           git push
