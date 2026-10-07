@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Checkout del repositorio
         uses: actions/checkout@v4
-          
+        
       - name: Procesar Datos y Actualizar Historial
         run: |
           mkdir -p data
@@ -82,22 +82,59 @@ jobs:
           fi
           echo "$FECHA,$TEMP,$FEELS,$APP,$DEW,$HUM,$SOLAR,$UVI,$PRES_REL,$PRES_ABS,$W_SPEED,$W_GUST,$W_DIR,$R_RATE,$R_1H,$R_DAY,$R_EVE,$R_WEE,$R_MON,$R_YEA" >> "$CSV_PATH"
 
-          # 5. ACTUALIZAR HISTORIAL DE 3 HORAS (Zambretti)
-          JSON_3H="data/3h.json"
+          # 5. ACTUALIZAR HISTORIAL DE 36 HORAS PARA GRÁFICOS
+          JSON_36H="data/36h.json"
           CURRENT_RECORD=$(jq -n \
             --arg time "$TIME_UNIX" \
             --arg fecha "$FECHA" \
-            --argjson pres "$PRES_REL" \
-            --argjson w_speed "$W_SPEED" \
-            --argjson w_dir "$W_DIR" \
+            --argjson temp "$TEMP" \
+            --argjson feels "$FEELS" \
+            --argjson app "$APP" \
+            --argjson dew "$DEW" \
             --argjson hum "$HUM" \
-            '{time: ($time | tonumber), fecha: $fecha, pressure: $pres, wind_speed: $w_speed, wind_direction: $w_dir, humidity: $hum}')
+            --argjson solar "$SOLAR" \
+            --argjson uvi "$UVI" \
+            --argjson pres_rel "$PRES_REL" \
+            --argjson pres_abs "$PRES_ABS" \
+            --argjson w_speed "$W_SPEED" \
+            --argjson w_gust "$W_GUST" \
+            --argjson w_dir "$W_DIR" \
+            --argjson r_rate "$R_RATE" \
+            --argjson r_1h "$R_1H" \
+            --argjson r_day "$R_DAY" \
+            --argjson r_eve "$R_EVE" \
+            --argjson r_wee "$R_WEE" \
+            --argjson r_mon "$R_MON" \
+            --argjson r_yea "$R_YEA" \
+            '{
+              time: ($time | tonumber),
+              fecha: $fecha,
+              temperature: $temp,
+              feels_like: $feels,
+              app_temp: $app,
+              dew_point: $dew,
+              humidity: $hum,
+              solar: $solar,
+              uvi: $uvi,
+              pressure_rel: $pres_rel,
+              pressure_abs: $pres_abs,
+              wind_speed: $w_speed,
+              wind_gust: $w_gust,
+              wind_direction: $w_dir,
+              rain_rate: $r_rate,
+              rain_1h: $r_1h,
+              rain_daily: $r_day,
+              rain_event: $r_eve,
+              rain_weekly: $r_wee,
+              rain_monthly: $r_mon,
+              rain_yearly: $r_yea
+            }')
 
-          if [ -f "$JSON_3H" ]; then
-            jq --argjson new "$CURRENT_RECORD" --argjson cutoff "$((TIME_UNIX - 10800))" \
-              '. + [$new] | map(select(.time >= $cutoff))' "$JSON_3H" > "$JSON_3H.tmp" && mv "$JSON_3H.tmp" "$JSON_3H"
+          if [ -f "$JSON_36H" ]; then
+            jq --argjson new "$CURRENT_RECORD" --argjson cutoff "$((TIME_UNIX - 129600))" \
+              '. + [$new] | map(select(.time >= $cutoff))' "$JSON_36H" > "$JSON_36H.tmp" && mv "$JSON_36H.tmp" "$JSON_36H"
           else
-            echo "[$CURRENT_RECORD]" > "$JSON_3H"
+            echo "[$CURRENT_RECORD]" > "$JSON_36H"
           fi
 
           # 6. ACTUALIZAR SITEMAP EN LA RAIZ (Hora actual en formato W3C)
@@ -112,7 +149,8 @@ jobs:
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-          git add data/latest.json data/*.csv data/3h.json sitemap.xml
-          git commit -m "Clima Chacabuco: Actualización de datos, historial 3h y sitemap" || echo "Sin cambios"
+          # Limpiamos el viejo json de 3h si existiera en el repo y agregamos el nuevo 36h
+          git add data/latest.json data/*.csv data/36h.json sitemap.xml
+          git commit -m "Clima Chacabuco: Actualización de datos, historial 36h y sitemap" || echo "Sin cambios"
           # git pull --rebase origin main
           git push
