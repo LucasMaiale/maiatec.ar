@@ -102,7 +102,7 @@ jobs:
           # 6. ACTUALIZAR SITEMAP EN LA RAIZ (Hora actual en formato W3C)
           if [ -f "sitemap.xml" ]; then
             SITEMAP_DATE=$(TZ="America/Argentina/Buenos_Aires" date -d "@$TIME_UNIX" +"%Y-%m-%dT%H:%M:%S-03:00")
-            sed -i "/<loc>https:\/\/maiatec.ar\/clima-chacabuco<\/loc>/{n;s|<lastmod>.*</lastmod>|<lastmod>$SITEMAP_DATE</lastmod>|;}" sitemap.xml
+            sed -i "/<loc>https:\/\/maiatec.ar\/clima-chacabuco\/<\/loc>/{n;s|<lastmod>.*</lastmod>|<lastmod>$SITEMAP_DATE</lastmod>|;}" sitemap.xml
           fi
 
           rm data/raw.json
