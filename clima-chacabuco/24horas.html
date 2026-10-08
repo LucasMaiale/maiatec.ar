@@ -355,8 +355,14 @@
                 }
 
                 const actual = data[data.length - 1];
-                const inicial = data[0];
-                const diffPresion = actual.pressure_rel - inicial.pressure_rel;
+                
+                // Buscamos el registro de hace aproximadamente 3 horas (10800 segundos) para el cálculo de Zambretti
+                const targetTime = actual.time - 10800;
+                let pastRecord = data.reduce((prev, curr) => {
+                    return Math.abs(curr.time - targetTime) < Math.abs(prev.time - targetTime) ? curr : prev;
+                }, data[0]);
+
+                const diffPresion = actual.pressure_rel - pastRecord.pressure_rel;
                 
                 let tendenciaText = 'Estable';
                 if (diffPresion >= 2.03) tendenciaText = 'Suba Rápida';
@@ -372,7 +378,7 @@
                         <div class="forecast-title">Pronóstico Zambretti (Hemisferio Sur)</div>
                         <div class="forecast-text">${pronostico}</div>
                         <div class="forecast-details">
-                            Tendencia (36h): <strong>${tendenciaText}</strong> (${diffPresion > 0 ? '+' : ''}${diffPresion.toFixed(1)} hPa)
+                            Tendencia (3h): <strong>${tendenciaText}</strong> (${diffPresion > 0 ? '+' : ''}${diffPresion.toFixed(1)} hPa)
                         </div>
                     </div>
 
