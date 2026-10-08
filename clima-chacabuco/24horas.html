@@ -156,41 +156,6 @@
             height: 220px;
         }
 
-        .history-section h2 {
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--sub);
-            border-bottom: 2px solid var(--text);
-            padding-bottom: 6px;
-            margin-bottom: 10px;
-            letter-spacing: 0.5px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.75rem;
-        }
-
-        th, td {
-            padding: 8px 6px;
-            text-align: left;
-            border-bottom: 1px solid var(--border);
-            font-weight: 600;
-        }
-
-        th {
-            color: var(--sub);
-            text-transform: uppercase;
-            font-weight: 700;
-            font-size: 0.7rem;
-        }
-
-        td {
-            color: var(--text);
-        }
-
         .loading {
             text-align: center;
             color: var(--sub);
@@ -399,35 +364,6 @@
 
                     <div class="chart-container">
                         <canvas id="pressureChart"></canvas>
-                    </div>
-
-                    <div class="history-section">
-                        <h2>Historial reciente (${data.length} registros)</h2>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Hora</th>
-                                    <th>Presión</th>
-                                    <th>Viento</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                `;
-
-                const sortedData = [...data].reverse();
-                sortedData.forEach(row => {
-                    html += `
-                        <tr>
-                            <td>${row.fecha}</td>
-                            <td>${row.pressure_rel} hPa</td>
-                            <td>${row.wind_speed} km/h (${getWindCardinal(row.wind_direction)})</td>
-                        </tr>
-                    `;
-                });
-
-                html += `
-                            </tbody>
-                        </table>
                     </div>
                 `;
 
