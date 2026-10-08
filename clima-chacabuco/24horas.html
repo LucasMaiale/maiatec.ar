@@ -427,7 +427,7 @@
 
                 appDiv.innerHTML = html;
 
-                const labels = data.map(d => d.fecha);
+                const labels = data.map(d => d.fecha.split(' ')[1]);
                 const pressures = data.map(d => d.pressure_rel);
 
                 // Redondeamos hacia abajo el mínimo y hacia arriba el máximo para evitar decimales extraños
