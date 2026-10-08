@@ -82,8 +82,8 @@ jobs:
           fi
           echo "$FECHA,$TEMP,$FEELS,$APP,$DEW,$HUM,$SOLAR,$UVI,$PRES_REL,$PRES_ABS,$W_SPEED,$W_GUST,$W_DIR,$R_RATE,$R_1H,$R_DAY,$R_EVE,$R_WEE,$R_MON,$R_YEA" >> "$CSV_PATH"
 
-          # 5. ACTUALIZAR HISTORIAL DE 36 HORAS PARA GRÁFICOS
-          JSON_36H="data/36hs.json"
+          # 5. ACTUALIZAR HISTORIAL DE 48 HORAS PARA GRÁFICOS
+          JSON_48H="data/48hs.json"
           CURRENT_RECORD=$(jq -n \
             --arg time "$TIME_UNIX" \
             --arg fecha "$FECHA" \
@@ -130,11 +130,11 @@ jobs:
               rain_yearly: $r_yea
             }')
 
-          if [ -f "$JSON_36H" ]; then
-            jq --argjson new "$CURRENT_RECORD" --argjson cutoff "$((TIME_UNIX - 129600))" \
-              '. + [$new] | map(select(.time >= $cutoff))' "$JSON_36H" > "$JSON_36H.tmp" && mv "$JSON_36H.tmp" "$JSON_36H"
+          if [ -f "$JSON_48H" ]; then
+            jq --argjson new "$CURRENT_RECORD" --argjson cutoff "$((TIME_UNIX - 172800))" \
+              '. + [$new] | map(select(.time >= $cutoff))' "$JSON_48H" > "$JSON_48H.tmp" && mv "$JSON_48H.tmp" "$JSON_48H"
           else
-            echo "[$CURRENT_RECORD]" > "$JSON_36H"
+            echo "[$CURRENT_RECORD]" > "$JSON_48H"
           fi
 
           # 6. ACTUALIZAR SITEMAP EN LA RAIZ (Hora actual en formato W3C)
@@ -149,8 +149,8 @@ jobs:
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-          # Limpiamos el viejo json de 3h si existiera en el repo y agregamos el nuevo 36h
-          git add data/latest.json data/*.csv data/36hs.json sitemap.xml
-          git commit -m "Clima Chacabuco: Actualización de datos, historial 36h y sitemap" || echo "Sin cambios"
+          # Agregamos el nuevo json de 48hs (y si querés asegurarte de borrar el viejo del repo podés hacerlo por fuera o queda ignorado)
+          git add data/latest.json data/*.csv data/48hs.json sitemap.xml
+          git commit -m "Clima Chacabuco: Actualización de datos, historial 48h y sitemap" || echo "Sin cambios"
           # git pull --rebase origin main
           git push
