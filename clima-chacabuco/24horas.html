@@ -373,8 +373,8 @@
 
                 // Redondeamos hacia abajo el mínimo y hacia arriba el máximo para evitar decimales extraños
                 const ultimoValor = actual.pressure_rel;
-                const minScale = Math.floor(ultimoValor - 4);
-                const maxScale = Math.ceil(ultimoValor + 4);
+                const minScale = Math.floor(ultimoValor - 7);
+                const maxScale = Math.ceil(ultimoValor + 7);
 
                 const ctx = document.getElementById('pressureChart').getContext('2d');
                 new Chart(ctx, {
