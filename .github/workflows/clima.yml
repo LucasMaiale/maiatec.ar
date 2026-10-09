@@ -158,7 +158,7 @@ jobs:
             echo "Ejecutando proceso diario de XLSX..."
             
             YESTERDAY_STR=$(TZ="America/Argentina/Buenos_Aires" date -d "yesterday" +"%Y%m%d")
-            URL="https://www.ecowitt.net/uploads/315168/all/MAIATECELECTR%C3%93NICA(${YESTERDAY_STR}2359%29.xlsx"
+            URL="https://www.ecowitt.net/uploads/315168/all%2FMAIATECELECTR%C3%93NICA%28202604010000-{YESTERDAY_STR}2359%29.xlsx"
             
             echo "Descargando desde: $URL"
             curl -s -L "$URL" -o data/diario.xlsx
