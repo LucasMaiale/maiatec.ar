@@ -148,14 +148,14 @@ jobs:
       - name: Instalar dependencias para XLSX
         run: pip install pandas openpyxl
 
-      - name: Procesar XLSX Diario (Solo a las 00:10 hs)
+- name: Procesar XLSX Diario (Forzado ahora)
         run: |
           CURRENT_HOUR=$(TZ="America/Argentina/Buenos_Aires" date +"%H")
           CURRENT_MIN=$(TZ="America/Argentina/Buenos_Aires" date +"%M")
           
-          # Se ejecuta solo si son las 00:10 hs (con margen de 15 min por el cron)
-          if [ "$CURRENT_HOUR" -eq 0 ] && [ "$CURRENT_MIN" -le 15 ]; then
-            echo "Ejecutando proceso diario de XLSX..."
+          # Forzado para que corra siempre (condición siempre verdadera)
+          if [ "1" = "1" ]; then
+            echo "Ejecutando proceso diario de XLSX (Forzado)..."
             
             YESTERDAY_STR=$(TZ="America/Argentina/Buenos_Aires" date -d "yesterday" +"%Y%m%d")
             URL="https://www.ecowitt.net/uploads/315168/all/MAIATECELECTR%C3%93NICA(${YESTERDAY_STR}2359%29.xlsx"
