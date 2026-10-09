@@ -145,6 +145,9 @@ jobs:
 
           rm data/raw.json
 
+      - name: Instalar Dependencias de Python
+        run: pip install pandas openpyxl
+
       - name: Procesar XLSX Diario (Solo a las 00:10 hs)
         run: |
           CURRENT_HOUR=$(TZ="America/Argentina/Buenos_Aires" date +"%H")
@@ -181,8 +184,6 @@ print('diario.json actualizado correctamente.')
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-          # Agregamos el nuevo diario.json junto con los demás archivos
           git add data/latest.json data/*.csv data/48hs.json data/diario.json sitemap.xml
           git commit -m "Clima Chacabuco: Actualización de datos, historial 48h, diario y sitemap" || echo "Sin cambios"
-          # git pull --rebase origin main
           git push
