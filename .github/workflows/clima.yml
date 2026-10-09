@@ -154,7 +154,7 @@ jobs:
           CURRENT_MIN=$(TZ="America/Argentina/Buenos_Aires" date +"%M")
           
           # Se ejecuta solo si son las 00:10 hs (con margen de 15 min por el cron)
-          if [ "1" = "1" ]; then
+          if [ "$CURRENT_HOUR" -eq 0 ] && [ "$CURRENT_MIN" -le 15 ]; then
             echo "Ejecutando proceso diario de XLSX..."
             
             YESTERDAY_STR=$(TZ="America/Argentina/Buenos_Aires" date -d "yesterday" +"%Y%m%d")
