@@ -1,8 +1,8 @@
 name: Actualizar Clima Chacabuco
 
 on:
-  # Dispara desde cron-job
-  workflow_dispatch:
+  # Dispara desde cron-job 
+  workflow_dispatch: 
 
 jobs:
   update-weather:
@@ -16,7 +16,7 @@ jobs:
         run: |
           mkdir -p data
           
-          # 1. DESCARGAR ORIGINAL EN TIEMPO REAL
+          # 1. DESCARGAR ORIGINAL
           curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&temp_unitid=1&pressure_unitid=3&precip_unitid=13&wind_speed_unitid=7&call_back=all" > data/raw.json
           
           # 2. LIMPIAR PRIVACIDAD Y CONVERTIR TODO EL BLOQUE DE LLUVIA (in a mm)
@@ -150,8 +150,8 @@ jobs:
           CURRENT_HOUR=$(TZ="America/Argentina/Buenos_Aires" date +"%H")
           CURRENT_MIN=$(TZ="America/Argentina/Buenos_Aires" date +"%M")
           
-          # Se ejecuta solo si son las 00:10 hs (con margen de 10 min por el cron)
-          if [ "$CURRENT_HOUR" -eq 0 ] && [ "$CURRENT_MIN5" -le 15 ]; then
+          # Se ejecuta solo si son las 00:10 hs (con margen de 15 min por el cron)
+          if [ "$CURRENT_HOUR" -eq 0 ] && [ "$CURRENT_MIN" -le 15 ]; then
             echo "Ejecutando proceso diario de XLSX..."
             
             # Calcular la fecha del día anterior en formato AAAAMMDD
@@ -164,7 +164,7 @@ jobs:
             if [ -f "data/diario.xlsx" ]; then
               python3 -c "
 import pandas as pd
-# Fila 0 es descripción, Fila 1 (header=1) son los encabezados reales
+# Fila 0 es descripción (se omite), Fila 1 (header=1) son los encabezados reales
 df = pd.read_excel('data/diario.xlsx', header=1)
 df.to_json('data/diario.json', orient='records', indent=2, force_ascii=False)
 print('diario.json actualizado correctamente.')
@@ -181,6 +181,8 @@ print('diario.json actualizado correctamente.')
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
+          # Agregamos el nuevo diario.json junto con los demás archivos
           git add data/latest.json data/*.csv data/48hs.json data/diario.json sitemap.xml
-          git commit -m "Clima Chacabuco: Actualización completa y procesamiento diario" || echo "Sin cambios"
+          git commit -m "Clima Chacabuco: Actualización de datos, historial 48h, diario y sitemap" || echo "Sin cambios"
+          # git pull --rebase origin main
           git push
