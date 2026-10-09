@@ -143,18 +143,28 @@ jobs:
             sed -i "/<loc>https:\/\/maiatec.ar\/clima-chacabuco\/<\/loc>/{n;s|<lastmod>.*</lastmod>|<lastmod>$SITEMAP_DATE</lastmod>|;}" sitemap.xml
           fi
 
-          rm data/raw.json
-
-          # 7. DESCARGAR HISTORIAL DE LLUVIAS
-          # Genero el timestamp del momento para la API y mantengo tus fechas estáticas por ahora
+          # 7. DESCARGAR Y PROCESAR HISTORIAL DE LLUVIAS
           TIMESTAMP_ACTUAL=$(date +%s)
-          curl -s -X GET "https://api.ecowitt.net/api/v3/device/history?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&call_time=$TIMESTAMP_ACTUAL&cycle=year&start_date=2026-01-01%2000:00:00&end_date=2026-09-30%2023:59:59&preset=custom&unit=metric&call_back=rainfall" > data/lluvias.json
+          curl -s -X GET "https://api.ecowitt.net/api/v3/device/history?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&call_time=$TIMESTAMP_ACTUAL&cycle=year&start_date=2026-01-01%2000:00:00&end_date=2026-09-30%2023:59:59&preset=custom&unit=metric&call_back=rainfall" > data/lluvias_raw.json
+          
+          # Convertir UNIX a fecha normal (restando 3 horas por Arg) y lluvia a milímetros
+          jq '
+            if .data.list.rainfall != null then
+              .data.list.rainfall | to_entries | map({
+                "fecha": (.key | tonumber - 10800 | strftime("%Y-%m-%d %H:%M:%S")),
+                "lluvia_mm": (try (.value | tonumber * 25.4 * 10 | round / 10) catch 0)
+              })
+            else
+              []
+            end
+          ' data/lluvias_raw.json > data/lluvias.json
+          
+          rm data/lluvias_raw.json
 
       - name: Commit y Push
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-          # Agregamos el nuevo json de 48hs (y si querés asegurarte de borrar el viejo del repo podés hacerlo por fuera o queda ignorado)
           git add data/latest.json data/*.csv data/48hs.json data/lluvias.json sitemap.xml
           git commit -m "Clima Chacabuco: Actualización de datos, historial 48h, lluvias y sitemap" || echo "Sin cambios"
           # git pull --rebase origin main
