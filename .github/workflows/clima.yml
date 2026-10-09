@@ -148,7 +148,7 @@ jobs:
       - name: Instalar dependencias para XLSX
         run: pip install pandas openpyxl
 
-- name: Procesar XLSX Diario (Forzado ahora)
+        - name: Procesar XLSX Diario (Forzado ahora)
         run: |
           CURRENT_HOUR=$(TZ="America/Argentina/Buenos_Aires" date +"%H")
           CURRENT_MIN=$(TZ="America/Argentina/Buenos_Aires" date +"%M")
