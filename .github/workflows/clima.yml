@@ -145,12 +145,45 @@ jobs:
 
           rm data/raw.json
 
+      - name: Instalar Dependencias de Python
+        run: pip install pandas openpyxl
+
+      - name: Procesar XLSX Diario (Solo a las 00:10 hs)
+        run: |
+          CURRENT_HOUR=$(TZ="America/Argentina/Buenos_Aires" date +"%H")
+          CURRENT_MIN=$(TZ="America/Argentina/Buenos_Aires" date +"%M")
+          
+          # Se ejecuta solo si son las 00:10 hs (con margen de 15 min por el cron)
+          if [ "$CURRENT_HOUR" -eq 0 ] && [ "$CURRENT_MIN" -le 15 ]; then
+            echo "Ejecutando proceso diario de XLSX..."
+            
+            # Calcular la fecha del día anterior en formato AAAAMMDD
+            YESTERDAY_STR=$(TZ="America/Argentina/Buenos_Aires" date -d "yesterday" +"%Y%m%d")
+            URL="https://www.ecowitt.net/uploads/315168/all/MAIATECELECTR%C3%93NICA(${YESTERDAY_STR}2359%29.xlsx"
+            
+            echo "Descargando desde: $URL"
+            curl -s -L "$URL" -o data/diario.xlsx
+            
+            if [ -f "data/diario.xlsx" ]; then
+              python3 -c "
+import pandas as pd
+# Fila 0 es descripción, Fila 1 (header=1) son los encabezados reales
+df = pd.read_excel('data/diario.xlsx', header=1)
+df.to_json('data/diario.json', orient='records', indent=2, force_ascii=False)
+print('diario.json actualizado correctamente.')
+"
+              rm data/diario.xlsx
+            else
+              echo "No se pudo descargar el archivo XLSX para la fecha $YESTERDAY_STR"
+            fi
+          else
+            echo "Fuera de horario para procesar XLSX diario (actualmente son las ${CURRENT_HOUR}:${CURRENT_MIN})."
+          fi
+
       - name: Commit y Push
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-          # Agregamos el nuevo json de 48hs (y si querés asegurarte de borrar el viejo del repo podés hacerlo por fuera o queda ignorado)
-          git add data/latest.json data/*.csv data/48hs.json sitemap.xml
-          git commit -m "Clima Chacabuco: Actualización de datos, historial 48h y sitemap" || echo "Sin cambios"
-          # git pull --rebase origin main
+          git add data/latest.json data/*.csv data/48hs.json data/diario.json sitemap.xml
+          git commit -m "Clima Chacabuco: Actualización de datos, historial 48h, diario y sitemap" || echo "Sin cambios"
           git push
