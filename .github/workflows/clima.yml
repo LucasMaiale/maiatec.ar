@@ -154,7 +154,7 @@ jobs:
           CURRENT_MIN=$(TZ="America/Argentina/Buenos_Aires" date +"%M")
           
           # Cambiar temporalmente a [ "1" = "1" ] si querés forzarlo ahora mismo para probar
-          if [ "$CURRENT_HOUR" -eq 0 ] && [ "$CURRENT_MIN" -le 15 ]; then
+          if [ "1" = "1" ]; then
             echo "Ejecutando proceso diario de XLSX..."
             
             YESTERDAY_STR=$(TZ="America/Argentina/Buenos_Aires" date -d "yesterday" +"%Y%m%d")
