@@ -145,32 +145,12 @@ jobs:
 
           rm data/raw.json
 
-      - name: Descargar XLSX Diario
-        run: |
-          CURRENT_HOUR=$(TZ="America/Argentina/Buenos_Aires" date +"%H")
-          CURRENT_MIN=$(TZ="America/Argentina/Buenos_Aires" date +"%M")
-          
-          # Cambiá temporalmente a [ "1" = "1" ] si querés forzarlo ahora mismo para probar la descarga
-          if [ "1" = "1" ]; then
-            echo "Ejecutando descarga diaria de XLSX..."
-            
-            YESTERDAY_STR=$(TZ="America/Argentina/Buenos_Aires" date -d "yesterday" +"%Y%m%d")
-            # Armamos la URL exacta con los %2F, %28 y %29 para no tener problemas
-            URL="https://www.ecowitt.net/uploads/315168/all%2FMAIATECELECTR%C3%93NICA%28202604010000-${YESTERDAY_STR}2359%29.xlsx"
-            
-            echo "Descargando desde: $URL"
-            curl -s -L "$URL" -o data/diario.xlsx
-            echo "Descarga finalizada. El archivo xlsx debería estar en data/diario.xlsx"
-          else
-            echo "Fuera de horario para descargar XLSX (actualmente son las ${CURRENT_HOUR}:${CURRENT_MIN})."
-          fi
-
       - name: Commit y Push
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-          # Agregamos data/diario.xlsx para que quede en el repo
-          git add data/latest.json data/*.csv data/48hs.json sitemap.xml data/diario.xlsx
-          git commit -m "Clima Chacabuco: Actualización de datos, historial y descarga de XLSX" || echo "Sin cambios"
+          # Agregamos el nuevo json de 48hs (y si querés asegurarte de borrar el viejo del repo podés hacerlo por fuera o queda ignorado)
+          git add data/latest.json data/*.csv data/48hs.json sitemap.xml
+          git commit -m "Clima Chacabuco: Actualización de datos, historial 48h y sitemap" || echo "Sin cambios"
           # git pull --rebase origin main
           git push
