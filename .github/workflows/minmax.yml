@@ -37,32 +37,27 @@ jobs:
           import json
           from datetime import datetime, timedelta
           
-          # Calculamos la hora actual en Argentina (UTC-3)
-          hora_argentina = datetime.utcnow() - timedelta(hours=3)
+          # Usamos UTC directo porque la API de Ecowitt trabaja en esa zona horaria
+          now_utc = datetime.utcnow()
           
-          # Armamos una ventana móvil de 24 horas exactas
-          end_date = hora_argentina.strftime('%Y-%m-%d %H:%M:%S')
-          start_date = (hora_argentina - timedelta(hours=24)).strftime('%Y-%m-%d %H:%M:%S')
+          # Redondeamos a la hora en punto para que el ciclo de 30min encaje perfecto
+          # y armamos la ventana exacta de 24 horas hacia atrás
+          end_date = now_utc.strftime('%Y-%m-%d %H:00:00')
+          start_date = (now_utc - timedelta(hours=24)).strftime('%Y-%m-%d %H:00:00')
           
           # Traemos las credenciales desde los secrets
           app_key = os.environ.get('APP_KEY')
           api_key = os.environ.get('API_KEY')
           mac = os.environ.get('MAC')
           
-          # Usamos exactamente el call_back que probaste y anda joya
-          url = 'https://api.ecowitt.net/api/v3/device/history'
-          params = {
-              'application_key': app_key,
-              'api_key': api_key,
-              'mac': mac,
-              'cycle': '30min',
-              'temp_unitid': '1', # 1 es Celsius
-              'start_date': start_date,
-              'end_date': end_date,
-              'call_back': 'outdoor.temperature'
-          }
+          # LA POSTA: requests convierte los espacios de la fecha en '+', y Ecowitt 
+          # a veces devuelve vacío por eso. Armamos la URL a mano forzando el '%20'.
+          start_url = start_date.replace(' ', '%20')
+          end_url = end_date.replace(' ', '%20')
           
-          response = requests.get(url, params=params)
+          url = f'https://api.ecowitt.net/api/v3/device/history?application_key={app_key}&api_key={api_key}&mac={mac}&cycle=30min&temp_unitid=1&start_date={start_url}&end_date={end_url}&call_back=outdoor.temperature'
+          
+          response = requests.get(url)
           data = response.json()
           
           try:
@@ -115,9 +110,8 @@ jobs:
           # Nos fijamos si el script de Python efectivamente creó el archivo
           if [ -f maxmin.json ]; then
             git add maxmin.json
-            # Si no hay cambios en las temperaturas, que no tire error y siga
             git commit -m "Actualizando maxmin.json [skip ci]" || echo "Sin cambios para commitear"
             git push
           else
-            echo "El archivo maxmin.json no se generó en esta corrida (quizás no había datos). Salteando el commit para no romper nada."
+            echo "El archivo maxmin.json no se generó. Salteando el commit para no romper nada."
           fi
