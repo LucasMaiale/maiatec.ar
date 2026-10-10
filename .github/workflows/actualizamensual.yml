@@ -1,4 +1,18 @@
-- name: Actualizar Historial Mensual (Ecowitt API)
+name: Actualizar Historial Mensual
+
+on:
+  # Disparador manual para que le pegue cronjob.org
+  workflow_dispatch: 
+
+jobs:
+  update-history:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Actualizar Historial Mensual (Ecowitt API)
         env:
           # Pasamos los secretos como variables para que Python los consuma
           APP_KEY: ${{ secrets.ECOWITT_APPLICATION_KEY }}
@@ -7,6 +21,7 @@
           # Ajustamos la hora local para que el corte del día sea exacto
           TZ: America/Argentina/Buenos_Aires
         run: |
+          mkdir -p data
           cat << 'EOF' > actualizar_mensual.py
           import os, requests, json
           from datetime import datetime, timedelta
@@ -118,3 +133,11 @@
           # Ejecutamos el script y limpiamos la evidencia
           python3 actualizar_mensual.py
           rm actualizar_mensual.py
+
+      - name: Commit y Push
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add data/maiatec_*.json
+          git commit -m "Clima Chacabuco: Actualización de historial mensual" || echo "Sin cambios"
+          git push
