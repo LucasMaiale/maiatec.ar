@@ -1,0 +1,122 @@
+name: Generar Historial Mensual
+
+on:
+  # Lo dejamos solo con dispatch para que lo llames desde tu cronjob.org externo a la noche
+  workflow_dispatch: 
+
+jobs:
+  update-history:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Actualizar Historial Mensual (Ecowitt API)
+        env:
+          # Pasamos los secretos como variables para que Python los consuma
+          APP_KEY: ${{ secrets.ECOWITT_APPLICATION_KEY }}
+          API_KEY: ${{ secrets.ECOWITT_API_KEY }}
+          MAC: ${{ secrets.ECOWITT_STATION_MAC }}
+          # Ajustamos la hora local para que el corte del día sea exacto
+          TZ: America/Argentina/Buenos_Aires
+        run: |
+          mkdir -p data
+          cat << 'EOF' > actualizar_mensual.py
+          import os, requests, json
+          from datetime import datetime
+
+          APP_KEY = os.environ.get("APP_KEY")
+          API_KEY = os.environ.get("API_KEY")
+          MAC = os.environ.get("MAC")
+          BASE_URL = "https://api.ecowitt.net/api/v3/device/history"
+
+          # Función para limpiar los guiones que manda Ecowitt cuando no hay datos
+          def clean_hyphens(obj):
+              if isinstance(obj, dict):
+                  return {k: clean_hyphens(v) for k, v in obj.items()}
+              elif isinstance(obj, list):
+                  return [clean_hyphens(elem) for elem in obj]
+              elif obj == "-":
+                  return None
+              return obj
+
+          def merge_dicts(dict1, dict2):
+              for k, v in dict2.items():
+                  if k in dict1 and isinstance(dict1[k], dict) and isinstance(v, dict):
+                      merge_dicts(dict1[k], v)
+                  else:
+                      dict1[k] = v
+
+          hoy = datetime.now()
+          start_str = hoy.strftime("%Y-%m-%d 00:00:00")
+          end_str = hoy.strftime("%Y-%m-%d 23:59:59")
+
+          # Guardamos todo prolijo dentro de la carpeta 'data'
+          archivo_mensual = f"data/maiatec_{hoy.strftime('%Y_%m')}.json"
+          archivo_diario_temp = f"data/temp_{hoy.strftime('%Y%m%d')}.json"
+
+          params = {
+              "application_key": APP_KEY,
+              "api_key": API_KEY,
+              "mac": MAC,
+              "cycle": "5min",
+              "temp_unitid": "1",
+              "rainfall_unitid": "12",
+              "wind_speed_unitid": "7",
+              "solar_irradiance_unitid": "16",
+              "pressure_unitid": "3",
+              "capacity_unitid": "24",
+              "call_back": "outdoor,pressure,rainfall,wind,solar_and_uvi",
+              "start_date": start_str,
+              "end_date": end_str
+          }
+
+          try:
+              response = requests.get(BASE_URL, params=params)
+              if response.status_code == 200:
+                  data_diaria = response.json()
+                  
+                  # Limpiamos los guiones pasándolos a nulo antes de procesar
+                  data_diaria = clean_hyphens(data_diaria)
+                  
+                  if data_diaria.get("code") == 0 and "data" in data_diaria:
+                      # 1. Guardamos el temporal diario
+                      with open(archivo_diario_temp, 'w', encoding='utf-8') as f:
+                          json.dump(data_diaria, f, indent=4, ensure_ascii=False)
+                      
+                      # 2. Leemos el mensual o lo creamos de cero
+                      data_mensual = {"code": 0, "msg": "success", "data": {}}
+                      if os.path.exists(archivo_mensual):
+                          with open(archivo_mensual, 'r', encoding='utf-8') as f:
+                              try:
+                                  data_mensual = json.load(f)
+                              except json.JSONDecodeError:
+                                  pass
+                      
+                      # 3. Fusionamos los datos sin duplicar
+                      merge_dicts(data_mensual["data"], data_diaria["data"])
+                      
+                      # 4. Guardamos el mensual actualizado
+                      with open(archivo_mensual, 'w', encoding='utf-8') as f:
+                          json.dump(data_mensual, f, indent=4, ensure_ascii=False)
+                          
+                      # 5. Volamos el archivo temporal
+                      os.remove(archivo_diario_temp)
+                      print(f"Historial {archivo_mensual} actualizado joya.")
+          except Exception as e:
+              print(f"Hubo un bardo: {e}")
+          EOF
+          
+          # Ejecutamos el script y limpiamos la evidencia
+          python3 actualizar_mensual.py
+          rm actualizar_mensual.py
+
+      - name: Commit y Push
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          # Le agregamos el patrón para que agarre solo los JSON mensuales
+          git add data/maiatec_*.json
+          git commit -m "Clima Chacabuco: Cierre de historial diario" || echo "Sin cambios"
+          git push
