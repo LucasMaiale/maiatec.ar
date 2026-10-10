@@ -82,97 +82,19 @@ jobs:
           fi
           echo "$FECHA,$TEMP,$FEELS,$APP,$DEW,$HUM,$SOLAR,$UVI,$PRES_REL,$PRES_ABS,$W_SPEED,$W_GUST,$W_DIR,$R_RATE,$R_1H,$R_DAY,$R_EVE,$R_WEE,$R_MON,$R_YEA" >> "$CSV_PATH"
 
-          # 5. ACTUALIZAR HISTORIAL DE 48 HORAS PARA GRÁFICOS
-          JSON_48H="data/48hs.json"
-          CURRENT_RECORD=$(jq -n \
-            --arg time "$TIME_UNIX" \
-            --arg fecha "$FECHA" \
-            --argjson temp "$TEMP" \
-            --argjson feels "$FEELS" \
-            --argjson app "$APP" \
-            --argjson dew "$DEW" \
-            --argjson hum "$HUM" \
-            --argjson solar "$SOLAR" \
-            --argjson uvi "$UVI" \
-            --argjson pres_rel "$PRES_REL" \
-            --argjson pres_abs "$PRES_ABS" \
-            --argjson w_speed "$W_SPEED" \
-            --argjson w_gust "$W_GUST" \
-            --argjson w_dir "$W_DIR" \
-            --argjson r_rate "$R_RATE" \
-            --argjson r_1h "$R_1H" \
-            --argjson r_day "$R_DAY" \
-            --argjson r_eve "$R_EVE" \
-            --argjson r_wee "$R_WEE" \
-            --argjson r_mon "$R_MON" \
-            --argjson r_yea "$R_YEA" \
-            '{
-              time: ($time | tonumber),
-              fecha: $fecha,
-              temperature: $temp,
-              feels_like: $feels,
-              app_temp: $app,
-              dew_point: $dew,
-              humidity: $hum,
-              solar: $solar,
-              uvi: $uvi,
-              pressure_rel: $pres_rel,
-              pressure_abs: $pres_abs,
-              wind_speed: $w_speed,
-              wind_gust: $w_gust,
-              wind_direction: $w_dir,
-              rain_rate: $r_rate,
-              rain_1h: $r_1h,
-              rain_daily: $r_day,
-              rain_event: $r_eve,
-              rain_weekly: $r_wee,
-              rain_monthly: $r_mon,
-              rain_yearly: $r_yea
-            }')
-
-          if [ -f "$JSON_48H" ]; then
-            jq --argjson new "$CURRENT_RECORD" --argjson cutoff "$((TIME_UNIX - 172800))" \
-              '. + [$new] | map(select(.time >= $cutoff))' "$JSON_48H" > "$JSON_48H.tmp" && mv "$JSON_48H.tmp" "$JSON_48H"
-          else
-            echo "[$CURRENT_RECORD]" > "$JSON_48H"
-          fi
-
           # 6. ACTUALIZAR SITEMAP EN LA RAIZ (Hora actual en formato W3C)
           if [ -f "sitemap.xml" ]; then
             SITEMAP_DATE=$(TZ="America/Argentina/Buenos_Aires" date -d "@$TIME_UNIX" +"%Y-%m-%dT%H:%M:%S-03:00")
             sed -i "/<loc>https:\/\/maiatec.ar\/clima-chacabuco\/<\/loc>/{n;s|<lastmod>.*</lastmod>|<lastmod>$SITEMAP_DATE</lastmod>|;}" sitemap.xml
           fi
 
-          # 7. DESCARGAR Y PROCESAR HISTORIAL DE LLUVIAS
-          TIMESTAMP_ACTUAL=$(date +%s)
-          curl -s -X GET "https://api.ecowitt.net/api/v3/device/history?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&call_time=$TIMESTAMP_ACTUAL&cycle=year&start_date=2026-01-01%2000:00:00&end_date=2026-09-30%2023:59:59&preset=custom&unit=metric&call_back=rainfall" > data/lluvias_raw.json
-          
-          # Convertir UNIX a fecha normal (restando 3 horas) y lluvia a milímetros dinámicamente
-          jq '
-            .data.rainfall.daily as $rain |
-            if ($rain != null and $rain.list != null) then
-              $rain.list | to_entries | map({
-                "fecha": (.key | tonumber - 10800 | strftime("%Y-%m-%d %H:%M:%S")),
-                "lluvia_mm": (
-                  if ($rain.unit == "in" or $rain.unit == "in/hr") then
-                    (try (.value | tonumber * 25.4 * 10 | round / 10) catch 0)
-                  else
-                    (try (.value | tonumber * 10 | round / 10) catch 0)
-                  end
-                )
-              })
-            else
-              []
-            end
-          ' data/lluvias_raw.json > data/lluvias.json
-          
-          rm data/lluvias_raw.json
+          rm data/raw.json
 
       - name: Commit y Push
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-          git add data/latest.json data/*.csv data/48hs.json data/lluvias.json sitemap.xml
-          git commit -m "Clima Chacabuco: Actualización de datos, historial 48h, lluvias y sitemap" || echo "Sin cambios"
+          git add data/latest.json data/*.csv sitemap.xml
+          git commit -m "Clima Chacabuco: Actualización de datos y sitemap" || echo "Sin cambios"
           # git pull --rebase origin main
           git push
