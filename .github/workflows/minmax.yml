@@ -1,30 +1,4 @@
-name: Min y Max de Temperatura
-
-on:
-  workflow_dispatch: # Para correrlo a mano desde GitHub
-  repository_dispatch:
-    types: [update-weather] # Por si lo disparás desde cronjob.org con un webhook
-
-permissions:
-  contents: write # Clave para que GitHub Actions pueda pushear el nuevo JSON
-
-jobs:
-  get-temp:
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout del repositorio
-        uses: actions/checkout@v4
-
-      - name: Configurar Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
-
-      - name: Instalar requests
-        run: pip install requests
-
-      - name: Obtener datos de Ecowitt y armar maxmin.json
+- name: Obtener datos de Ecowitt y armar maxmin.json
         env:
           APP_KEY: ${{ secrets.ECOWITT_APP_KEY }}
           API_KEY: ${{ secrets.ECOWITT_API_KEY }}
@@ -37,7 +11,7 @@ jobs:
           import json
           from datetime import datetime
           
-          # Obtenemos la fecha actual para el inicio y fin del día
+          # Obtenemos la fecha actual
           today = datetime.now().strftime('%Y-%m-%d')
           start_date = f'{today} 00:00:00'
           end_date = f'{today} 23:59:59'
@@ -47,7 +21,7 @@ jobs:
           api_key = os.environ.get('API_KEY')
           mac = os.environ.get('MAC')
           
-          # Armamos la URL solo con lo necesario (call_back=outdoor.temperature)
+          # Usamos exactamente el call_back que probaste y anda joya
           url = 'https://api.ecowitt.net/api/v3/device/history'
           params = {
               'application_key': app_key,
@@ -64,8 +38,24 @@ jobs:
           data = response.json()
           
           try:
-              # Navegamos por la estructura JSON para sacar la lista de temperaturas
-              temp_data = data['data']['outdoor']['temperature']['list']
+              data_content = data.get('data')
+              
+              # Si no hay datos, la API devuelve una lista vacía. Lo atajamos acá:
+              if isinstance(data_content, list) or not data_content:
+                  print('No hay datos de temperatura todavía para hoy (la API devolvió una lista).')
+                  exit(0) # Salimos limpio para que la Action no tire error
+                  
+              # Buscamos la lista de temperaturas de forma segura.
+              # Atajamos las distintas formas en las que Ecowitt puede devolver este call_back:
+              if 'outdoor' in data_content and 'temperature' in data_content['outdoor']:
+                  temp_data = data_content['outdoor']['temperature']['list']
+              elif 'outdoor.temperature' in data_content:
+                  temp_data = data_content['outdoor.temperature']['list']
+              elif 'temperature' in data_content:
+                  temp_data = data_content['temperature']['list']
+              else:
+                  print('Estructura del JSON no reconocida:', data_content)
+                  exit(0)
               
               # Filtramos los valores válidos y los convertimos a float
               temperaturas = [float(v) for k, v in temp_data.items() if v is not None]
@@ -76,24 +66,16 @@ jobs:
                   print(f'Temperatura Mínima: {t_min}°C')
                   print(f'Temperatura Máxima: {t_max}°C')
                   
-                  # Creamos el maxmin.json solo con estos dos datos
+                  # Creamos el maxmin.json
                   datos_json = {'min': t_min, 'max': t_max}
                   with open('maxmin.json', 'w') as f:
                       json.dump(datos_json, f, indent=4)
                       
-                  print('Archivo maxmin.json generado joya.')
+                  print('Archivo maxmin.json generado de 10.')
               else:
                   print('No se encontraron registros de temperatura para hoy.')
-          except KeyError as e:
+                  
+          except Exception as e:
               print(f'Error al procesar los datos de la API: {e}')
               print('Respuesta cruda:', data)
           "
-
-      - name: Hacer commit y push de maxmin.json
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add maxmin.json
-          # Si no hay cambios, que no tire error y siga de largo
-          git commit -m "Actualizando maxmin.json [skip ci]" || echo "Sin cambios para commitear"
-          git push
