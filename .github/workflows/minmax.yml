@@ -1,4 +1,30 @@
-- name: Obtener datos de Ecowitt y armar maxmin.json
+name: Obtener Min y Max de Temperatura
+
+on:
+  workflow_dispatch: # Para correrlo a mano desde GitHub
+  repository_dispatch:
+    types: [update-weather] # Por si lo disparás desde cronjob.org con un webhook
+
+permissions:
+  contents: write # Clave para que GitHub Actions pueda pushear el nuevo JSON
+
+jobs:
+  get-temp:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Instalar requests
+        run: pip install requests
+
+      - name: Obtener datos de Ecowitt y armar maxmin.json
         env:
           APP_KEY: ${{ secrets.ECOWITT_APP_KEY }}
           API_KEY: ${{ secrets.ECOWITT_API_KEY }}
@@ -79,3 +105,12 @@
               print(f'Error al procesar los datos de la API: {e}')
               print('Respuesta cruda:', data)
           "
+
+      - name: Hacer commit y push de maxmin.json
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add maxmin.json
+          # Si no hay cambios, que no tire error y siga de largo
+          git commit -m "Actualizando maxmin.json [skip ci]" || echo "Sin cambios para commitear"
+          git push
