@@ -23,7 +23,7 @@ jobs:
         run: |
           mkdir -p data
           cat << 'EOF' > actualizar_mensual.py
-          import os, requests, json
+          import os, requests, json, time
           from datetime import datetime, timedelta
 
           APP_KEY = os.environ.get("APP_KEY")
@@ -56,63 +56,75 @@ jobs:
 
           # Función que hace el pedido y guarda en el archivo del mes correspondiente
           def actualizar_mes(start_dt, end_dt):
-              start_str = start_dt.strftime("%Y-%m-%d %H:%M:%S")
-              end_str = end_dt.strftime("%Y-%m-%d %H:%M:%S")
+              # Partimos la consulta en bloques de 3 horas para forzar a la API a devolver datos cada 5 minutos
+              chunk_size = timedelta(hours=3)
+              current_start = start_dt
               
               # El nombre del archivo se basa en el mes de la fecha de inicio
               archivo_mensual = f"data/maiatec_{start_dt.strftime('%Y_%m')}.json"
               archivo_diario_temp = f"data/temp_{start_dt.strftime('%Y%m%d%H%M%S')}.json"
 
-              params = {
-                  "application_key": APP_KEY,
-                  "api_key": API_KEY,
-                  "mac": MAC,
-                  "cycle": "5min",
-                  "temp_unitid": "1",
-                  "rainfall_unitid": "12",
-                  "wind_speed_unitid": "7",
-                  "solar_irradiance_unitid": "16",
-                  "pressure_unitid": "3",
-                  "capacity_unitid": "24",
-                  "call_back": "outdoor,pressure,rainfall,wind,solar_and_uvi",
-                  "start_date": start_str,
-                  "end_date": end_str
-              }
+              while current_start < end_dt:
+                  current_end = min(current_start + chunk_size, end_dt)
+                  
+                  start_str = current_start.strftime("%Y-%m-%d %H:%M:%S")
+                  end_str = current_end.strftime("%Y-%m-%d %H:%M:%S")
 
-              try:
-                  response = requests.get(BASE_URL, params=params)
-                  if response.status_code == 200:
-                      data_diaria = response.json()
-                      
-                      if data_diaria.get("code") == 0 and "data" in data_diaria:
-                          # 1. Guardamos el temporal diario
-                          with open(archivo_diario_temp, 'w', encoding='utf-8') as f:
-                              json.dump(data_diaria, f, indent=4, ensure_ascii=False)
+                  params = {
+                      "application_key": APP_KEY,
+                      "api_key": API_KEY,
+                      "mac": MAC,
+                      "cycle": "5min",
+                      "temp_unitid": "1",
+                      "rainfall_unitid": "12",
+                      "wind_speed_unitid": "7",
+                      "solar_irradiance_unitid": "16",
+                      "pressure_unitid": "3",
+                      "capacity_unitid": "24",
+                      "call_back": "outdoor,pressure,rainfall,wind,solar_and_uvi",
+                      "start_date": start_str,
+                      "end_date": end_str
+                  }
+
+                  try:
+                      response = requests.get(BASE_URL, params=params)
+                      if response.status_code == 200:
+                          data_diaria = response.json()
                           
-                          # 2. Leemos el mensual o lo creamos de cero
-                          data_mensual = {"code": 0, "msg": "success", "data": {}}
-                          if os.path.exists(archivo_mensual):
-                              with open(archivo_mensual, 'r', encoding='utf-8') as f:
-                                  try:
-                                      data_mensual = json.load(f)
-                                  except json.JSONDecodeError:
-                                      pass
-                          
-                          # 3. Fusionamos los datos sin duplicar
-                          merge_dicts(data_mensual["data"], data_diaria["data"])
-                          
-                          # 4. Limpiamos los guiones pasándolos a nulo y ordenamos todo el mes
-                          data_mensual = limpiar_y_ordenar(data_mensual)
-                          
-                          # 5. Guardamos el mensual actualizado y ordenadito
-                          with open(archivo_mensual, 'w', encoding='utf-8') as f:
-                              json.dump(data_mensual, f, indent=4, ensure_ascii=False)
+                          if data_diaria.get("code") == 0 and "data" in data_diaria:
+                              # 1. Guardamos el temporal diario
+                              with open(archivo_diario_temp, 'w', encoding='utf-8') as f:
+                                  json.dump(data_diaria, f, indent=4, ensure_ascii=False)
                               
-                          # 6. Volamos el archivo temporal
-                          os.remove(archivo_diario_temp)
-                          print(f"Historial {archivo_mensual} actualizado y ordenado desde {start_str} hasta {end_str}.")
-              except Exception as e:
-                  print(f"Hubo un bardo al actualizar {archivo_mensual}: {e}")
+                              # 2. Leemos el mensual o lo creamos de cero
+                              data_mensual = {"code": 0, "msg": "success", "data": {}}
+                              if os.path.exists(archivo_mensual):
+                                  with open(archivo_mensual, 'r', encoding='utf-8') as f:
+                                      try:
+                                          data_mensual = json.load(f)
+                                      except json.JSONDecodeError:
+                                          pass
+                              
+                              # 3. Fusionamos los datos sin duplicar
+                              merge_dicts(data_mensual["data"], data_diaria["data"])
+                              
+                              # 4. Limpiamos los guiones pasándolos a nulo y ordenamos todo el mes
+                              data_mensual = limpiar_y_ordenar(data_mensual)
+                              
+                              # 5. Guardamos el mensual actualizado y ordenadito
+                              with open(archivo_mensual, 'w', encoding='utf-8') as f:
+                                  json.dump(data_mensual, f, indent=4, ensure_ascii=False)
+                                  
+                              # 6. Volamos el archivo temporal
+                              if os.path.exists(archivo_diario_temp):
+                                  os.remove(archivo_diario_temp)
+                              print(f"Historial {archivo_mensual} actualizado y ordenado desde {start_str} hasta {end_str}.")
+                  except Exception as e:
+                      print(f"Hubo un bardo al actualizar {archivo_mensual} en el tramo {start_str}: {e}")
+                  
+                  # Le damos un respiro de 1 segundo a la API
+                  time.sleep(1)
+                  current_start = current_end
 
           # Calculamos la ventana de 12 horas
           hoy = datetime.now()
