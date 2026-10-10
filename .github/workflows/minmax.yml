@@ -110,7 +110,13 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add maxmin.json
-          # Si no hay cambios, que no tire error y siga de largo
-          git commit -m "Actualizando maxmin.json [skip ci]" || echo "Sin cambios para commitear"
-          git push
+          
+          # Nos fijamos si el script de Python efectivamente creó el archivo
+          if [ -f maxmin.json ]; then
+            git add maxmin.json
+            # Si no hay cambios en las temperaturas, que no tire error y siga
+            git commit -m "Actualizando maxmin.json [skip ci]" || echo "Sin cambios para commitear"
+            git push
+          else
+            echo "El archivo maxmin.json no se generó en esta corrida (quizás no había datos). Salteando el commit para no romper nada."
+          fi
