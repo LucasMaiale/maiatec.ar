@@ -21,9 +21,6 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Instalar requests
-        run: pip install requests
-
       - name: Obtener datos de Ecowitt y armar maxmin.json
         env:
           APP_KEY: ${{ secrets.ECOWITT_APP_KEY }}
@@ -33,39 +30,52 @@ jobs:
           python -c "
           # No borramos los comentarios, maquinola.
           import os
-          import requests
           import json
+          import urllib.request
+          import urllib.parse
           from datetime import datetime, timedelta
           
-          # Usamos UTC directo porque la API de Ecowitt trabaja en esa zona horaria
-          now_utc = datetime.utcnow()
+          # Calculamos la hora actual en Argentina (UTC-3)
+          hora_argentina = datetime.utcnow() - timedelta(hours=3)
           
-          # Redondeamos a la hora en punto para que el ciclo de 30min encaje perfecto
-          # y armamos la ventana exacta de 24 horas hacia atrás
-          end_date = now_utc.strftime('%Y-%m-%d %H:00:00')
-          start_date = (now_utc - timedelta(hours=24)).strftime('%Y-%m-%d %H:00:00')
+          # Armamos una ventana de 24 horas exactas en HORA LOCAL. 
+          # Así nunca le pedimos a la API datos del futuro.
+          end_date = hora_argentina.strftime('%Y-%m-%d %H:%M:%S')
+          start_date = (hora_argentina - timedelta(hours=24)).strftime('%Y-%m-%d %H:%M:%S')
           
           # Traemos las credenciales desde los secrets
           app_key = os.environ.get('APP_KEY')
           api_key = os.environ.get('API_KEY')
           mac = os.environ.get('MAC')
           
-          # LA POSTA: requests convierte los espacios de la fecha en '+', y Ecowitt 
-          # a veces devuelve vacío por eso. Armamos la URL a mano forzando el '%20'.
-          start_url = start_date.replace(' ', '%20')
-          end_url = end_date.replace(' ', '%20')
+          params = {
+              'application_key': app_key,
+              'api_key': api_key,
+              'mac': mac,
+              'cycle': '30min',
+              'temp_unitid': '1', # 1 es Celsius
+              'start_date': start_date,
+              'end_date': end_date,
+              'call_back': 'outdoor.temperature'
+          }
           
-          url = f'https://api.ecowitt.net/api/v3/device/history?application_key={app_key}&api_key={api_key}&mac={mac}&cycle=30min&temp_unitid=1&start_date={start_url}&end_date={end_url}&call_back=outdoor.temperature'
+          # Usamos urllib nativo y le forzamos a usar %20 en los espacios.
+          # Chau problemas de URL mal armadas.
+          query_string = urllib.parse.urlencode(params, quote_via=urllib.parse.quote)
+          url = f'https://api.ecowitt.net/api/v3/device/history?{query_string}'
           
-          response = requests.get(url)
-          data = response.json()
+          print(f'Pegándole a la API con las fechas locales: {start_date} a {end_date}')
           
+          req = urllib.request.Request(url)
           try:
+              with urllib.request.urlopen(req) as response:
+                  data = json.loads(response.read().decode())
+                  
               data_content = data.get('data')
               
-              # Si no hay datos, la API devuelve una lista vacía. Lo atajamos acá:
+              # Si no hay datos, la API devuelve una lista vacía.
               if isinstance(data_content, list) or not data_content:
-                  print(f'No hay datos todavía. URL armada: start={start_date} end={end_date}')
+                  print('No hay datos todavía. La API devolvió vacío.')
                   exit(0) # Salimos limpio para que la Action no tire error
                   
               # Buscamos la lista de temperaturas de forma segura.
@@ -99,7 +109,6 @@ jobs:
                   
           except Exception as e:
               print(f'Error al procesar los datos de la API: {e}')
-              print('Respuesta cruda:', data)
           "
 
       - name: Hacer commit y push de maxmin.json
