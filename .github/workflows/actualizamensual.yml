@@ -31,15 +31,21 @@ jobs:
           MAC = os.environ.get("MAC")
           BASE_URL = "https://api.ecowitt.net/api/v3/device/history"
 
-          # Función para limpiar los guiones que manda Ecowitt cuando no hay datos
-          def clean_hyphens(obj):
-              if isinstance(obj, dict):
-                  return {k: clean_hyphens(v) for k, v in obj.items()}
-              elif isinstance(obj, list):
-                  return [clean_hyphens(elem) for elem in obj]
-              elif obj == "-":
+          # Función recursiva para ordenar cronológicamente y limpiar los guiones que manda Ecowitt
+          def limpiar_y_ordenar(datos):
+              if isinstance(datos, dict):
+                  # Si las claves son puros números (timestamps), las ordenamos
+                  if all(k.isdigit() for k in datos.keys() if k):
+                      datos_ordenados = dict(sorted(datos.items(), key=lambda item: int(item[0])))
+                  else:
+                      datos_ordenados = datos
+                  return {k: limpiar_y_ordenar(v) for k, v in datos_ordenados.items()}
+              elif isinstance(datos, list):
+                  return [limpiar_y_ordenar(i) for i in datos]
+              elif datos == "-":
                   return None
-              return obj
+              else:
+                  return datos
 
           def merge_dicts(dict1, dict2):
               for k, v in dict2.items():
@@ -78,9 +84,6 @@ jobs:
                   if response.status_code == 200:
                       data_diaria = response.json()
                       
-                      # Limpiamos los guiones pasándolos a nulo antes de procesar
-                      data_diaria = clean_hyphens(data_diaria)
-                      
                       if data_diaria.get("code") == 0 and "data" in data_diaria:
                           # 1. Guardamos el temporal diario
                           with open(archivo_diario_temp, 'w', encoding='utf-8') as f:
@@ -98,13 +101,16 @@ jobs:
                           # 3. Fusionamos los datos sin duplicar
                           merge_dicts(data_mensual["data"], data_diaria["data"])
                           
-                          # 4. Guardamos el mensual actualizado
+                          # 4. Limpiamos los guiones pasándolos a nulo y ordenamos todo el mes
+                          data_mensual = limpiar_y_ordenar(data_mensual)
+                          
+                          # 5. Guardamos el mensual actualizado y ordenadito
                           with open(archivo_mensual, 'w', encoding='utf-8') as f:
                               json.dump(data_mensual, f, indent=4, ensure_ascii=False)
                               
-                          # 5. Volamos el archivo temporal
+                          # 6. Volamos el archivo temporal
                           os.remove(archivo_diario_temp)
-                          print(f"Historial {archivo_mensual} actualizado desde {start_str} hasta {end_str}.")
+                          print(f"Historial {archivo_mensual} actualizado y ordenado desde {start_str} hasta {end_str}.")
               except Exception as e:
                   print(f"Hubo un bardo al actualizar {archivo_mensual}: {e}")
 
