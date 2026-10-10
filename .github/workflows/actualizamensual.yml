@@ -113,9 +113,10 @@ jobs:
                           print(f"Historial {archivo_mensual} actualizado y ordenado desde {start_str} hasta {end_str}.")
               except Exception as e:
                   print(f"Hubo un bardo al actualizar {archivo_mensual}: {e}")
+
           # Calculamos la ventana de 48 horas
-              hoy = datetime.now()
-              hace_48_horas = hoy - timedelta(hours=48)
+          hoy = datetime.now()
+          hace_48_horas = hoy - timedelta(hours=48)
 
           # Verificamos si cruzamos de mes en esas 48 horas
           if hoy.month == hace_48_horas.month:
@@ -132,7 +133,6 @@ jobs:
               actualizar_mes(hace_48_horas, fin_mes_anterior)
               # Actualizamos las primeras horas del mes nuevo
               actualizar_mes(inicio_mes_actual, hoy)
-
           EOF
           
           # Ejecutamos el script y limpiamos la evidencia
