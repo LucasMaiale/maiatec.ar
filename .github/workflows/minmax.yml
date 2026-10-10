@@ -35,19 +35,22 @@ jobs:
           import os
           import requests
           import json
-          from datetime import datetime
+          from datetime import datetime, timedelta
           
-          # Obtenemos la fecha actual
-          today = datetime.now().strftime('%Y-%m-%d')
-          start_date = f'{today} 00:00:00'
-          end_date = f'{today} 23:59:59'
+          # Ajustamos la hora a UTC-3 (Argentina) porque GitHub Actions corre en UTC
+          hora_argentina = datetime.utcnow() - timedelta(hours=3)
+          today_str = hora_argentina.strftime('%Y-%m-%d')
+          tomorrow_str = (hora_argentina + timedelta(days=1)).strftime('%Y-%m-%d')
+          
+          # Compensamos las -3 horas de Argentina como hacés siempre en tus scripts
+          start_date = f'{today_str} 03:00:00'
+          end_date = f'{tomorrow_str} 02:59:59'
           
           # Traemos las credenciales desde los secrets
           app_key = os.environ.get('APP_KEY')
           api_key = os.environ.get('API_KEY')
           mac = os.environ.get('MAC')
           
-          # Usamos exactamente el call_back que probaste y anda joya
           url = 'https://api.ecowitt.net/api/v3/device/history'
           params = {
               'application_key': app_key,
@@ -66,13 +69,10 @@ jobs:
           try:
               data_content = data.get('data')
               
-              # Si no hay datos, la API devuelve una lista vacía. Lo atajamos acá:
               if isinstance(data_content, list) or not data_content:
-                  print('No hay datos de temperatura todavía para hoy (la API devolvió una lista).')
-                  exit(0) # Salimos limpio para que la Action no tire error
+                  print(f'No hay datos todavía. URL armada: start={start_date} end={end_date}')
+                  exit(0) # Salimos limpio
                   
-              # Buscamos la lista de temperaturas de forma segura.
-              # Atajamos las distintas formas en las que Ecowitt puede devolver este call_back:
               if 'outdoor' in data_content and 'temperature' in data_content['outdoor']:
                   temp_data = data_content['outdoor']['temperature']['list']
               elif 'outdoor.temperature' in data_content:
@@ -83,7 +83,6 @@ jobs:
                   print('Estructura del JSON no reconocida:', data_content)
                   exit(0)
               
-              # Filtramos los valores válidos y los convertimos a float
               temperaturas = [float(v) for k, v in temp_data.items() if v is not None]
               
               if temperaturas:
@@ -92,14 +91,13 @@ jobs:
                   print(f'Temperatura Mínima: {t_min}°C')
                   print(f'Temperatura Máxima: {t_max}°C')
                   
-                  # Creamos el maxmin.json
                   datos_json = {'min': t_min, 'max': t_max}
                   with open('maxmin.json', 'w') as f:
                       json.dump(datos_json, f, indent=4)
                       
                   print('Archivo maxmin.json generado de 10.')
               else:
-                  print('No se encontraron registros de temperatura para hoy.')
+                  print('No se encontraron registros válidos de temperatura.')
                   
           except Exception as e:
               print(f'Error al procesar los datos de la API: {e}')
