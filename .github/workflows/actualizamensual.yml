@@ -67,7 +67,7 @@ jobs:
                   "application_key": APP_KEY,
                   "api_key": API_KEY,
                   "mac": MAC,
-                  "cycle": "5min",
+                  "cycle_type": "5min",
                   "temp_unitid": "1",
                   "rainfall_unitid": "12",
                   "wind_speed_unitid": "7",
