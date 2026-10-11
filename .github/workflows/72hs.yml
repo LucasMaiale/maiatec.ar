@@ -1,0 +1,138 @@
+name: Actualizar Clima Chacabuco
+
+on:
+  schedule:
+    - cron: '0 */4 * * *'
+  workflow_dispatch: 
+
+jobs:
+  update-weather:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Instalar dependencias de Python
+        run: pip install requests
+        
+      - name: Procesar Datos Actuales (latest.json)
+        run: |
+          mkdir -p data
+          
+          # 1. DESCARGAR ORIGINAL
+          curl -s -X GET "https://api.ecowitt.net/api/v3/device/real_time?application_key=${{ secrets.ECOWITT_APPLICATION_KEY }}&api_key=${{ secrets.ECOWITT_API_KEY }}&mac=${{ secrets.ECOWITT_STATION_MAC }}&temp_unitid=1&rainfall_unitid=12&wind_speed_unitid=7&solar_irradiance_unitid=16&pressure_unitid=3&capacity_unitid=24&call_back=all" > data/raw.json
+          
+          # 2. LIMPIAR PRIVACIDAD
+          jq '
+            .data.outdoor |= del(.vpd) | 
+            del(.data.indoor, .data.battery)
+          ' data/raw.json > data/latest.json
+          
+          rm data/raw.json
+
+      - name: Generar y Procesar Historial de 72hs (72hs.json)
+        env:
+          ECOWITT_APPLICATION_KEY: ${{ secrets.ECOWITT_APPLICATION_KEY }}
+          ECOWITT_API_KEY: ${{ secrets.ECOWITT_API_KEY }}
+          ECOWITT_STATION_MAC: ${{ secrets.ECOWITT_STATION_MAC }}
+        run: |
+          cat << 'EOF' > script_72hs.py
+          import os
+          import json
+          import requests
+          from datetime import datetime, timedelta
+
+          APP_KEY = os.environ.get("ECOWITT_APPLICATION_KEY")
+          API_KEY = os.environ.get("ECOWITT_API_KEY")
+          MAC = os.environ.get("ECOWITT_STATION_MAC")
+          URL = "https://api.ecowitt.net/api/v3/device/history"
+
+          now = datetime.now()
+          time_frames = []
+          
+          # Armamos 3 bloques de 24hs exactas
+          for i in range(3, 0, -1):
+              start = now - timedelta(days=i)
+              end = now - timedelta(days=i-1)
+              time_frames.append({
+                  "start": start.strftime("%Y-%m-%d %H:%M:%S"),
+                  "end": end.strftime("%Y-%m-%d %H:%M:%S")
+              })
+
+          merged_data = {}
+
+          def merge_dicts(dict1, dict2):
+              for k, v in dict2.items():
+                  if k in dict1 and isinstance(dict1[k], dict) and isinstance(v, dict):
+                      merge_dicts(dict1[k], v)
+                  else:
+                      dict1[k] = v
+
+          for tf in time_frames:
+              params = {
+                  "application_key": APP_KEY,
+                  "api_key": API_KEY,
+                  "mac": MAC,
+                  "cycle": "5min",
+                  "temp_unitid": 1,
+                  "rainfall_unitid": 12,
+                  "wind_speed_unitid": 7,
+                  "solar_irradiance_unitid": 16,
+                  "pressure_unitid": 3,
+                  "capacity_unitid": 24,
+                  "call_back": "outdoor,pressure,rainfall,wind,solar_and_uvi",
+                  "start_date": tf["start"],
+                  "end_date": tf["end"]
+              }
+              response = requests.get(URL, params=params)
+              if response.status_code == 200:
+                  res_json = response.json()
+                  if res_json.get("code") == 0 and "data" in res_json:
+                      merge_dicts(merged_data, res_json["data"])
+                  else:
+                      print(f"Error en la respuesta de la API: {res_json}")
+              else:
+                  print(f"Error HTTP: {response.status_code}")
+
+          def sort_lists_by_key(d):
+              for k, v in d.items():
+                  if isinstance(v, dict):
+                      if k == "list":
+                          d[k] = dict(sorted(v.items()))
+                      else:
+                          sort_lists_by_key(v)
+
+          sort_lists_by_key(merged_data)
+
+          if "outdoor" in merged_data and "vpd" in merged_data["outdoor"]:
+              del merged_data["outdoor"]["vpd"]
+
+          final_output = {
+              "code": 0,
+              "msg": "success",
+              "data": merged_data
+          }
+
+          os.makedirs("data", exist_ok=True)
+          with open("data/72hs.json", "w", encoding="utf-8") as f:
+              json.dump(final_output, f, separators=(',', ':'))
+          
+          print("72hs.json generado exitosamente.")
+          EOF
+          
+          python script_72hs.py
+          rm script_72hs.py
+
+      - name: Commit y Push
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add data/latest.json data/72hs.json
+          git commit -m "Clima Chacabuco: Actualización de datos (latest + 72hs)" || echo "Sin cambios"
+          git push
