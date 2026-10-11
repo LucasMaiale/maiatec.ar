@@ -1,4 +1,4 @@
-name: Actualiza las últimas 72hs.
+name: Actualizar Clima Chacabuco
 
 on:
   schedule:
@@ -54,20 +54,32 @@ jobs:
           URL = "https://api.ecowitt.net/api/v3/device/history"
 
           now = datetime.now()
-          time_frames = []
+          # Clavamos el inicio del día de hoy a las 00:00:00
+          today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
           
-          # Armamos 3 bloques de 24hs exactas
-          for i in range(3, 0, -1):
-              start = now - timedelta(days=i)
-              end = now - timedelta(days=i-1)
-              time_frames.append({
-                  "start": start.strftime("%Y-%m-%d %H:%M:%S"),
-                  "end": end.strftime("%Y-%m-%d %H:%M:%S")
-              })
+          # Armamos los 3 bloques exactos de calendario
+          # 1. Dos días para atrás: desde las 00:00:00 hasta las 23:59:59
+          start_2 = today_start - timedelta(days=2)
+          end_2 = today_start - timedelta(days=1) - timedelta(seconds=1)
+          
+          # 2. Ayer: desde las 00:00:00 hasta las 23:59:59
+          start_1 = today_start - timedelta(days=1)
+          end_1 = today_start - timedelta(seconds=1)
+          
+          # 3. Hoy: desde las 00:00:00 hasta la hora actual
+          start_0 = today_start
+          end_0 = now
+
+          time_frames = [
+              {"start": start_2.strftime("%Y-%m-%d %H:%M:%S"), "end": end_2.strftime("%Y-%m-%d %H:%M:%S")},
+              {"start": start_1.strftime("%Y-%m-%d %H:%M:%S"), "end": end_1.strftime("%Y-%m-%d %H:%M:%S")},
+              {"start": start_0.strftime("%Y-%m-%d %H:%M:%S"), "end": end_0.strftime("%Y-%m-%d %H:%M:%S")}
+          ]
 
           merged_data = {}
 
           def merge_dicts(dict1, dict2):
+              # Función recursiva para ir anidando y combinando los diccionarios de la API
               for k, v in dict2.items():
                   if k in dict1 and isinstance(dict1[k], dict) and isinstance(v, dict):
                       merge_dicts(dict1[k], v)
@@ -101,6 +113,7 @@ jobs:
                   print(f"Error HTTP: {response.status_code}")
 
           def sort_lists_by_key(d):
+              # Ordenamos las keys que son las fechas dentro de 'list' secuencialmente para que el gráfico no rompa
               for k, v in d.items():
                   if isinstance(v, dict):
                       if k == "list":
@@ -110,6 +123,7 @@ jobs:
 
           sort_lists_by_key(merged_data)
 
+          # Limpiamos el vpd, igual que hacias en el bash con jq, para mantenerlo prolijo
           if "outdoor" in merged_data and "vpd" in merged_data["outdoor"]:
               del merged_data["outdoor"]["vpd"]
 
