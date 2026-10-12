@@ -55,7 +55,8 @@
             "clima chacabuco",
             "tiempo chacabuco",
             "estacion meteorologica chacabuco",
-            "temperatura actual chacabuco"
+            "temperatura actual chacabuco",
+            "lluvia chacabuco"
         ],
         "spatialCoverage": {
             "@type": "Place",
@@ -321,7 +322,23 @@
             <div class="value-box">
                 <span class="value" id="rain-event">&nbsp;</span><span class="unit">mm</span>
             </div>
+        </article>        
+
+        <article class="item">
+            <span class="label">Lluvia Semana</span>
+            <div class="value-box">
+                <span class="value" id="rain-week">&nbsp;</span><span class="unit">mm</span>
+            </div>
         </article>
+
+        <article class="item">
+            <span class="label">Lluvia Mes</span>
+            <div class="value-box">
+                <span class="value" id="rain-month">&nbsp;</span><span class="unit">mm</span>
+            </div>
+        </article>        
+
+
     </main>
 
     <footer>
@@ -360,6 +377,8 @@
             document.getElementById('uv').innerText = d.solar_and_uvi.uvi.value;
             document.getElementById('rain-24').innerText = parseFloat(d.rainfall.daily.value).toFixed(1);
             document.getElementById('rain-event').innerText = parseFloat(d.rainfall.event.value).toFixed(1);
+            document.getElementById('rain-week').innerText = parseFloat(d.rainfall.weekly.value).toFixed(1);
+            document.getElementById('rain-month').innerText = parseFloat(d.rainfall.monthly.value).toFixed(1);
             document.getElementById('wind').innerText = parseFloat(d.wind.wind_speed.value).toFixed(1);
             document.getElementById('gust').innerText = parseFloat(d.wind.wind_gust.value).toFixed(1);
             
