@@ -1,149 +1,84 @@
-name: Actualizar Historial Mensual
+import json
+import os
+from datetime import datetime
 
-on:
-  # Disparador manual para que le pegue cronjob.org
-  workflow_dispatch: 
+def generar_resumen(archivo_json):
+    # Verificamos que el archivo exista
+    if not os.path.exists(archivo_json):
+        print(f"Che, no encontré el archivo {archivo_json}.")
+        return
 
-jobs:
-  update-history:
-    runs-on: ubuntu-latest
+    with open(archivo_json, 'r', encoding='utf-8') as f:
+        try:
+            contenido = json.load(f)
+        except json.JSONDecodeError:
+            print("Hubo un error al leer el JSON. Fijate si está bien formateado.")
+            return
 
-    steps:
-      - name: Checkout del repositorio
-        uses: actions/checkout@v4
+    # Adaptamos para que lea si es una lista (varias llamadas del cron) o un diccionario
+    if isinstance(contenido, dict):
+        registros = [contenido]
+    elif isinstance(contenido, list):
+        registros = contenido
+    else:
+        print("El formato del JSON no es ni lista ni diccionario.")
+        return
 
-      - name: Actualizar Historial Mensual (Ecowitt API)
-        env:
-          # Pasamos los secretos como variables para que Python los consuma
-          APP_KEY: ${{ secrets.ECOWITT_APPLICATION_KEY }}
-          API_KEY: ${{ secrets.ECOWITT_API_KEY }}
-          MAC: ${{ secrets.ECOWITT_STATION_MAC }}
-          # Ajustamos la hora local para que el corte del día sea exacto
-          TZ: America/Argentina/Buenos_Aires
-        run: |
-          mkdir -p data
-          cat << 'EOF' > actualizar_mensual.py
-          import os, requests, json
-          from datetime import datetime, timedelta
+    fechas = set() # Usamos un set para limpiar duplicados si el cronjob solapó datos
 
-          APP_KEY = os.environ.get("APP_KEY")
-          API_KEY = os.environ.get("API_KEY")
-          MAC = os.environ.get("MAC")
-          BASE_URL = "https://api.ecowitt.net/api/v3/device/history"
+    # Recorremos cada respuesta de la API guardada
+    for registro in registros:
+        # Validamos que sea un diccionario y que el código de la API sea 0 (éxito)
+        if not isinstance(registro, dict) or registro.get("code") != 0:
+            continue
 
-          # Función recursiva para ordenar cronológicamente y limpiar los guiones que manda Ecowitt
-          def limpiar_y_ordenar(datos):
-              if isinstance(datos, dict):
-                  # Si las claves son puros números (timestamps), las ordenamos
-                  if all(k.isdigit() for k in datos.keys() if k):
-                      datos_ordenados = dict(sorted(datos.items(), key=lambda item: int(item[0])))
-                  else:
-                      datos_ordenados = datos
-                  return {k: limpiar_y_ordenar(v) for k, v in datos_ordenados.items()}
-              elif isinstance(datos, list):
-                  return [limpiar_y_ordenar(i) for i in datos]
-              elif datos == "-":
-                  return None
-              else:
-                  return datos
+        datos = registro.get("data", {})
+        
+        # Usamos outdoor.temperature como referencia para sacar todos los timestamps
+        temp_data = datos.get("outdoor", {}).get("temperature", {}).get("list", {})
+        
+        for timestamp in temp_data.keys():
+            fechas.add(timestamp)
 
-          def merge_dicts(dict1, dict2):
-              for k, v in dict2.items():
-                  if k in dict1 and isinstance(dict1[k], dict) and isinstance(v, dict):
-                      merge_dicts(dict1[k], v)
-                  else:
-                      dict1[k] = v
+    if not fechas:
+        print("No se encontraron datos en el archivo para armar el resumen.")
+        return
 
-          # Función que hace el pedido y guarda en el archivo del mes correspondiente
-          def actualizar_mes(start_dt, end_dt):
-              start_str = start_dt.strftime("%Y-%m-%d %H:%M:%S")
-              end_str = end_dt.strftime("%Y-%m-%d %H:%M:%S")
-              
-              # El nombre del archivo se basa en el mes de la fecha de inicio
-              archivo_mensual = f"data/maiatec_{start_dt.strftime('%Y_%m')}.json"
-              archivo_diario_temp = f"data/temp_{start_dt.strftime('%Y%m%d%H%M%S')}.json"
+    # Ordenamos las fechas cronológicamente
+    fechas_ordenadas = sorted(list(fechas))
+    
+    # Convertimos a objetos datetime para poder calcular las diferencias
+    formato_fecha = "%Y-%m-%d %H:%M:%S"
+    fechas_dt = [datetime.strptime(f, formato_fecha) for f in fechas_ordenadas]
 
-              params = {
-                  "application_key": APP_KEY,
-                  "api_key": API_KEY,
-                  "mac": MAC,
-                  "cycle_type": "5min",
-                  "temp_unitid": "1",
-                  "rainfall_unitid": "12",
-                  "wind_speed_unitid": "7",
-                  "solar_irradiance_unitid": "16",
-                  "pressure_unitid": "3",
-                  "capacity_unitid": "24",
-                  "call_back": "outdoor,pressure,rainfall,wind,solar_and_uvi",
-                  "start_date": start_str,
-                  "end_date": end_str
-              }
+    total_registros = len(fechas_dt)
+    inicio = fechas_ordenadas[0]
+    fin = fechas_ordenadas[-1]
 
-              try:
-                  response = requests.get(BASE_URL, params=params)
-                  if response.status_code == 200:
-                      data_diaria = response.json()
-                      
-                      if data_diaria.get("code") == 0 and "data" in data_diaria:
-                          # 1. Guardamos el temporal diario
-                          with open(archivo_diario_temp, 'w', encoding='utf-8') as f:
-                              json.dump(data_diaria, f, indent=4, ensure_ascii=False)
-                          
-                          # 2. Leemos el mensual o lo creamos de cero
-                          data_mensual = {"code": 0, "msg": "success", "data": {}}
-                          if os.path.exists(archivo_mensual):
-                              with open(archivo_mensual, 'r', encoding='utf-8') as f:
-                                  try:
-                                      data_mensual = json.load(f)
-                                  except json.JSONDecodeError:
-                                      pass
-                          
-                          # 3. Fusionamos los datos sin duplicar
-                          merge_dicts(data_mensual["data"], data_diaria["data"])
-                          
-                          # 4. Limpiamos los guiones pasándolos a nulo y ordenamos todo el mes
-                          data_mensual = limpiar_y_ordenar(data_mensual)
-                          
-                          # 5. Guardamos el mensual actualizado y ordenadito
-                          with open(archivo_mensual, 'w', encoding='utf-8') as f:
-                              json.dump(data_mensual, f, indent=4, ensure_ascii=False)
-                              
-                          # 6. Volamos el archivo temporal
-                          if os.path.exists(archivo_diario_temp):
-                              os.remove(archivo_diario_temp)
-                          print(f"Historial {archivo_mensual} actualizado y ordenado desde {start_str} hasta {end_str}.")
-              except Exception as e:
-                  print(f"Hubo un bardo al actualizar {archivo_mensual}: {e}")
+    # Imprimimos la cabecera del resumen
+    print(f"--- Resumen Mensual de {archivo_json} ---")
+    print(f"Total de mediciones únicas: {total_registros}")
+    print(f"Primer registro: {inicio}")
+    print(f"Último registro: {fin}")
+    print("\n--- Verificación de intervalos de 5 minutos ---")
 
-          # Calculamos la ventana de 23 horas
-          hoy = datetime.now()
-          hace_23_horas = hoy - timedelta(hours=23)
+    huecos = 0
+    # Chequeamos la diferencia de tiempo entre cada registro y el anterior
+    for i in range(1, total_registros):
+        delta = fechas_dt[i] - fechas_dt[i-1]
+        minutos_diff = delta.total_seconds() / 60.0
+        
+        # Le damos un margen mínimo por si la API o el sensor tardaron unos segundos más (> 6 minutos)
+        if minutos_diff > 6:
+            huecos += 1
+            print(f"Salto detectado: de {fechas_dt[i-1]} a {fechas_dt[i]} ({minutos_diff:.1f} minutos sin datos)")
 
-          # Verificamos si cruzamos de mes en esas 23 horas
-          if hoy.month == hace_23_horas.month:
-              # Mismo mes, hacemos una sola actualización
-              actualizar_mes(hace_23_horas, hoy)
-          else:
-              # Meses distintos, partimos la consulta al medio
-              print("¡Opa! Cruzamos de mes, procesando por separado...")
-              # fin_mes_anterior es el último segundo del mes pasado (ej: 31 de Oct 23:59:59)
-              inicio_mes_actual = hoy.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-              fin_mes_anterior = inicio_mes_actual - timedelta(seconds=1)
-              
-              # Actualizamos el pucho del mes pasado
-              actualizar_mes(hace_23_horas, fin_mes_anterior)
-              # Actualizamos las primeras horas del mes nuevo
-              actualizar_mes(inicio_mes_actual, hoy)
-          EOF
-          
-          # Ejecutamos el script y limpiamos la evidencia
-          python3 actualizar_mensual.py
-          rm actualizar_mensual.py
+    if huecos == 0:
+        print("¡Todo joya, lince! No hay cortes, tenés un dato cada 5 minutos de corrido.")
+    else:
+        print(f"\nResumen de errores: Se encontraron {huecos} cortes en la transmisión de datos.")
 
-      - name: Commit y Push
-        run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
-          git add data/maiatec_*.json
-          git commit -m "Clima Chacabuco: Actualización de historial mensual" || echo "Sin cambios"
-          git push
+if __name__ == "__main__":
+    # Apuntá al archivo mensual
+    archivo = 'data/maiatec_2026_10.json'
+    generar_resumen(archivo)
