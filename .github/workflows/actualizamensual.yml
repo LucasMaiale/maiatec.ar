@@ -146,4 +146,5 @@ jobs:
           git config --global user.email "action@github.com"
           git add data/maiatec_*.json
           git commit -m "Clima Chacabuco: Actualización de historial mensual" || echo "Sin cambios"
+          git pull --rebase origin main
           git push
