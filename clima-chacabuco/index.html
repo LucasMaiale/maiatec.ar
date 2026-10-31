@@ -6,7 +6,6 @@
     <meta name="theme-color" content="#1B438A"> <!-- Pinta la barra del navegador en celulares -->
     
     <title>Clima y Tiempo en Chacabuco Hoy | Estación Meteorológica en Vivo - Maiatec</title>
-    <!-- <meta name="description" content="Consultá el clima en Chacabuco en tiempo real. Datos exactos de temperatura, viento y lluvia actualizados cada 10 minutos desde nuestra estación meteorológica propia."> -->
     <meta name="description" content="Consultá el clima y el tiempo en Chacabuco en tiempo real. Datos exactos para el pronóstico local: temperatura, viento y lluvia actualizados cada 10 minutos.">
     <link rel="canonical" href="https://maiatec.ar/clima-chacabuco/" />
     
@@ -345,7 +344,7 @@
         <span id="status" aria-live="polite">Cargando...</span>
     </header>
 
-        <p class="seo-intro">El clima en Chacabuco. Datos meteorológicos actualizados cada 10 minutos.</p>
+    <p class="seo-intro">El clima en Chacabuco. Datos meteorológicos actualizados cada 10 minutos.</p>
 
     <main class="grid">
         <article class="item">
@@ -432,9 +431,7 @@
                         </tr>
                     </thead>
                     <tbody id="rain-history-body">
-                        <tr>
-                            <td colspan="2" style="text-align: center; color: var(--sub);">Cargando historial...</td>
-                        </tr>
+                        <!-- RAIN_HISTORY_TABLE_PLACEHOLDER -->
                     </tbody>
                 </table>
             </div>
@@ -446,7 +443,6 @@
         <div class="footer-line">Actualizado: <b id="last-update">--:--</b></div>
         <div class="location-note">
             Estación meteorológica propia ubicada en las<br>inmediaciones del Club Social en Chacabuco
-            <!-- Orgullosos proveedores de datos de clima en tiempo real para <strong>Chacabuco en Red</strong> y la comunidad. -->
         </div>
         
         <a href="https://wa.me/5492352502050?text=QUIERO%20TENER%20MI%20PROPIA%20ESTACI%C3%93N"  
@@ -500,15 +496,10 @@
             const res = await fetch('/data/lluvias_acumuladas.json?t=' + Date.now());
             if (!res.ok) throw new Error();
             const rainData = await res.json();
-            
-            const tbody = document.getElementById('rain-history-body');
-            tbody.innerHTML = '';
 
-            const sortedDates = Object.keys(rainData).sort().reverse();
-
-            // Lógica para calcular la semana desde Lunes 00:00 hasta Domingo 23:59
+            // Calcular suma semanal desde Lunes 00:00 hasta Domingo 23:59
             const now = new Date();
-            const currentDay = now.getDay(); // 0: Domingo, 1: Lunes, ..., 6: Sábado
+            const currentDay = now.getDay();
             const diffToMonday = (currentDay === 0 ? 6 : currentDay - 1);
             
             const mondayDate = new Date(now);
@@ -521,35 +512,19 @@
 
             let weeklySum = 0;
 
-            sortedDates.forEach(dateStr => {
-                const mm = parseFloat(rainData[dateStr]).toFixed(1);
-                
-                // Parseamos la fecha en formato local para comparar
+            Object.keys(rainData).forEach(dateStr => {
                 const [year, month, day] = dateStr.split('-').map(Number);
                 const entryDate = new Date(year, month - 1, day, 12, 0, 0);
 
                 if (entryDate >= mondayDate && entryDate <= sundayDate) {
                     weeklySum += parseFloat(rainData[dateStr]);
                 }
-
-                const formattedDate = `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
-
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td class="rain-date">${formattedDate}</td>
-                    <td class="rain-val-cell">${mm} <span class="rain-unit">mm</span></td>
-                `;
-                tbody.appendChild(tr);
             });
 
             document.getElementById('rain-week').innerText = weeklySum.toFixed(1);
 
         } catch (e) {
-            document.getElementById('rain-history-body').innerHTML = `
-                <tr>
-                    <td colspan="2" style="text-align: center; color: var(--sub);">No se pudo cargar el historial.</td>
-                </tr>
-            `;
+            console.error('Error calculando lluvia semanal:', e);
         }
     }
 
