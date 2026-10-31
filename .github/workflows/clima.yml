@@ -1,14 +1,13 @@
-name: Actualizar Clima Chacabuco
+name: Actualizar Clima y HTML
 
 on:
+  workflow_dispatch: # Para disparar desde cronjob.org / API de GitHub
   schedule:
-    - cron: '0 */4 * * *'
-  workflow_dispatch: 
+    - cron: '*/10 * * * *' # O el trigger que uses
 
 jobs:
-  update-weather:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout del repositorio
         uses: actions/checkout@v4
@@ -18,18 +17,35 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Procesar Datos Actuales (Python Script)
-        env:
-          ECOWITT_APPLICATION_KEY: ${{ secrets.ECOWITT_APPLICATION_KEY }}
-          ECOWITT_API_KEY: ${{ secrets.ECOWITT_API_KEY }}
-          ECOWITT_STATION_MAC: ${{ secrets.ECOWITT_STATION_MAC }}
+      - name: Instalar dependencias
         run: |
-          python scripts/actualizar_actual.py
+          pip install requests
 
-      - name: Commit y Push
+      # PASO 1: Traer datos en tiempo real (crea/actualiza latest.json)
+      - name: Ejecutar datos actuales
+        run: python scripts/actualizar_actual.py
+        env:
+          API_KEY: ${{ secrets.ECOWITT_API_KEY }}
+          APPLICATION_KEY: ${{ secrets.ECOWITT_APP_KEY }}
+          MAC: ${{ secrets.ECOWITT_MAC }}
+
+      # PASO 2: Traer historial de lluvias (crea/actualiza lluvias_acumuladas.json)
+      - name: Ejecutar historial lluvias
+        run: python scripts/lluvias_acumuladas.py
+        env:
+          API_KEY: ${{ secrets.ECOWITT_API_KEY }}
+          APPLICATION_KEY: ${{ secrets.ECOWITT_APP_KEY }}
+          MAC: ${{ secrets.ECOWITT_MAC }}
+
+      # PASO 3: Pre-renderizar el HTML leyendo los JSON recién generados
+      - name: Renderizar HTML
+        run: python scripts/renderizar_html.py
+
+      # PASO 4: Guardar todo en GitHub Pages
+      - name: Commit y Push de los cambios
         run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
-          git add data/latest.json
-          git commit -m "Clima Chacabuco: Actualización de latest.json" || echo "Sin cambios"
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add data/*.json clima-chacabuco/index.html
+          git commit -m "Auto-update clima data y HTML pre-renderizado [skip ci]" || exit 0
           git push
