@@ -22,7 +22,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: Actualizar Historial Mensual (Ecowitt API)
+      - name: Ejecutar Scripts (Ecowitt API)
         env:
           # Pasamos los secretos como variables para que Python los consuma
           APP_KEY: ${{ secrets.ECOWITT_APPLICATION_KEY }}
@@ -33,12 +33,13 @@ jobs:
         run: |
           mkdir -p data
           python3 scripts/actualizar_mensual.py
+          python3 scripts/lluvias_acumuladas.py
 
       - name: Commit y Push
         run: |
           git config --global user.name "GitHub Action"
           git config --global user.email "action@github.com"
-          git add data/maiatec_*.json
-          git commit -m "Clima Chacabuco: Actualización de historial mensual" || echo "Sin cambios"
+          git add data/*.json
+          git commit -m "Clima Chacabuco: Actualización de datos" || echo "Sin cambios"
           git pull --rebase origin main
           git push
