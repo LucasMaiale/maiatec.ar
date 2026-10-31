@@ -158,11 +158,13 @@
             margin-left: 2px;
         }
 
-        /* Contenedor de tabla principal */
+        /* Contenedor deslizante de la tabla principal */
         .rain-table-container {
             width: 100%;
+            max-height: 350px;
+            overflow-y: auto;
             margin-top: 10px;
-            padding: 5px 10px;
+            padding: 0 10px;
             border: 1.5px solid var(--text);
             border-radius: 6px;
         }
@@ -180,9 +182,10 @@
             font-weight: 800;
             color: var(--sub);
             text-transform: uppercase;
-            padding: 8px 0;
+            padding: 10px 0;
             border-bottom: 2px solid var(--text);
             text-align: left;
+            z-index: 1;
         }
 
         .rain-table th:last-child {
@@ -318,7 +321,7 @@
             </table>
         </div>
 
-                <!-- Acceso directo a estación en vivo -->
+        <!-- Acceso directo a estación en vivo -->
         <a href="/clima-chacabuco/" class="bookmark-btn btn-primary">
             📡 Volver a la Estación Meteorológica en Vivo
         </a>
