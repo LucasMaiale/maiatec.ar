@@ -6,6 +6,7 @@ def procesar_historial_lluvia(anio_inicio=2026, mes_inicio=4, ruta_destino='lluv
     ahora = datetime.now()
     anio_actual = ahora.year
     mes_actual = ahora.month
+    hoy_str = ahora.strftime('%Y-%m-%d')  # Fecha de hoy para comparar
 
     # Generamos la lista de sufijos año_mes a procesar
     meses_a_procesar = []
@@ -66,9 +67,12 @@ def procesar_historial_lluvia(anio_inicio=2026, mes_inicio=4, ruta_destino='lluv
         print("\nNo se encontró ningún archivo para procesar.")
         return
 
-    # Filtrar solo los días con precipitaciones (> 0 mm)
+    # Filtrar solo los días con precipitaciones (> 0 mm), excluyendo el día actual en curso
     resultado = {}
     for fecha, valores in sorted(lluvia_por_dia.items()):
+        if fecha == hoy_str:
+            continue  # Saltea el día de hoy hasta que termine el día
+            
         total_dia = max(valores) if valores else 0.0
         if total_dia > 0:
             resultado[fecha] = round(total_dia, 2)
