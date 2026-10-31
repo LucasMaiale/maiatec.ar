@@ -425,11 +425,27 @@
 </div>
 
 <script>
+    function getMonday(date) {
+        const d = new Date(date);
+        const day = d.getDay();
+        const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+        const monday = new Date(d.setDate(diff));
+        
+        const year = monday.getFullYear();
+        const month = String(monday.getMonth() + 1).padStart(2, '0');
+        const mDay = String(monday.getDate()).padStart(2, '0');
+        return `${year}-${month}-${mDay}`;
+    }
+
     async function update() {
         try {
-            const res = await fetch('/data/latest.json?t=' + Date.now());
-            if (!res.ok) throw new Error();
-            const json = await res.json();
+            const [resLatest, resHistory] = await Promise.all([
+                fetch('/data/latest.json?t=' + Date.now()),
+                fetch('/data/lluvias_acumuladas.json?t=' + Date.now())
+            ]);
+
+            if (!resLatest.ok) throw new Error();
+            const json = await resLatest.json();
             const d = json.data;
 
             document.getElementById('temp').innerText = parseFloat(d.outdoor.temperature.value).toFixed(1);
@@ -438,7 +454,6 @@
             document.getElementById('press').innerText = Math.round(d.pressure.relative.value);
             document.getElementById('uv').innerText = d.solar_and_uvi.uvi.value;
             document.getElementById('rain-24').innerText = parseFloat(d.rainfall.daily.value).toFixed(1);
-            document.getElementById('rain-week').innerText = parseFloat(d.rainfall.weekly.value).toFixed(1);
             document.getElementById('rain-month').innerText = parseFloat(d.rainfall.monthly.value).toFixed(1);
             document.getElementById('wind').innerText = parseFloat(d.wind.wind_speed.value).toFixed(1);
             document.getElementById('gust').innerText = parseFloat(d.wind.wind_gust.value).toFixed(1);
@@ -446,6 +461,22 @@
             const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO'];
             const angle = d.wind.wind_direction.value;
             document.getElementById('wind-dir').innerText = dirs[Math.round(angle / 22.5) % 16];
+
+            let rainWeekTotal = 0;
+            if (resHistory.ok) {
+                const historyData = await resHistory.json();
+                const mondayStr = getMonday(new Date());
+
+                for (const [dateStr, rainMm] of Object.entries(historyData)) {
+                    if (dateStr >= mondayStr) {
+                        rainWeekTotal += parseFloat(rainMm);
+                    }
+                }
+            } else {
+                rainWeekTotal = parseFloat(d.rainfall.weekly.value);
+            }
+
+            document.getElementById('rain-week').innerText = rainWeekTotal.toFixed(1);
 
             const date = new Date(json.time * 1000);
             document.getElementById('last-update').innerText = date.toLocaleTimeString('es-AR', {
