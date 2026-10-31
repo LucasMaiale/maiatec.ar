@@ -2,7 +2,7 @@ import json
 import os
 from datetime import datetime
 
-def procesar_historial_lluvia(anio_inicio=2026, mes_inicio=4, ruta_destino='lluvias_acumuladas.json'):
+def procesar_historial_lluvia(anio_inicio=2026, mes_inicio=4, ruta_destino='data/lluvias_acumuladas.json'):
     ahora = datetime.now()
     anio_actual = ahora.year
     mes_actual = ahora.month
@@ -81,6 +81,9 @@ def procesar_historial_lluvia(anio_inicio=2026, mes_inicio=4, ruta_destino='lluv
         print("\nRevisión terminada: no se registraron precipitaciones en el período analizado.")
         return
 
+    # Aseguramos que la carpeta data exista por las dudas
+    os.makedirs(os.path.dirname(ruta_destino), exist_ok=True)
+
     try:
         with open(ruta_destino, 'w', encoding='utf-8') as f:
             json.dump(resultado, f, ensure_ascii=False, indent=4)
@@ -88,6 +91,6 @@ def procesar_historial_lluvia(anio_inicio=2026, mes_inicio=4, ruta_destino='lluv
     except Exception as e:
         print(f"\nError al escribir el archivo de salida: {e}")
 
-# --- EJECUCIÓN ---
-# Arranca en 2026_04 y llega dinámicamente hasta el mes actual
-procesar_historial_lluvia(anio_inicio=2026, mes_inicio=4)
+if __name__ == "__main__":
+    # Arranca en 2026_04 y llega dinámicamente hasta el mes actual
+    procesar_historial_lluvia(anio_inicio=2026, mes_inicio=4)
