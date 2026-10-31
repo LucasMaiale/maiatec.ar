@@ -17,7 +17,6 @@
 
     <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
 
-
     <script type="application/ld+json">
     {
     "@context": "https://schema.org",
@@ -182,6 +181,95 @@
             margin-top: 4px;
         }
 
+        /* Acordeón desplegable para lluvia */
+        .details-item {
+            border-bottom: 1px solid var(--border);
+            padding: 15px 0;
+        }
+
+        .details-item summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--sub);
+            letter-spacing: 0.5px;
+            list-style: none;
+        }
+
+        .details-item summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .details-item summary::after {
+            content: "▼";
+            font-size: 0.7rem;
+            color: var(--text);
+            margin-left: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .details-item[open] summary::after {
+            transform: rotate(180deg);
+        }
+
+        .rain-table-container {
+            max-height: 250px;
+            overflow-y: auto;
+            margin-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .rain-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .rain-table th {
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--sub);
+            text-transform: uppercase;
+            padding: 8px 0;
+            border-bottom: 2px solid var(--text);
+            text-align: left;
+        }
+
+        .rain-table th:last-child {
+            text-align: right;
+        }
+
+        .rain-table td {
+            padding: 8px 0;
+            font-size: 0.8rem;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .rain-table .rain-date {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .rain-table .rain-val-cell {
+            text-align: right;
+            font-weight: 900;
+            font-size: 1rem;
+            letter-spacing: -0.5px;
+        }
+
+        .rain-table .rain-unit {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--sub);
+            margin-left: 2px;
+        }
+
         footer { 
             margin-top: 30px; 
             border-top: 1px solid var(--border); 
@@ -257,7 +345,7 @@
         <span id="status" aria-live="polite">Cargando...</span>
     </header>
 
-		<p class="seo-intro">El clima en Chacabuco. Datos meteorológicos actualizados cada 10 minutos.</p>
+        <p class="seo-intro">El clima en Chacabuco. Datos meteorológicos actualizados cada 10 minutos.</p>
 
     <main class="grid" data-nosnippet>
         <article class="item">
@@ -317,13 +405,6 @@
             </div>
         </article>
 
-        <article class="item highlight">
-            <span class="label">Último Evento</span>
-            <div class="value-box">
-                <span class="value" id="rain-event">&nbsp;</span><span class="unit">mm</span>
-            </div>
-        </article>        
-
         <article class="item">
             <span class="label">Lluvia Semana</span>
             <div class="value-box">
@@ -338,6 +419,26 @@
             </div>
         </article>        
 
+        <details class="details-item">
+            <summary>
+                <span class="label">Historial de Lluvia</span>
+            </summary>
+            <div class="rain-table-container">
+                <table class="rain-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Lluvia (mm)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rain-history-body">
+                        <tr>
+                            <td colspan="2" style="text-align: center; color: var(--sub);">Cargando historial...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </details>
 
     </main>
 
@@ -376,8 +477,6 @@
             document.getElementById('press').innerText = Math.round(d.pressure.relative.value);
             document.getElementById('uv').innerText = d.solar_and_uvi.uvi.value;
             document.getElementById('rain-24').innerText = parseFloat(d.rainfall.daily.value).toFixed(1);
-            document.getElementById('rain-event').innerText = parseFloat(d.rainfall.event.value).toFixed(1);
-            document.getElementById('rain-week').innerText = parseFloat(d.rainfall.weekly.value).toFixed(1);
             document.getElementById('rain-month').innerText = parseFloat(d.rainfall.monthly.value).toFixed(1);
             document.getElementById('wind').innerText = parseFloat(d.wind.wind_speed.value).toFixed(1);
             document.getElementById('gust').innerText = parseFloat(d.wind.wind_gust.value).toFixed(1);
@@ -395,7 +494,67 @@
             document.getElementById('status').innerText = 'Reconectando...';
         }
     }
+
+    async function loadRainHistory() {
+        try {
+            const res = await fetch('/data/lluvia_acumulado.json?t=' + Date.now());
+            if (!res.ok) throw new Error();
+            const rainData = await res.json();
+            
+            const tbody = document.getElementById('rain-history-body');
+            tbody.innerHTML = '';
+
+            const sortedDates = Object.keys(rainData).sort().reverse();
+
+            // Lógica para calcular la semana desde Lunes 00:00 hasta Domingo 23:59
+            const now = new Date();
+            const currentDay = now.getDay(); // 0: Domingo, 1: Lunes, ..., 6: Sábado
+            const diffToMonday = (currentDay === 0 ? 6 : currentDay - 1);
+            
+            const mondayDate = new Date(now);
+            mondayDate.setDate(now.getDate() - diffToMonday);
+            mondayDate.setHours(0, 0, 0, 0);
+
+            const sundayDate = new Date(mondayDate);
+            sundayDate.setDate(mondayDate.getDate() + 6);
+            sundayDate.setHours(23, 59, 59, 999);
+
+            let weeklySum = 0;
+
+            sortedDates.forEach(dateStr => {
+                const mm = parseFloat(rainData[dateStr]).toFixed(1);
+                
+                // Parseamos la fecha en formato local para comparar
+                const [year, month, day] = dateStr.split('-').map(Number);
+                const entryDate = new Date(year, month - 1, day, 12, 0, 0);
+
+                if (entryDate >= mondayDate && entryDate <= sundayDate) {
+                    weeklySum += parseFloat(rainData[dateStr]);
+                }
+
+                const formattedDate = `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="rain-date">${formattedDate}</td>
+                    <td class="rain-val-cell">${mm} <span class="rain-unit">mm</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('rain-week').innerText = weeklySum.toFixed(1);
+
+        } catch (e) {
+            document.getElementById('rain-history-body').innerHTML = `
+                <tr>
+                    <td colspan="2" style="text-align: center; color: var(--sub);">No se pudo cargar el historial.</td>
+                </tr>
+            `;
+        }
+    }
+
     update();
+    loadRainHistory();
     setInterval(update, 300000);
 
     function addBookmark() {
