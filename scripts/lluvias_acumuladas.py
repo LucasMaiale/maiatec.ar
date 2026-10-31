@@ -25,7 +25,7 @@ def procesar_historial_lluvia(anio_inicio=2026, mes_inicio=4, ruta_destino='lluv
     print(f"Revisando archivos desde {anio_inicio}_{mes_inicio:02d} hasta {anio_actual}_{mes_actual:02d}...\n")
 
     for periodo in meses_a_procesar:
-        nombre_archivo = f"maiatec_{periodo}.json"
+        nombre_archivo = f"data/maiatec_{periodo}.json"
 
         if not os.path.exists(nombre_archivo):
             print(f"[-] No se encontró '{nombre_archivo}', salteando...")
