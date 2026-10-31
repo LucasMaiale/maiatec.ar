@@ -497,7 +497,7 @@
 
     async function loadRainHistory() {
         try {
-            const res = await fetch('/data/lluvia_acumulado.json?t=' + Date.now());
+            const res = await fetch('/data/lluvias_acumuladas.json?t=' + Date.now());
             if (!res.ok) throw new Error();
             const rainData = await res.json();
             

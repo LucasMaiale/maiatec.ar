@@ -2,7 +2,7 @@ import json
 import os
 from datetime import datetime
 
-def procesar_historial_lluvia(anio_inicio=2026, mes_inicio=4, ruta_destino='lluvia_acumulado.json'):
+def procesar_historial_lluvia(anio_inicio=2026, mes_inicio=4, ruta_destino='lluvias_acumuladas.json'):
     ahora = datetime.now()
     anio_actual = ahora.year
     mes_actual = ahora.month
