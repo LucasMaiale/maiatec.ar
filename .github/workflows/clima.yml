@@ -24,7 +24,7 @@ jobs:
           ECOWITT_API_KEY: ${{ secrets.ECOWITT_API_KEY }}
           ECOWITT_STATION_MAC: ${{ secrets.ECOWITT_STATION_MAC }}
         run: |
-          python scripts/update_weather.py
+          python scripts/actualizar_actual.py
 
       - name: Commit y Push
         run: |
