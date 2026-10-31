@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1B438A"> <!-- Pinta la barra del navegador en celulares -->
+    
+    <title>Historial y Registro de Lluvias en Chacabuco | Maiatec</title>
+    <meta name="description" content="Consulta el registro histórico de lluvias acumuladas en Chacabuco día por día. Datos exactos registrados por la estación meteorológica propia de Maiatec.">
+    <link rel="canonical" href="https://maiatec.ar/historial-lluvias-chacabuco/" />
+    
+    <meta property="og:title" content="Historial y Registro de Lluvias en Chacabuco | Maiatec">
+    <meta property="og:description" content="Registro diario de precipitaciones y acumulados de lluvia en Chacabuco en tiempo real.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://maiatec.ar/historial-lluvias-chacabuco/">
+
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+
+    <script type="application/ld+json">
+    {
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+        "@type": "Organization",
+        "@id": "https://maiatec.ar/#organization",
+        "name": "MAIATEC",
+        "url": "https://maiatec.ar"
+        },
+        {
+        "@type": "WebPage",
+        "@id": "https://maiatec.ar/historial-lluvias-chacabuco/#webpage",
+        "url": "https://maiatec.ar/historial-lluvias-chacabuco/",
+        "name": "Historial y Registro de Lluvias en Chacabuco | Maiatec",
+        "description": "Consulta el registro histórico de lluvias acumuladas en Chacabuco día por día. Datos exactos registrados por la estación meteorológica propia de Maiatec.",
+        "about": {
+            "@type": "Place",
+            "name": "Chacabuco, Buenos Aires, Argentina",
+            "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": -34.63797751814227,
+            "longitude": -60.48544502476414
+            }
+        }
+        }
+    ]
+    }
+    </script>
+
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #000000;
+            --sub: #888888;
+            --border: #f0f0f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text); 
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .brand-bar {
+            width: 100%;
+            padding: 10px 15px;
+            background: #1B438A;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 1000;
+            text-transform: uppercase;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .brand-bar a { color: #fff; text-decoration: none; border-bottom: 1px solid #fff; }
+
+        .container { 
+            max-width: 450px; 
+            width: 100%; 
+            padding: 25px 20px; 
+        }
+
+        header { 
+            border-bottom: 3px solid var(--text); 
+            padding-bottom: 10px; 
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-content: center;
+        }
+
+        h1 { 
+            font-size: 1.1rem; 
+            font-weight: 900; 
+            text-align: center;
+            text-transform: uppercase; 
+            letter-spacing: -1px; 
+            width: 100%; 
+            margin-bottom: 5px; 
+        }
+        #status { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: var(--sub); width: 100%; text-align: center; }
+        
+        @media (min-width: 400px) {
+            h1 { font-size: 1.4rem; }
+        }
+
+        /* Texto SEO visible */
+        .seo-intro {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #aaa;
+            line-height: 1.3;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        /* Card del total acumulado en la semana */
+        .summary-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fafafa;
+            border: 1.5px solid var(--text);
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .summary-card .label {
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--text);
+            letter-spacing: 0.5px;
+        }
+
+        .summary-card .value {
+            font-size: 2rem;
+            font-weight: 900;
+            letter-spacing: -1px;
+            color: #1B438A;
+        }
+
+        .summary-card .unit {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--sub);
+            margin-left: 2px;
+        }
+
+        /* Contenedor de tabla principal */
+        .rain-table-container {
+            width: 100%;
+            margin-top: 10px;
+            padding: 5px 10px;
+            border: 1.5px solid var(--text);
+            border-radius: 6px;
+        }
+
+        .rain-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .rain-table th {
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--sub);
+            text-transform: uppercase;
+            padding: 8px 0;
+            border-bottom: 2px solid var(--text);
+            text-align: left;
+        }
+
+        .rain-table th:last-child {
+            text-align: right;
+        }
+
+        .rain-table td {
+            padding: 10px 0;
+            font-size: 0.8rem;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .rain-table .rain-date {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .rain-table .rain-val-cell {
+            text-align: right;
+            font-weight: 900;
+            font-size: 1rem;
+            letter-spacing: -0.5px;
+        }
+
+        .rain-table .rain-unit {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--sub);
+            margin-left: 2px;
+        }
+
+        footer { 
+            margin-top: 30px; 
+            border-top: 1px solid var(--border); 
+            padding-top: 15px;
+            width: 100%;
+        }
+        
+        .location-note {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #aaa;
+            line-height: 1.3;
+            margin-top: 8px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .bookmark-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-top: 12px;
+            padding: 12px;
+            background-color: transparent;
+            border: 1.5px solid var(--text);
+            color: var(--text);
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            border-radius: 6px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .bookmark-btn:hover {
+            background-color: var(--text);
+            color: var(--bg);
+        }
+
+        .btn-primary {
+            background-color: #1B438A;
+            color: #fff;
+            border-color: #1B438A;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--text);
+            color: var(--bg);
+            border-color: var(--text);
+        }
+    </style>
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8BPCML95R3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-8BPCML95R3');
+    </script>
+</head>
+<body>
+
+<nav class="brand-bar">
+    SERVICIO A LA COMUNIDAD BRINDADO POR <a href="https://maiatec.ar">MAIATEC ELECTRÓNICA</a>
+</nav>
+
+<div class="container">
+    <header>
+        <h1>Registro e historial de lluvias en Chacabuco</h1>
+        <span id="status" aria-live="polite">Cargando historial...</span>
+    </header>
+
+    <p class="seo-intro">Acumulados diarios de precipitaciones medidos por la estación meteorológica Maiatec.</p>
+
+    <main class="grid">
+        <!-- Acceso directo a estación en vivo -->
+        <a href="/clima-chacabuco/" class="bookmark-btn btn-primary">
+            📡 Ver Estación Meteorológica en Vivo
+        </a>
+
+        <!-- Card destacado con las lluvias acumuladas de esta semana -->
+        <div class="summary-card">
+            <span class="label">Lluvias esta Semana</span>
+            <div>
+                <span class="value" id="rain-week">0.0</span><span class="unit">mm</span>
+            </div>
+        </div>
+
+        <div class="rain-table-container">
+            <table class="rain-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Lluvia (mm)</th>
+                    </tr>
+                </thead>
+                <tbody id="rain-history-body">
+                    <tr>
+                        <td colspan="2" style="text-align: center; color: var(--sub);">Cargando historial...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer>
+        <a href="https://wa.me/5492352502050?text=QUIERO%20TENER%20MI%20PROPIA%20ESTACI%C3%93N"  
+           class="bookmark-btn"
+           target="_blank"
+           rel="noopener">
+            ¿Querés tener tu propia estación? Contactanos
+        </a>
+        
+        <button type="button" class="bookmark-btn" onclick="addBookmark()">
+            ★ Agregá esta página a Marcadores
+        </button>
+
+        <div class="location-note">
+            Medición de lluvias en Chacabuco, Buenos Aires<br>Estación ubicada en las inmediaciones del Club Social
+        </div>
+    </footer>
+</div>
+
+<script>
+    async function loadRainHistory() {
+        try {
+            const res = await fetch('/data/lluvias_acumuladas.json?t=' + Date.now());
+            if (!res.ok) throw new Error();
+            const rainData = await res.json();
+            
+            const tbody = document.getElementById('rain-history-body');
+            tbody.innerHTML = '';
+
+            const sortedDates = Object.keys(rainData).sort().reverse();
+
+            // Lógica para calcular la semana desde Lunes 00:00 hasta Domingo 23:59
+            const now = new Date();
+            const currentDay = now.getDay(); // 0: Domingo, 1: Lunes, ..., 6: Sábado
+            const diffToMonday = (currentDay === 0 ? 6 : currentDay - 1);
+            
+            const mondayDate = new Date(now);
+            mondayDate.setDate(now.getDate() - diffToMonday);
+            mondayDate.setHours(0, 0, 0, 0);
+
+            const sundayDate = new Date(mondayDate);
+            sundayDate.setDate(mondayDate.getDate() + 6);
+            sundayDate.setHours(23, 59, 59, 999);
+
+            let weeklySum = 0;
+
+            sortedDates.forEach(dateStr => {
+                const mm = parseFloat(rainData[dateStr]).toFixed(1);
+                
+                // Parseamos la fecha en formato local para comparar
+                const [year, month, day] = dateStr.split('-').map(Number);
+                const entryDate = new Date(year, month - 1, day, 12, 0, 0);
+
+                if (entryDate >= mondayDate && entryDate <= sundayDate) {
+                    weeklySum += parseFloat(rainData[dateStr]);
+                }
+
+                const formattedDate = `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="rain-date">${formattedDate}</td>
+                    <td class="rain-val-cell">${mm} <span class="rain-unit">mm</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('rain-week').innerText = weeklySum.toFixed(1);
+            document.getElementById('status').innerText = 'Actualizado';
+
+        } catch (e) {
+            document.getElementById('rain-history-body').innerHTML = `
+                <tr>
+                    <td colspan="2" style="text-align: center; color: var(--sub);">No se pudo cargar el historial.</td>
+                </tr>
+            `;
+            document.getElementById('status').innerText = 'Error al cargar';
+        }
+    }
+
+    loadRainHistory();
+
+    function addBookmark() {
+        const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+        const shortcut = isMac ? 'Cmd + D' : 'Ctrl + D';
+        alert('Para guardar el acceso a esta página, agregala a los Marcadores de tu celular o presioná ' + shortcut + ' si estás en una PC');
+    }
+</script>
+
+</body>
+</html>
