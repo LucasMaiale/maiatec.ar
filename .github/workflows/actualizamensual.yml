@@ -33,6 +33,7 @@ jobs:
         run: |
           mkdir -p data
           python3 scripts/actualizar_mensual.py
+          python3 scripts/lluvias_acumuladas.py
 
       - name: Commit y Push
         run: |
