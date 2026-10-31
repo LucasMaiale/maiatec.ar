@@ -181,46 +181,76 @@
             margin-top: 4px;
         }
 
-        /* Acordeón desplegable para lluvia */
+        /* Acordeón desplegable integrado al estilo visual */
         .details-item {
             border-bottom: 1px solid var(--border);
-            padding: 15px 0;
+            padding: 12px 0;
         }
 
         .details-item summary {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 12px 14px;
+            background-color: transparent;
+            border: 1.5px solid var(--text);
+            border-radius: 6px;
             cursor: pointer;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: var(--sub);
-            letter-spacing: 0.5px;
             list-style: none;
+            transition: background-color 0.2s, color 0.2s;
         }
 
         .details-item summary::-webkit-details-marker {
             display: none;
         }
 
+        .details-item summary .label {
+            color: var(--text);
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            transition: color 0.2s;
+        }
+
         .details-item summary::after {
             content: "▼";
             font-size: 0.7rem;
             color: var(--text);
-            margin-left: 8px;
-            transition: transform 0.2s ease;
+            transition: transform 0.25s ease, color 0.2s;
         }
 
+        /* Hover: invierte colores */
+        .details-item summary:hover {
+            background-color: var(--text);
+        }
+
+        .details-item summary:hover .label,
+        .details-item summary:hover::after {
+            color: var(--bg);
+        }
+
+        /* Estado abierto */
         .details-item[open] summary::after {
             transform: rotate(180deg);
         }
 
+        .details-item[open] summary {
+            background-color: var(--text);
+        }
+
+        .details-item[open] summary .label,
+        .details-item[open] summary::after {
+            color: var(--bg);
+        }
+
+        /* Contenedor de la tabla del historial */
         .rain-table-container {
             max-height: 250px;
             overflow-y: auto;
-            margin-top: 12px;
-            border-top: 1px solid var(--border);
+            margin-top: 10px;
+            padding: 5px 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
         }
 
         .rain-table {
@@ -322,6 +352,7 @@
             border-radius: 10px; 
             border-bottom: none !important; 
         }
+        
     </style>
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-8BPCML95R3"></script>
