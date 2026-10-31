@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1B438A"> <!-- Pinta la barra del navegador en celulares -->
+    
+    <title>Clima y Tiempo en Chacabuco Hoy | Estación Meteorológica en Vivo - Maiatec</title>
+    <!-- <meta name="description" content="Consultá el clima en Chacabuco en tiempo real. Datos exactos de temperatura, viento y lluvia actualizados cada 10 minutos desde nuestra estación meteorológica propia."> -->
+    <meta name="description" content="Consultá el clima y el tiempo en Chacabuco en tiempo real. Datos exactos para el pronóstico local: temperatura, viento y lluvia actualizados cada 10 minutos.">
+    <link rel="canonical" href="https://maiatec.ar/clima-chacabuco/" />
+    
+    <meta property="og:title" content="Estación Meteorológica Chacabuco en Vivo | Maiatec">
+    <meta property="og:description" content="Datos meteorológicos exactos y en tiempo real desde el centro de Chacabuco.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://maiatec.ar/clima-chacabuco/">
+
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+
+    <script type="application/ld+json">
+    {
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+        "@type": "Organization",
+        "@id": "https://maiatec.ar/#organization",
+        "name": "MAIATEC",
+        "url": "https://maiatec.ar"
+        },
+        {
+        "@type": "WebPage",
+        "@id": "https://maiatec.ar/clima-chacabuco/#webpage",
+        "url": "https://maiatec.ar/clima-chacabuco/",
+        "name": "Clima y Tiempo en Chacabuco Hoy | Estación Meteorológica en Vivo - Maiatec",
+        "description": "Consultá el clima y el tiempo en Chacabuco en tiempo real. Datos exactos para el pronóstico local: temperatura, viento y lluvia actualizados cada 10 minutos.",
+        "about": {
+            "@type": "Place",
+            "name": "Chacabuco, Buenos Aires, Argentina",
+            "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": -34.63797751814227,
+            "longitude": -60.48544502476414
+            }
+        }
+        },
+        {
+        "@type": "Dataset",
+        "@id": "https://maiatec.ar/clima-chacabuco/#dataset",
+        "name": "Clima y Tiempo en Chacabuco en Vivo - Estación Maiatec",
+        "description": "Datos meteorológicos exactos de la ciudad de Chacabuco. Fuente original y proveedor de datos en tiempo real para Chacabuco en Red y la comunidad, obtenidos de estación propia.",
+        "url": "https://maiatec.ar/clima-chacabuco/",
+        "license": "https://creativecommons.org/licenses/by/4.0/",
+        "keywords": [
+            "clima chacabuco",
+            "tiempo chacabuco",
+            "estacion meteorologica chacabuco",
+            "temperatura actual chacabuco",
+            "lluvias chacabuco"
+        ],
+        "spatialCoverage": {
+            "@type": "Place",
+            "name": "Chacabuco, Buenos Aires, Argentina"
+        },
+        "variableMeasured": [
+            "Temperature",
+            "Humidity",
+            "Wind Speed",
+            "Rainfall",
+            "Dew Point",
+            "Atmospheric Pressure",
+            "UV Index"
+        ],
+        "creator": {
+            "@id": "https://maiatec.ar/#organization"
+        },
+        "publisher": {
+            "@id": "https://maiatec.ar/#organization"
+        }
+        }
+    ]
+    }
+    </script>
+
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #000000;
+            --sub: #888888;
+            --border: #f0f0f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text); 
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .brand-bar {
+            width: 100%;
+            padding: 10px 15px;
+            background: #1B438A;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 1000;
+            text-transform: uppercase;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .brand-bar a { color: #fff; text-decoration: none; border-bottom: 1px solid #fff; }
+
+        .container { 
+            max-width: 450px; 
+            width: 100%; 
+            padding: 25px 20px; 
+        }
+
+        header { 
+            border-bottom: 3px solid var(--text); 
+            padding-bottom: 10px; 
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-content: center;
+        }
+
+        h1 { 
+            font-size: 1.1rem; 
+            font-weight: 900; 
+            text-align: center;
+            text-transform: uppercase; 
+            letter-spacing: -1px; 
+            width: 100%; 
+            margin-bottom: 5px; }
+        #status { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: var(--sub); }
+        
+        /* Texto SEO visible y elegante */
+        .seo-intro {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #aaa;
+            line-height: 1.3;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .item { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 15px 0; 
+            border-bottom: 1px solid var(--border);
+        }
+
+        .label { font-size: 0.8rem; font-weight: 700; text-transform: uppercase; color: var(--sub); letter-spacing: 0.5px; }
+        .value-box { text-align: right; }
+        
+        .value { font-size: 2.2rem; font-weight: 900; letter-spacing: -1.5px; line-height: 0.9; min-width: 1.5ch; display: inline-block; }
+        @media (min-width: 400px) {
+            .value { font-size: 2.6rem; }
+            h1 { font-size: 1.4rem; }
+        }
+
+        .unit { font-size: 0.85rem; font-weight: 800; color: var(--sub); margin-left: 2px; }
+
+        .gust-sub { 
+            display: block;
+            font-size: 0.85rem; 
+            font-weight: 700; 
+            color: var(--sub); 
+            margin-top: 4px;
+        }
+
+        /* Acordeón desplegable para lluvia */
+        .details-item {
+            border-bottom: 1px solid var(--border);
+            padding: 15px 0;
+        }
+
+        .details-item summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--sub);
+            letter-spacing: 0.5px;
+            list-style: none;
+        }
+
+        .details-item summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .details-item summary::after {
+            content: "▼";
+            font-size: 0.7rem;
+            color: var(--text);
+            margin-left: 8px;
+            transition: transform 0.2s ease;
+        }
+
+        .details-item[open] summary::after {
+            transform: rotate(180deg);
+        }
+
+        .rain-table-container {
+            max-height: 250px;
+            overflow-y: auto;
+            margin-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .rain-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .rain-table th {
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--sub);
+            text-transform: uppercase;
+            padding: 8px 0;
+            border-bottom: 2px solid var(--text);
+            text-align: left;
+        }
+
+        .rain-table th:last-child {
+            text-align: right;
+        }
+
+        .rain-table td {
+            padding: 8px 0;
+            font-size: 0.8rem;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .rain-table .rain-date {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .rain-table .rain-val-cell {
+            text-align: right;
+            font-weight: 900;
+            font-size: 1rem;
+            letter-spacing: -0.5px;
+        }
+
+        .rain-table .rain-unit {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--sub);
+            margin-left: 2px;
+        }
+
+        footer { 
+            margin-top: 30px; 
+            border-top: 1px solid var(--border); 
+            padding-top: 15px;
+        }
+        .footer-line {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--sub);
+            margin-bottom: 4px;
+        }
+        .footer-line b { color: var(--text); }
+        
+        .location-note {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #aaa;
+            line-height: 1.3;
+            margin-top: 8px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .bookmark-btn {
+            display: block;
+            width: 100%;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: transparent;
+            border: 1.5px solid var(--text);
+            color: var(--text);
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .bookmark-btn:hover {
+            background-color: var(--text);
+            color: var(--bg);
+        }
+
+        .highlight { 
+            background-color: #f9f9f9; 
+            margin: 0 -10px; 
+            padding: 15px 10px; 
+            border-radius: 10px; 
+            border-bottom: none !important; 
+        }
+    </style>
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8BPCML95R3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-8BPCML95R3');
+    </script>
+    
+</head>
+<body>
+
+<nav class="brand-bar">
+    SERVICIO A LA COMUNIDAD BRINDADO POR <a href="https://maiatec.ar">MAIATEC ELECTRÓNICA</a>
+</nav>
+
+<div class="container">
+    <header>
+        <h1>Estado del tiempo en Chacabuco hoy en vivo</h1>
+        <span id="status" aria-live="polite">Cargando...</span>
+    </header>
+
+        <p class="seo-intro">El clima en Chacabuco. Datos meteorológicos actualizados cada 10 minutos.</p>
+
+    <main class="grid" data-nosnippet>
+        <article class="item">
+            <span class="label">Temperatura</span>
+            <div class="value-box">
+                <span class="value" id="temp">&nbsp;</span><span class="unit">°C</span>
+            </div>
+        </article>
+
+        <article class="item">
+            <span class="label">Humedad</span>
+            <div class="value-box">
+                <span class="value" id="hum">&nbsp;</span><span class="unit">%</span>
+            </div>
+        </article>
+        
+        <article class="item">
+            <span class="label">Punto de Rocío</span>
+            <div class="value-box">
+                <span class="value" id="dewpoint">&nbsp;</span><span class="unit">°C</span>
+            </div>
+        </article>
+
+        <article class="item">
+            <span class="label">Presión</span>
+            <div class="value-box">
+                <span class="value" id="press">&nbsp;</span><span class="unit">hPa</span>
+            </div>
+        </article>
+
+        <article class="item">
+            <span class="label">Dirección Viento</span>
+            <div class="value-box">
+                <span class="value" id="wind-dir">&nbsp;</span>
+            </div>
+        </article>
+
+        <article class="item">
+            <span class="label">Velocidad Viento</span>
+            <div class="value-box">
+                <div><span class="value" id="wind">&nbsp;</span><span class="unit">km/h</span></div>
+                <span class="gust-sub">(Ráfaga: <span id="gust">&nbsp;</span> km/h)</span>
+            </div>
+        </article>
+
+        <article class="item">
+            <span class="label">Índice UV</span>
+            <div class="value-box">
+                <span class="value" id="uv">&nbsp;</span>
+            </div>
+        </article>
+
+        <article class="item">
+            <span class="label">Lluvia hoy</span>
+            <div class="value-box">
+                <span class="value" id="rain-24">&nbsp;</span><span class="unit">mm</span>
+            </div>
+        </article>
+
+        <article class="item">
+            <span class="label">Lluvias esta Semana</span>
+            <div class="value-box">
+                <span class="value" id="rain-week">&nbsp;</span><span class="unit">mm</span>
+            </div>
+        </article>
+
+        <article class="item">
+            <span class="label">Lluvias este Mes</span>
+            <div class="value-box">
+                <span class="value" id="rain-month">&nbsp;</span><span class="unit">mm</span>
+            </div>
+        </article>        
+
+        <details class="details-item">
+            <summary>
+                <span class="label">Historial de Lluvias</span>
+            </summary>
+            <div class="rain-table-container">
+                <table class="rain-table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Lluvia (mm)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rain-history-body">
+                        <tr>
+                            <td colspan="2" style="text-align: center; color: var(--sub);">Cargando historial...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </details>
+
+    </main>
+
+    <footer>
+        <div class="footer-line">Actualizado: <b id="last-update">--:--</b></div>
+        <div class="location-note">
+            Estación meteorológica propia ubicada en las<br>inmediaciones del Club Social en Chacabuco
+            <!-- Orgullosos proveedores de datos de clima en tiempo real para <strong>Chacabuco en Red</strong> y la comunidad. -->
+        </div>
+        
+        <a href="https://wa.me/5492352502050?text=QUIERO%20TENER%20MI%20PROPIA%20ESTACI%C3%93N"  
+           class="bookmark-btn"
+           target="_blank"
+           rel="noopener"
+           style="text-decoration: none;text-align: center;">
+            ¿Querés tener tu propia estación? Contactanos
+        </a>
+        
+        <button type="button" class="bookmark-btn" onclick="addBookmark()">
+            ★ Agregá esta página a Marcadores
+        </button>
+    </footer>
+</div>
+
+<script>
+    async function update() {
+        try {
+            const res = await fetch('/data/latest.json?t=' + Date.now());
+            if (!res.ok) throw new Error();
+            const json = await res.json();
+            const d = json.data;
+
+            document.getElementById('temp').innerText = parseFloat(d.outdoor.temperature.value).toFixed(1);
+            document.getElementById('hum').innerText = d.outdoor.humidity.value;
+            document.getElementById('dewpoint').innerText = parseFloat(d.outdoor.dew_point.value).toFixed(1);
+            document.getElementById('press').innerText = Math.round(d.pressure.relative.value);
+            document.getElementById('uv').innerText = d.solar_and_uvi.uvi.value;
+            document.getElementById('rain-24').innerText = parseFloat(d.rainfall.daily.value).toFixed(1);
+            document.getElementById('rain-month').innerText = parseFloat(d.rainfall.monthly.value).toFixed(1);
+            document.getElementById('wind').innerText = parseFloat(d.wind.wind_speed.value).toFixed(1);
+            document.getElementById('gust').innerText = parseFloat(d.wind.wind_gust.value).toFixed(1);
+            
+            const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSO','SO','OSO','O','ONO','NO','NNO'];
+            const angle = d.wind.wind_direction.value;
+            document.getElementById('wind-dir').innerText = dirs[Math.round(angle / 22.5) % 16];
+
+            const date = new Date(json.time * 1000);
+            document.getElementById('last-update').innerText = date.toLocaleTimeString('es-AR', {
+                hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'America/Argentina/Buenos_Aires'
+            });
+            document.getElementById('status').innerText = 'En Vivo';
+        } catch (e) {
+            document.getElementById('status').innerText = 'Reconectando...';
+        }
+    }
+
+    async function loadRainHistory() {
+        try {
+            const res = await fetch('/data/lluvia_acumulado.json?t=' + Date.now());
+            if (!res.ok) throw new Error();
+            const rainData = await res.json();
+            
+            const tbody = document.getElementById('rain-history-body');
+            tbody.innerHTML = '';
+
+            const sortedDates = Object.keys(rainData).sort().reverse();
+
+            // Lógica para calcular la semana desde Lunes 00:00 hasta Domingo 23:59
+            const now = new Date();
+            const currentDay = now.getDay(); // 0: Domingo, 1: Lunes, ..., 6: Sábado
+            const diffToMonday = (currentDay === 0 ? 6 : currentDay - 1);
+            
+            const mondayDate = new Date(now);
+            mondayDate.setDate(now.getDate() - diffToMonday);
+            mondayDate.setHours(0, 0, 0, 0);
+
+            const sundayDate = new Date(mondayDate);
+            sundayDate.setDate(mondayDate.getDate() + 6);
+            sundayDate.setHours(23, 59, 59, 999);
+
+            let weeklySum = 0;
+
+            sortedDates.forEach(dateStr => {
+                const mm = parseFloat(rainData[dateStr]).toFixed(1);
+                
+                // Parseamos la fecha en formato local para comparar
+                const [year, month, day] = dateStr.split('-').map(Number);
+                const entryDate = new Date(year, month - 1, day, 12, 0, 0);
+
+                if (entryDate >= mondayDate && entryDate <= sundayDate) {
+                    weeklySum += parseFloat(rainData[dateStr]);
+                }
+
+                const formattedDate = `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="rain-date">${formattedDate}</td>
+                    <td class="rain-val-cell">${mm} <span class="rain-unit">mm</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('rain-week').innerText = weeklySum.toFixed(1);
+
+        } catch (e) {
+            document.getElementById('rain-history-body').innerHTML = `
+                <tr>
+                    <td colspan="2" style="text-align: center; color: var(--sub);">No se pudo cargar el historial.</td>
+                </tr>
+            `;
+        }
+    }
+
+    update();
+    loadRainHistory();
+    setInterval(update, 300000);
+
+    function addBookmark() {
+        const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+        const shortcut = isMac ? 'Cmd + D' : 'Ctrl + D';
+        alert('Para guardar el acceso a esta página, agregala a los Marcadores de tu celular o presioná ' + shortcut + ' si estás en una PC');
+    }
+</script>
+
+</body>
+</html>
