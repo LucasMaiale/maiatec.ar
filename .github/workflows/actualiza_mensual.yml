@@ -1,7 +1,6 @@
 name: Actualiza Historial Mensual
 
 on:
-  # Disparador manual para que le pegue cronjob.org
   workflow_dispatch: 
 
 jobs:
@@ -24,11 +23,9 @@ jobs:
 
       - name: Ejecutar Scripts (Ecowitt API)
         env:
-          # Pasamos los secretos como variables para que Python los consuma
           APP_KEY: ${{ secrets.ECOWITT_APPLICATION_KEY }}
           API_KEY: ${{ secrets.ECOWITT_API_KEY }}
           MAC: ${{ secrets.ECOWITT_STATION_MAC }}
-          # Ajustamos la hora local para que el corte del día sea exacto
           TZ: America/Argentina/Buenos_Aires
         run: |
           mkdir -p data
@@ -38,9 +35,19 @@ jobs:
 
       - name: Commit y Push
         run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
-          git add data/*.json
-          git commit -m "Clima Chacabuco: Actualización de datos" || echo "Sin cambios"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Guardar temporalmente lo que generaron los scripts de Python
+          git stash
+          
+          # Traer los cambios del remoto para estar al día
           git pull --rebase origin main
-          git push
+          
+          # Restaurar los archivos modificados/creados por Python
+          git stash pop || true
+          
+          # Agregamos todo en data/ y mandamos el commit/push
+          git add data/*.json
+          git commit -m "Clima Chacabuco: Actualización de datos" || echo "Sin cambios para commitear"
+          git push origin main
