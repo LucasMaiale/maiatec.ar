@@ -448,12 +448,14 @@
             const json = await resLatest.json();
             const d = json.data;
 
+            const rainToday = parseFloat(d.rainfall.daily.value) || 0;
+
             document.getElementById('temp').innerText = parseFloat(d.outdoor.temperature.value).toFixed(1);
             document.getElementById('hum').innerText = d.outdoor.humidity.value;
             document.getElementById('dewpoint').innerText = parseFloat(d.outdoor.dew_point.value).toFixed(1);
             document.getElementById('press').innerText = Math.round(d.pressure.relative.value);
             document.getElementById('uv').innerText = d.solar_and_uvi.uvi.value;
-            document.getElementById('rain-24').innerText = parseFloat(d.rainfall.daily.value).toFixed(1);
+            document.getElementById('rain-24').innerText = rainToday.toFixed(1);
             document.getElementById('rain-month').innerText = parseFloat(d.rainfall.monthly.value).toFixed(1);
             document.getElementById('wind').innerText = parseFloat(d.wind.wind_speed.value).toFixed(1);
             document.getElementById('gust').innerText = parseFloat(d.wind.wind_gust.value).toFixed(1);
@@ -472,6 +474,7 @@
                         rainWeekTotal += parseFloat(rainMm);
                     }
                 }
+                rainWeekTotal += rainToday;
             } else {
                 rainWeekTotal = parseFloat(d.rainfall.weekly.value);
             }
