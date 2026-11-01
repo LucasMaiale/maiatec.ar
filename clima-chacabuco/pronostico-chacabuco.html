@@ -125,7 +125,7 @@
         }
 
         .experimental-note {
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             font-weight: 700;
             color: var(--sub);
             text-transform: uppercase;
@@ -142,7 +142,7 @@
         .rain-table-container {
             width: 100%;
             margin-top: 10px;
-            padding: 5px 10px;
+            padding: 5px 12px;
             border: 1.5px solid var(--text);
             border-radius: 6px;
         }
@@ -156,13 +156,14 @@
             position: sticky;
             top: 0;
             background: var(--bg);
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             font-weight: 800;
             color: var(--sub);
             text-transform: uppercase;
-            padding: 8px 0;
+            padding: 12px 0;
             border-bottom: 2px solid var(--text);
             text-align: left;
+            z-index: 1;
         }
 
         .rain-table th:last-child {
@@ -170,25 +171,27 @@
         }
 
         .rain-table td {
-            padding: 10px 0;
-            font-size: 0.8rem;
+            padding: 12px 0;
+            font-size: 0.95rem;
             border-bottom: 1px dashed var(--border);
         }
 
         .rain-table .rain-date {
             font-weight: 700;
+            font-size: 0.95rem;
             color: var(--text);
         }
 
         .rain-table .rain-val-cell {
             text-align: right;
             font-weight: 900;
-            font-size: 1rem;
+            font-size: 1.15rem;
             letter-spacing: -0.5px;
+            color: #1B438A;
         }
 
         .rain-table .rain-unit {
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             font-weight: 800;
             color: var(--sub);
             margin-left: 2px;
@@ -198,15 +201,15 @@
         .rain-table tr.forecast-day-header td {
             background-color: var(--border);
             font-weight: 900;
-            font-size: 0.75rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            padding: 6px 8px;
+            padding: 8px 10px;
             border-bottom: 1px solid var(--text);
         }
 
         .forecast-subtext {
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             color: var(--sub);
             font-weight: 600;
         }
@@ -309,7 +312,6 @@
 
     <main class="grid">
 
-
         <div class="rain-table-container">
             <table class="rain-table">
                 <thead>
@@ -325,14 +327,14 @@
                 </tbody>
             </table>
         </div>
-                <!-- Acceso directo a estación en vivo para interconexión SEO -->
+        
+        <!-- Acceso directo a estación en vivo para interconexión SEO -->
         <a href="/clima-chacabuco/" class="bookmark-btn btn-primary">
             Volver a la Estación Meteorológica en Vivo
         </a>
     </main>
 
     <footer>
-
         <a href="https://wa.me/5492352502050?text=QUIERO%20TENER%20MI%20PROPIA%20ESTACI%C3%93N"  
            class="bookmark-btn"
            target="_blank"
