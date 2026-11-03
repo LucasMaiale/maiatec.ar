@@ -24,7 +24,19 @@
         "@type": "LocalBusiness",
         "@id": "https://maiatec.ar/#organization",
         "name": "MAIATEC",
-        "url": "https://maiatec.ar"
+        "url": "https://maiatec.ar",
+        "logo": "https://maiatec.ar/logo.png",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Chacabuco",
+            "addressRegion": "Buenos Aires",
+            "addressCountry": "AR"
+        },
+        "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": -34.63797751814227,
+            "longitude": -60.48544502476414
+        }
         },
         {
         "@type": "BreadcrumbList",
@@ -48,9 +60,61 @@
         "@type": "WebPage",
         "@id": "https://maiatec.ar/historial-lluvias-chacabuco/#webpage",
         "url": "https://maiatec.ar/historial-lluvias-chacabuco/",
-        "name": "Historial y Registro de Lluvias en Chacabuco | Maiatec",
+        "name": "Historial de Lluvias en Chacabuco | Registro y Acumulados - Maiatec",
+        "description": "Consultá el historial de precipitaciones y lluvias acumuladas en Chacabuco. Registros diarios, mensuales y anuales obtenidos con estación meteorológica propia.",
+        "isPartOf": {
+            "@id": "https://maiatec.ar/#organization"
+        },
+        "publisher": {
+            "@id": "https://maiatec.ar/#organization"
+        },
         "breadcrumb": {
             "@id": "https://maiatec.ar/historial-lluvias-chacabuco/#breadcrumb"
+        },
+        "about": {
+            "@type": "Place",
+            "name": "Chacabuco, Buenos Aires, Argentina",
+            "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": -34.63797751814227,
+            "longitude": -60.48544502476414
+            }
+        }
+        },
+        {
+        "@type": "Dataset",
+        "@id": "https://maiatec.ar/historial-lluvias-chacabuco/#dataset",
+        "name": "Historial de Lluvias y Precipitaciones en Chacabuco - Estación Maiatec",
+        "description": "Base de datos y registros pluviométricos históricos de la ciudad de Chacabuco. Acumulados diarios, mensuales y anuales en milímetros.",
+        "url": "https://maiatec.ar/historial-lluvias-chacabuco/",
+        "license": "https://creativecommons.org/licenses/by/4.0/",
+        "keywords": [
+            "lluvias chacabuco",
+            "cuanto llovio en chacabuco",
+            "historial de lluvias chacabuco",
+            "registro pluviometrico chacabuco",
+            "lluvia acumulada chacabuco"
+        ],
+        "spatialCoverage": {
+            "@type": "Place",
+            "name": "Chacabuco, Buenos Aires, Argentina",
+            "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": -34.63797751814227,
+            "longitude": -60.48544502476414
+            }
+        },
+        "variableMeasured": [
+            "Daily Rainfall",
+            "Monthly Rainfall",
+            "Yearly Rainfall",
+            "Rain Rate"
+        ],
+        "creator": {
+            "@id": "https://maiatec.ar/#organization"
+        },
+        "publisher": {
+            "@id": "https://maiatec.ar/#organization"
         }
         }
     ]
