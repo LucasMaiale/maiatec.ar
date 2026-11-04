@@ -1,7 +1,7 @@
 {
   "latitude": -34.622143,
   "longitude": -60.45453,
-  "generationtime_ms": 0.06186962127685547,
+  "generationtime_ms": 0.05829334259033203,
   "utc_offset_seconds": -10800,
   "timezone": "America/Buenos_Aires",
   "timezone_abbreviation": "GMT-3",
@@ -264,25 +264,25 @@
       0.0,
       0.0,
       0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
       0.1,
       0.0,
+      0.3,
       0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      1.9,
       0.6,
-      0.9,
-      2.3,
-      0.7,
-      1.8,
-      0.7,
-      0.7,
-      0.7,
-      0.1,
+      1.6,
+      0.2,
+      0.4,
+      0.0,
+      0.0,
+      0.0,
       0.0,
       0.0,
       0.0,
@@ -308,15 +308,6 @@
     ]
   },
   "franjas_procesadas": [
-    {
-      "fecha": "2026-11-04",
-      "franja": "Madrugada",
-      "horario": "00:00 a 06:00",
-      "inicio_iso": "2026-11-04T00:00",
-      "fin_iso": "2026-11-04T05:00",
-      "probabilidad_max_pct": 12,
-      "precipitacion_total_mm": 0.0
-    },
     {
       "fecha": "2026-11-04",
       "franja": "Mañana",
@@ -396,7 +387,7 @@
       "inicio_iso": "2026-11-06T06:00",
       "fin_iso": "2026-11-06T11:00",
       "probabilidad_max_pct": 20,
-      "precipitacion_total_mm": 0.1
+      "precipitacion_total_mm": 0.0
     },
     {
       "fecha": "2026-11-06",
@@ -405,7 +396,7 @@
       "inicio_iso": "2026-11-06T12:00",
       "fin_iso": "2026-11-06T17:00",
       "probabilidad_max_pct": 87,
-      "precipitacion_total_mm": 2.5
+      "precipitacion_total_mm": 0.4
     },
     {
       "fecha": "2026-11-06",
@@ -414,7 +405,7 @@
       "inicio_iso": "2026-11-06T18:00",
       "fin_iso": "2026-11-06T23:00",
       "probabilidad_max_pct": 95,
-      "precipitacion_total_mm": 7.1
+      "precipitacion_total_mm": 2.8
     },
     {
       "fecha": "2026-11-07",
@@ -423,7 +414,7 @@
       "inicio_iso": "2026-11-07T00:00",
       "fin_iso": "2026-11-07T05:00",
       "probabilidad_max_pct": 69,
-      "precipitacion_total_mm": 0.8
+      "precipitacion_total_mm": 0.0
     },
     {
       "fecha": "2026-11-07",
