@@ -1,7 +1,7 @@
 {
   "latitude": -34.622143,
   "longitude": -60.45453,
-  "generationtime_ms": 0.0749826431274414,
+  "generationtime_ms": 0.043272972106933594,
   "utc_offset_seconds": -10800,
   "timezone": "America/Buenos_Aires",
   "timezone_abbreviation": "GMT-3",
@@ -220,21 +220,21 @@
       0.0,
       0.0,
       0.0,
-      0.4,
-      0.2,
-      2.4,
-      1.8,
       0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.2,
       0.4,
       0.3,
-      0.2,
-      0.3,
+      0.0,
+      3.1,
+      0.8,
+      0.0,
+      0.0,
+      0.0,
+      0.5,
       0.2,
       0.1,
+      0.0,
+      0.0,
+      0.0,
       0.1,
       0.0,
       0.0,
@@ -310,21 +310,12 @@
   "franjas_procesadas": [
     {
       "fecha": "2026-11-06",
-      "franja": "Madrugada",
-      "horario": "00:00 a 06:00",
-      "inicio_iso": "2026-11-06T00:00",
-      "fin_iso": "2026-11-06T05:00",
-      "probabilidad_max_pct": 5,
-      "precipitacion_total_mm": 0.0
-    },
-    {
-      "fecha": "2026-11-06",
       "franja": "Mañana",
       "horario": "06:00 a 12:00",
       "inicio_iso": "2026-11-06T06:00",
       "fin_iso": "2026-11-06T11:00",
       "probabilidad_max_pct": 24,
-      "precipitacion_total_mm": 0.4
+      "precipitacion_total_mm": 0.0
     },
     {
       "fecha": "2026-11-06",
@@ -333,7 +324,7 @@
       "inicio_iso": "2026-11-06T12:00",
       "fin_iso": "2026-11-06T17:00",
       "probabilidad_max_pct": 79,
-      "precipitacion_total_mm": 4.4
+      "precipitacion_total_mm": 4.6
     },
     {
       "fecha": "2026-11-06",
@@ -342,7 +333,7 @@
       "inicio_iso": "2026-11-06T18:00",
       "fin_iso": "2026-11-06T23:00",
       "probabilidad_max_pct": 83,
-      "precipitacion_total_mm": 1.4
+      "precipitacion_total_mm": 0.8
     },
     {
       "fecha": "2026-11-07",
@@ -351,7 +342,7 @@
       "inicio_iso": "2026-11-07T00:00",
       "fin_iso": "2026-11-07T05:00",
       "probabilidad_max_pct": 35,
-      "precipitacion_total_mm": 0.4
+      "precipitacion_total_mm": 0.1
     },
     {
       "fecha": "2026-11-07",
