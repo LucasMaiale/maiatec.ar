@@ -1,7 +1,7 @@
 {
   "latitude": -34.622143,
   "longitude": -60.45453,
-  "generationtime_ms": 0.05435943603515625,
+  "generationtime_ms": 0.03695487976074219,
   "utc_offset_seconds": -10800,
   "timezone": "America/Buenos_Aires",
   "timezone_abbreviation": "GMT-3",
@@ -301,22 +301,13 @@
       0.0,
       0.0,
       0.0,
-      0.0,
+      0.3,
       0.0,
       0.0,
       0.0
     ]
   },
   "franjas_procesadas": [
-    {
-      "fecha": "2026-11-07",
-      "franja": "Tarde",
-      "horario": "12:00 a 18:00",
-      "inicio_iso": "2026-11-07T12:00",
-      "fin_iso": "2026-11-07T17:00",
-      "probabilidad_max_pct": 0,
-      "precipitacion_total_mm": 0.0
-    },
     {
       "fecha": "2026-11-07",
       "franja": "Noche",
@@ -432,7 +423,7 @@
       "inicio_iso": "2026-11-10T18:00",
       "fin_iso": "2026-11-10T23:00",
       "probabilidad_max_pct": 13,
-      "precipitacion_total_mm": 0.0
+      "precipitacion_total_mm": 0.3
     }
   ]
 }
