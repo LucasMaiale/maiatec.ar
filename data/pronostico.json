@@ -1,7 +1,7 @@
 {
   "latitude": -34.622143,
   "longitude": -60.45453,
-  "generationtime_ms": 0.04076957702636719,
+  "generationtime_ms": 0.057220458984375,
   "utc_offset_seconds": -10800,
   "timezone": "America/Buenos_Aires",
   "timezone_abbreviation": "GMT-3",
@@ -254,14 +254,16 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.0,
-      0.9,
-      0.6,
-      1.0,
+      0.2,
+      0.8,
+      0.7,
+      0.2,
+      7.9,
       2.5,
-      2.0,
-      0.6,
+      0.2,
+      0.2,
+      0.1,
+      0.1,
       0.0,
       0.0,
       0.0,
@@ -288,13 +290,11 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
-      0.0,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
+      0.1,
       0.0,
       0.0,
       0.0,
@@ -308,15 +308,6 @@
     ]
   },
   "franjas_procesadas": [
-    {
-      "fecha": "2026-11-12",
-      "franja": "Madrugada",
-      "horario": "00:00 a 06:00",
-      "inicio_iso": "2026-11-12T00:00",
-      "fin_iso": "2026-11-12T05:00",
-      "probabilidad_max_pct": 0,
-      "precipitacion_total_mm": 0.0
-    },
     {
       "fecha": "2026-11-12",
       "franja": "Mañana",
@@ -378,7 +369,7 @@
       "inicio_iso": "2026-11-13T18:00",
       "fin_iso": "2026-11-13T23:00",
       "probabilidad_max_pct": 71,
-      "precipitacion_total_mm": 0.9
+      "precipitacion_total_mm": 1.7
     },
     {
       "fecha": "2026-11-14",
@@ -387,7 +378,7 @@
       "inicio_iso": "2026-11-14T00:00",
       "fin_iso": "2026-11-14T05:00",
       "probabilidad_max_pct": 85,
-      "precipitacion_total_mm": 6.7
+      "precipitacion_total_mm": 11.1
     },
     {
       "fecha": "2026-11-14",
@@ -396,7 +387,7 @@
       "inicio_iso": "2026-11-14T06:00",
       "fin_iso": "2026-11-14T11:00",
       "probabilidad_max_pct": 29,
-      "precipitacion_total_mm": 0.0
+      "precipitacion_total_mm": 0.1
     },
     {
       "fecha": "2026-11-14",
@@ -432,7 +423,7 @@
       "inicio_iso": "2026-11-15T06:00",
       "fin_iso": "2026-11-15T11:00",
       "probabilidad_max_pct": 17,
-      "precipitacion_total_mm": 0.0
+      "precipitacion_total_mm": 0.3
     },
     {
       "fecha": "2026-11-15",
@@ -441,7 +432,7 @@
       "inicio_iso": "2026-11-15T12:00",
       "fin_iso": "2026-11-15T17:00",
       "probabilidad_max_pct": 20,
-      "precipitacion_total_mm": 0.0
+      "precipitacion_total_mm": 0.2
     },
     {
       "fecha": "2026-11-15",
