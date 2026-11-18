@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1B438A"> <!-- Pinta la barra del navegador en celulares -->
+    
+    <title>Historial y Registro de Lluvias en Chacabuco | Maiatec</title>
+    <meta name="description" content="Consulta el registro histórico de lluvias acumuladas en Chacabuco día por día. Datos exactos registrados por la estación meteorológica propia de Maiatec.">
+    <link rel="canonical" href="https://maiatec.ar/historial-lluvias-chacabuco/" />
+    
+    <meta property="og:title" content="Historial y Registro de Lluvias en Chacabuco | Maiatec">
+    <meta property="og:description" content="Registro diario de precipitaciones y acumulados de lluvia en Chacabuco en tiempo real.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://maiatec.ar/historial-lluvias-chacabuco/">
+
+    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+
+    <script type="application/ld+json">
+    {
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+        "@type": "LocalBusiness",
+        "@id": "https://maiatec.ar/#organization",
+        "name": "MAIATEC",
+        "url": "https://maiatec.ar",
+        "logo": "https://maiatec.ar/logo.png",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Chacabuco",
+            "addressRegion": "Buenos Aires",
+            "addressCountry": "AR"
+        },
+        "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": -34.63797751814227,
+            "longitude": -60.48544502476414
+        }
+        },
+        {
+        "@type": "BreadcrumbList",
+        "@id": "https://maiatec.ar/historial-lluvias-chacabuco/#breadcrumb",
+        "itemListElement": [
+            {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Inicio",
+            "item": "https://maiatec.ar/"
+            },
+            {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Historial de Lluvias",
+            "item": "https://maiatec.ar/historial-lluvias-chacabuco/"
+            }
+        ]
+        },
+        {
+        "@type": "WebPage",
+        "@id": "https://maiatec.ar/historial-lluvias-chacabuco/#webpage",
+        "url": "https://maiatec.ar/historial-lluvias-chacabuco/",
+        "name": "Historial de Lluvias en Chacabuco | Registro y Acumulados - Maiatec",
+        "description": "Consultá el historial de precipitaciones y lluvias acumuladas en Chacabuco. Registros diarios, mensuales y anuales obtenidos con estación meteorológica propia.",
+        "isPartOf": {
+            "@id": "https://maiatec.ar/#organization"
+        },
+        "publisher": {
+            "@id": "https://maiatec.ar/#organization"
+        },
+        "breadcrumb": {
+            "@id": "https://maiatec.ar/historial-lluvias-chacabuco/#breadcrumb"
+        },
+        "about": {
+            "@type": "Place",
+            "name": "Chacabuco, Buenos Aires, Argentina",
+            "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": -34.63797751814227,
+            "longitude": -60.48544502476414
+            }
+        }
+        },
+        {
+        "@type": "Dataset",
+        "@id": "https://maiatec.ar/historial-lluvias-chacabuco/#dataset",
+        "name": "Historial de Lluvias y Precipitaciones en Chacabuco - Estación Maiatec",
+        "description": "Base de datos y registros pluviométricos históricos de la ciudad de Chacabuco. Acumulados diarios, mensuales y anuales en milímetros.",
+        "url": "https://maiatec.ar/historial-lluvias-chacabuco/",
+        "license": "https://creativecommons.org/licenses/by/4.0/",
+        "keywords": [
+            "lluvias chacabuco",
+            "cuanto llovio en chacabuco",
+            "historial de lluvias chacabuco",
+            "registro pluviometrico chacabuco",
+            "lluvia acumulada chacabuco"
+        ],
+        "spatialCoverage": {
+            "@type": "Place",
+            "name": "Chacabuco, Buenos Aires, Argentina",
+            "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": -34.63797751814227,
+            "longitude": -60.48544502476414
+            }
+        },
+        "variableMeasured": [
+            "Daily Rainfall",
+            "Monthly Rainfall",
+            "Yearly Rainfall",
+            "Rain Rate"
+        ],
+        "creator": {
+            "@type": "Organization",
+            "@id": "https://maiatec.ar/#organization",
+            "name": "MAIATEC",
+            "url": "https://maiatec.ar"
+        },
+        "publisher": {
+            "@type": "Organization",
+            "@id": "https://maiatec.ar/#organization",
+            "name": "MAIATEC",
+            "url": "https://maiatec.ar"
+        }
+        }
+    ]
+    }
+    </script>
+
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text: #000000;
+            --sub: #888888;
+            --border: #f0f0f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text); 
+            display: flex; 
+            flex-direction: column;
+            align-items: center;
+            padding-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .brand-bar {
+            width: 100%;
+            padding: 10px 15px;
+            background: #1B438A;
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: 1000;
+            text-transform: uppercase;
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        .brand-bar a { color: #fff; text-decoration: none; border-bottom: 1px solid #fff; }
+
+        .container { 
+            max-width: 450px; 
+            width: 100%; 
+            padding: 25px 20px; 
+        }
+
+        header { 
+            border-bottom: 3px solid var(--text); 
+            padding-bottom: 10px; 
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-content: center;
+        }
+
+        h1 { 
+            font-size: 1.1rem; 
+            font-weight: 900; 
+            text-align: center;
+            text-transform: uppercase; 
+            letter-spacing: -1px; 
+            width: 100%; 
+            margin-bottom: 5px; 
+        }
+        #status { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; color: var(--sub); width: 100%; text-align: center; }
+        
+        @media (min-width: 400px) {
+            h1 { font-size: 1.4rem; }
+        }
+
+        /* Texto SEO visible */
+        .seo-intro {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #aaa;
+            line-height: 1.3;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        /* Contenedor deslizante de la tabla principal */
+        .rain-table-container {
+            width: 100%;
+            max-height: 380px;
+            overflow-y: auto;
+            margin-top: 10px;
+            padding: 0 12px;
+            border: 1.5px solid var(--text);
+            border-radius: 6px;
+        }
+
+        .rain-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .rain-table th {
+            position: sticky;
+            top: 0;
+            background: var(--bg);
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--sub);
+            text-transform: uppercase;
+            padding: 12px 0;
+            border-bottom: 2px solid var(--text);
+            text-align: left;
+            z-index: 1;
+        }
+
+        .rain-table th:last-child {
+            text-align: right;
+        }
+
+        .rain-table td {
+            padding: 12px 0;
+            font-size: 0.95rem;
+            border-bottom: 1px dashed var(--border);
+        }
+
+        .rain-table .rain-date {
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .rain-table .rain-val-cell {
+            text-align: right;
+            font-weight: 900;
+            font-size: 1.15rem;
+            letter-spacing: -0.5px;
+            color: #1B438A;
+        }
+
+        .rain-table .rain-unit {
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: var(--sub);
+            margin-left: 2px;
+        }
+
+        footer { 
+            margin-top: 30px; 
+            border-top: 1px solid var(--border); 
+            padding-top: 15px;
+            width: 100%;
+        }
+        
+        .location-note {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #aaa;
+            line-height: 1.3;
+            margin-top: 8px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .bookmark-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            margin-top: 12px;
+            padding: 12px;
+            background-color: transparent;
+            border: 1.5px solid var(--text);
+            color: var(--text);
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            border-radius: 6px;
+            text-align: center;
+            text-decoration: none;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .bookmark-btn:hover {
+            background-color: var(--text);
+            color: var(--bg);
+        }
+
+        .btn-primary {
+            background-color: #1B438A;
+            color: #fff;
+            border-color: #1B438A;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--text);
+            color: var(--bg);
+            border-color: var(--text);
+        }
+    </style>
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8BPCML95R3"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-8BPCML95R3');
+    </script>
+</head>
+<body>
+
+<nav class="brand-bar">
+    SERVICIO A LA COMUNIDAD BRINDADO POR <a href="https://maiatec.ar/">MAIATEC ELECTRÓNICA</a>
+</nav>
+
+<div class="container">
+    <header>
+        <h1>Registro e historial de lluvias en Chacabuco</h1>
+        <span id="status" aria-live="polite">Cargando historial...</span>
+    </header>
+
+    <p class="seo-intro">Acumulados diarios de precipitaciones medidos por la estación meteorológica Maiatec.</p>
+
+    <main class="grid">
+
+        <div class="rain-table-container">
+            <table class="rain-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Lluvia (mm)</th>
+                    </tr>
+                </thead>
+                <tbody id="rain-history-body">
+                    <tr>
+                        <td colspan="2" style="text-align: center; color: var(--sub);">Cargando historial...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Acceso directo a estación en vivo -->
+        <a href="/clima-chacabuco/" class="bookmark-btn btn-primary">
+            Volver a la Estación Meteorológica en Vivo
+        </a>
+
+    </main>
+
+    <footer>
+        <a href="https://wa.me/5492352502050?text=QUIERO%20TENER%20MI%20PROPIA%20ESTACI%C3%93N"  
+           class="bookmark-btn"
+           target="_blank"
+           rel="noopener">
+            ¿Querés tener tu propia estación? Contactanos
+        </a>
+        
+        <button type="button" class="bookmark-btn" onclick="addBookmark()">
+            ★ Agregá esta página a Marcadores
+        </button>
+
+        <div class="location-note">
+            Medición de lluvias en Chacabuco, Buenos Aires<br>Estación ubicada en las inmediaciones del Club Social
+        </div>
+    </footer>
+</div>
+
+<script>
+    async function loadRainHistory() {
+        try {
+            const res = await fetch('/data/lluvias_acumuladas.json?t=' + Date.now());
+            if (!res.ok) throw new Error();
+            const rainData = await res.json();
+            
+            const tbody = document.getElementById('rain-history-body');
+            tbody.innerHTML = '';
+
+            const sortedDates = Object.keys(rainData).sort().reverse();
+
+            sortedDates.forEach(dateStr => {
+                const mm = parseFloat(rainData[dateStr]).toFixed(1);
+                const [year, month, day] = dateStr.split('-').map(Number);
+                const formattedDate = `${String(day).padStart(2, '0')}/${String(month).padStart(2, '0')}/${year}`;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="rain-date">${formattedDate}</td>
+                    <td class="rain-val-cell">${mm} <span class="rain-unit">mm</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('status').innerText = 'Actualizado c/24hs';
+
+        } catch (e) {
+            document.getElementById('rain-history-body').innerHTML = `
+                <tr>
+                    <td colspan="2" style="text-align: center; color: var(--sub);">No se pudo cargar el historial.</td>
+                </tr>
+            `;
+            document.getElementById('status').innerText = 'Error al cargar';
+        }
+    }
+
+    loadRainHistory();
+
+    function addBookmark() {
+        const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+        const shortcut = isMac ? 'Cmd + D' : 'Ctrl + D';
+        alert('Para guardar el acceso a esta página, agregala a los Marcadores de tu celular o presioná ' + shortcut + ' si estás en una PC');
+    }
+</script>
+
+</body>
+</html>
