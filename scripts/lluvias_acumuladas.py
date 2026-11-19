@@ -20,7 +20,7 @@ def procesar_historial_lluvia(anio_inicio=2026, mes_inicio=4, ruta_destino='data
             m = 1
             a += 1
 
-    lluvia_por_dia = {}
+    lecturas_por_dia = {}
     archivos_procesados = 0
 
     print(f"Revisando archivos desde {anio_inicio}_{mes_inicio:02d} hasta {anio_actual}_{mes_actual:02d}...\n")
@@ -51,17 +51,16 @@ def procesar_historial_lluvia(anio_inicio=2026, mes_inicio=4, ruta_destino='data
         if not mediciones_lluvia:
             continue
 
-        # Agrupamos por fecha ("YYYY-MM-DD") aplicando UTC-3
+        # Agrupamos por fecha ("YYYY-MM-DD") guardando la tupla (timestamp, valor)
         for ts_str, valor in mediciones_lluvia.items():
             try:
                 ts = int(ts_str)
-                # Convertimos el timestamp a la zona horaria de Argentina
                 fecha_str = datetime.fromtimestamp(ts, tz=tz_arg).strftime('%Y-%m-%d')
                 mm = float(valor)
 
-                if fecha_str not in lluvia_por_dia:
-                    lluvia_por_dia[fecha_str] = []
-                lluvia_por_dia[fecha_str].append(mm)
+                if fecha_str not in lecturas_por_dia:
+                    lecturas_por_dia[fecha_str] = []
+                lecturas_por_dia[fecha_str].append((ts, mm))
             except (ValueError, TypeError):
                 continue
 
@@ -69,12 +68,22 @@ def procesar_historial_lluvia(anio_inicio=2026, mes_inicio=4, ruta_destino='data
         print("\nNo se encontró ningún archivo para procesar.")
         return
 
-    # Filtrar solo los días con precipitaciones (> 0 mm), excluyendo el día actual en curso
     resultado = {}
-    for fecha, valores in sorted(lluvia_por_dia.items()):
+
+    # Procesamos día por día limpiando el arrastre de medianoche
+    for fecha in sorted(lecturas_por_dia.keys()):
         if fecha == hoy_str:
             continue  # Saltea el día de hoy hasta que termine el día
             
+        # Ordenamos las lecturas del día cronológicamente por timestamp
+        lecturas = sorted(lecturas_por_dia[fecha], key=lambda x: x[0])
+        valores = [v for ts, v in lecturas]
+
+        # Si la primera lectura del día (00:00 hs) arrastra el acumulado anterior
+        # y recién en la lectura siguiente baja/resetea el contador, descartamos el sobrante
+        if len(valores) > 1 and valores[0] > 0 and valores[1] < valores[0]:
+            valores = valores[1:]
+
         total_dia = max(valores) if valores else 0.0
         if total_dia > 0:
             resultado[fecha] = round(total_dia, 2)
