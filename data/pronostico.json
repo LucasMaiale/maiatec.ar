@@ -1,7 +1,7 @@
 {
   "latitude": -34.622143,
   "longitude": -60.45453,
-  "generationtime_ms": 0.052928924560546875,
+  "generationtime_ms": 0.0591278076171875,
   "utc_offset_seconds": -10800,
   "timezone": "America/Buenos_Aires",
   "timezone_abbreviation": "GMT-3",
@@ -238,21 +238,20 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.0,
       0.7,
-      0.6,
+      1.7,
+      0.8,
       0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.1,
       0.0,
       0.0,
       0.1,
       0.4,
-      0.1,
-      0.2,
-      0.3,
-      0.1,
-      0.1,
-      0.2,
+      3.3,
       0.0,
       0.0,
       0.0,
@@ -273,15 +272,16 @@
       0.0,
       0.0,
       0.0,
-      0.3,
-      0.1,
-      0.7,
-      4.3,
-      5.1,
-      4.4,
-      0.8,
       0.0,
-      0.1,
+      0.0,
+      0.5,
+      0.4,
+      1.5,
+      2.7,
+      0.5,
+      0.0,
+      0.0,
+      0.0,
       0.0,
       0.0,
       0.0,
@@ -308,15 +308,6 @@
     ]
   },
   "franjas_procesadas": [
-    {
-      "fecha": "2026-11-19",
-      "franja": "Madrugada",
-      "horario": "00:00 a 06:00",
-      "inicio_iso": "2026-11-19T00:00",
-      "fin_iso": "2026-11-19T05:00",
-      "probabilidad_max_pct": 0,
-      "precipitacion_total_mm": 0.0
-    },
     {
       "fecha": "2026-11-19",
       "franja": "Mañana",
@@ -351,7 +342,7 @@
       "inicio_iso": "2026-11-20T00:00",
       "fin_iso": "2026-11-20T05:00",
       "probabilidad_max_pct": 15,
-      "precipitacion_total_mm": 0.0
+      "precipitacion_total_mm": 0.7
     },
     {
       "fecha": "2026-11-20",
@@ -360,7 +351,7 @@
       "inicio_iso": "2026-11-20T06:00",
       "fin_iso": "2026-11-20T11:00",
       "probabilidad_max_pct": 43,
-      "precipitacion_total_mm": 1.3
+      "precipitacion_total_mm": 2.5
     },
     {
       "fecha": "2026-11-20",
@@ -369,7 +360,7 @@
       "inicio_iso": "2026-11-20T12:00",
       "fin_iso": "2026-11-20T17:00",
       "probabilidad_max_pct": 55,
-      "precipitacion_total_mm": 1.2
+      "precipitacion_total_mm": 0.6
     },
     {
       "fecha": "2026-11-20",
@@ -378,7 +369,7 @@
       "inicio_iso": "2026-11-20T18:00",
       "fin_iso": "2026-11-20T23:00",
       "probabilidad_max_pct": 49,
-      "precipitacion_total_mm": 0.3
+      "precipitacion_total_mm": 3.3
     },
     {
       "fecha": "2026-11-21",
@@ -405,7 +396,7 @@
       "inicio_iso": "2026-11-21T12:00",
       "fin_iso": "2026-11-21T17:00",
       "probabilidad_max_pct": 54,
-      "precipitacion_total_mm": 0.4
+      "precipitacion_total_mm": 0.5
     },
     {
       "fecha": "2026-11-21",
@@ -414,7 +405,7 @@
       "inicio_iso": "2026-11-21T18:00",
       "fin_iso": "2026-11-21T23:00",
       "probabilidad_max_pct": 84,
-      "precipitacion_total_mm": 15.3
+      "precipitacion_total_mm": 5.1
     },
     {
       "fecha": "2026-11-22",
@@ -423,7 +414,7 @@
       "inicio_iso": "2026-11-22T00:00",
       "fin_iso": "2026-11-22T05:00",
       "probabilidad_max_pct": 69,
-      "precipitacion_total_mm": 0.1
+      "precipitacion_total_mm": 0.0
     },
     {
       "fecha": "2026-11-22",
