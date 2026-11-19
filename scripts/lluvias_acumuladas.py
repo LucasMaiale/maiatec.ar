@@ -1,12 +1,14 @@
 import json
 import os
-from datetime import datetime
+from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 def procesar_historial_lluvia(anio_inicio=2026, mes_inicio=4, ruta_destino='data/lluvias_acumuladas.json'):
-    ahora = datetime.now()
+    tz_local = ZoneInfo("America/Argentina/Buenos_Aires")
+    ahora = datetime.now(tz_local)
     anio_actual = ahora.year
     mes_actual = ahora.month
-    hoy_str = ahora.strftime('%Y-%m-%d')  # Fecha de hoy para comparar
+    hoy_str = ahora.strftime('%Y-%m-%d')  # Fecha de hoy en hora local Argentina
 
     # Generamos la lista de sufijos año_mes a procesar
     meses_a_procesar = []
@@ -50,11 +52,13 @@ def procesar_historial_lluvia(anio_inicio=2026, mes_inicio=4, ruta_destino='data
         if not mediciones_lluvia:
             continue
 
-        # Agrupamos por fecha ("YYYY-MM-DD")
+        # Agrupamos por fecha local ("YYYY-MM-DD")
         for ts_str, valor in mediciones_lluvia.items():
             try:
                 ts = int(ts_str)
-                fecha_str = datetime.fromtimestamp(ts).strftime('%Y-%m-%d')
+                # Convertimos timestamp UTC directamente a hora local de Argentina (-03:00)
+                dt_local = datetime.fromtimestamp(ts, tz=timezone.utc).astimezone(tz_local)
+                fecha_str = dt_local.strftime('%Y-%m-%d')
                 mm = float(valor)
 
                 if fecha_str not in lluvia_por_dia:
