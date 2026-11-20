@@ -1,7 +1,7 @@
 {
   "latitude": -34.622143,
   "longitude": -60.45453,
-  "generationtime_ms": 0.0635385513305664,
+  "generationtime_ms": 0.0457763671875,
   "utc_offset_seconds": -10800,
   "timezone": "America/Buenos_Aires",
   "timezone_abbreviation": "GMT-3",
@@ -222,10 +222,14 @@
       0.0,
       0.0,
       0.0,
+      0.3,
+      0.4,
+      1.0,
+      0.2,
+      0.0,
       0.1,
       0.0,
       0.0,
-      1.2,
       0.0,
       0.0,
       0.0,
@@ -248,12 +252,8 @@
       0.0,
       0.0,
       0.0,
-      0.0,
-      0.8,
-      0.0,
-      0.5,
-      0.2,
-      0.0,
+      0.1,
+      0.1,
       0.0,
       0.0,
       0.0,
@@ -310,21 +310,12 @@
   "franjas_procesadas": [
     {
       "fecha": "2026-11-20",
-      "franja": "Tarde",
-      "horario": "12:00 a 18:00",
-      "inicio_iso": "2026-11-20T12:00",
-      "fin_iso": "2026-11-20T17:00",
-      "probabilidad_max_pct": 49,
-      "precipitacion_total_mm": 1.3
-    },
-    {
-      "fecha": "2026-11-20",
       "franja": "Noche",
       "horario": "18:00 a 24:00",
       "inicio_iso": "2026-11-20T18:00",
       "fin_iso": "2026-11-20T23:00",
       "probabilidad_max_pct": 47,
-      "precipitacion_total_mm": 0.0
+      "precipitacion_total_mm": 0.1
     },
     {
       "fecha": "2026-11-21",
@@ -351,7 +342,7 @@
       "inicio_iso": "2026-11-21T12:00",
       "fin_iso": "2026-11-21T17:00",
       "probabilidad_max_pct": 28,
-      "precipitacion_total_mm": 0.8
+      "precipitacion_total_mm": 0.0
     },
     {
       "fecha": "2026-11-21",
@@ -360,7 +351,7 @@
       "inicio_iso": "2026-11-21T18:00",
       "fin_iso": "2026-11-21T23:00",
       "probabilidad_max_pct": 53,
-      "precipitacion_total_mm": 0.7
+      "precipitacion_total_mm": 0.2
     },
     {
       "fecha": "2026-11-22",
